@@ -11,7 +11,11 @@ This folder contains the Week 2 deliverables required for Assignment 2.
 - `reports/week2/analysis.md`
 - `reports/week2/llm-report.md`
 
+## Current status
+- Repository skeleton and assignment structure have been created.
+- `.github/` automation and PR template are configured.
+- `reports/week2/` files have been initialized with the expected structure.
+
 ## Notes
-- The report index should link to every required file.
-- Use this file as the public Week 2 entry point.
+- This index is the public Week 2 entry point.
 - Do not duplicate long content from the specific report files.
