@@ -1,7 +1,7 @@
 # MVP v0 Report
 
 ## Purpose and description
-This MVP v0 describes the initial product foundation and repository infrastructure for the SWP TickFrame project.
+This MVP v0 describes the initial product foundation for SWP TickFrame.
 
 The current foundation includes:
 - MIT-licensed public repository structure
@@ -9,34 +9,43 @@ The current foundation includes:
 - `.github/pull_request_template.md` for review consistency
 - `.github/workflows/lychee.yml` for automatic Markdown link checking
 - Week 2 report structure under `reports/week2/`
+- Runnable CLI interface documented in `docs/interface.md`
+- Minimal CLI implementation in `tickframe/`
 
 ## Deployment or runnable artifact
-This MVP v0 is a repository infrastructure foundation available at:
+This MVP v0 is available in the repository at:
 - `https://github.com/DaniilJechev/SWP_TickFrame_28_team`
 - Branch: `infra/initial-setup`
 
+## Runnable artifact
+Use the local CLI from the repository root:
+- `python -m tickframe --help`
+- `python -m tickframe scan --symbol BTCUSDT --interval 1h --limit 3`
+- `python -m tickframe report --symbol BTCUSDT --interval 1h --output reports/week2/mvp0-report.md`
+
 ## Smoke-check scenario
 Repeatable smoke-check scenario:
-1. Open the repository on GitHub.
-2. Confirm that the branch `infra/initial-setup` exists.
-3. Confirm that `.github/pull_request_template.md` is present.
-4. Confirm that `.github/workflows/lychee.yml` is present.
-5. Confirm that `reports/week2/README.md` and `reports/week2/user-stories.md` exist.
-6. Verify that `LICENSE`, `.gitignore`, and `.env.example` are present in the repository root.
+1. Open a terminal in the repository root.
+2. Run `python -m tickframe --help`.
+3. Run `python -m tickframe scan --symbol BTCUSDT --interval 1h --limit 3`.
+4. Run `python -m tickframe report --symbol BTCUSDT --interval 1h --output reports/week2/mvp0-report.md`.
+5. Confirm that `reports/week2/mvp0-report.md` is created or updated.
 
 Expected result:
-- All required files exist.
-- The PR template and workflow definitions are configured.
+- The CLI displays help text.
+- The scan command prints sample pattern results.
+- The report command writes a Markdown report file.
 
 ## Current limitations and placeholders
-- No product business logic is implemented yet.
-- The Week 2 report files are initialized and contain structured content, but meeting evidence is still pending.
-- The MVP v0 foundation is repository infrastructure rather than a finished analytical application.
+- The current CLI uses mocked sample scan output.
+- Real market data ingestion and machine learning prediction are not implemented.
+- The MVP v0 foundation is intentionally minimal to satisfy the runnable interface requirement.
 
 ## Relationship to the prototype and proposed MVP v1 stories
-- This foundation supports the planned MVP v1 scope by providing the required repository, review, and CI workflow structure.
-- The repository skeleton is necessary before implementing the user-facing analytical features described in `reports/week2/user-stories.md`.
+- The CLI interface supports the proposed MVP v1 scope by defining how users will run scans and generate reports.
+- It maps to user stories such as US-01, US-02, and US-03 by providing a runnable product foundation.
 
 ## Link to local setup instructions
 - Root README: `../README.md`
+- Interface documentation: `../../docs/interface.md`
 - Week 2 report index: `README.md`
