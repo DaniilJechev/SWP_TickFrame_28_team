@@ -1,0 +1,15 @@
+# Secrets & Configs
+.env
+.env.local
+
+# Python/ML logs and caches
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.venv/
+venv/
+
+# OS and IDE files
+.DS_Store
+.idea/
+.vscode/
