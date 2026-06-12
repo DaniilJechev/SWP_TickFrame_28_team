@@ -10,6 +10,7 @@ This folder contains the Week 2 deliverables required for Assignment 2.
 - [Customer meeting notes](customer-meeting-notes.md)
 - [Week 2 analysis](analysis.md)
 - [LLM usage report](llm-report.md)
+- [Smoke-check evaluation guide](smoke-check-evaluation-guide.md)
 
 ## Product artifacts
 - [Product interface documentation](../../docs/interface.md)
@@ -17,11 +18,11 @@ This folder contains the Week 2 deliverables required for Assignment 2.
 - [Root README](../../README.md)
 
 ## Current status
-- Repository skeleton and assignment structure have been created.
-- `.github/` automation and PR template are configured.
-- `reports/week2/` files are initialized and linked from this index.
-- A runnable MVP v0 CLI foundation is included in `tickframe/`.
+- Bybit API integration implemented — real OHLCV data fetching
+- Candle cache with auto-refresh every 60 seconds (200+1 candles)
+- Interactive web dashboard with candlestick chart (lightweight-charts)
+- Mock ML pattern detection for the last 50 candles
+- CLI commands: `scan`, `report`, `analyze`, `serve`
 
 ## Notes
 - This index links to required Week 2 files and artifact documentation.
-- Keep substantive content in the dedicated files listed above.
