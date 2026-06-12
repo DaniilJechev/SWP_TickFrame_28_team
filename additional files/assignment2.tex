@@ -1,0 +1,114 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{titlesec}
+\usepackage[left=1cm, right=1cm, top=2.5cm, bottom=2.5cm]{geometry}
+
+% Hyperref setup for secure and viewable university links
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    pdftitle={Assignment 2 Moodle Submission Report - Team 28},
+}
+
+\titleformat{\section}{\large\bfseries}{\thesection}{1em}{}[{\titlerule[0.5pt]}]
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{1em}{}
+
+\begin{document}
+
+% =========================================================================
+% HEADER SECTION
+% =========================================================================
+\begin{center}
+    {\large \textbf{INNOPOLIS UNIVERSITY}} \\
+    \vspace{0.1cm}
+    {\large \textbf{Software Project (SWP) — Spring 2026}} \\
+    \vspace{0.5cm}
+    \textbf{\Large Assignment 2: Product Foundation \& Validation Report} \\
+    \vspace{0.3cm}
+    \textbf{Project Name:} SWP TickFrame \quad | \quad \textbf{Team Number:} Team 28 \\
+    \textbf{Submission Date:} June 11, 2026
+\end{center}
+
+\vspace{0.5cm}
+
+% =========================================================================
+% SECTION 1: TEAM STRUCTURE & TECHNICAL RESPONSIBILITIES
+% =========================================================================
+\section{Team Structure and Technical Responsibilities}
+The table below maps out the official Scrum framework roles and technical ownership fields established inside Team 28 for the execution of this project.
+
+\vspace{0.2cm}
+\begin{table}[h!]
+    \centering
+    \small
+    \begin{tabular}{lllll}
+        \toprule
+        \textbf{Full Name} & \textbf{University Email} & \textbf{GitHub} & \textbf{Scrum Role} & \textbf{Technical Domain} \\
+        \midrule
+        Daniil Zhechev & d.zhechev@innopolis.university & \href{https://github.com/DaniilJechev}{DaniilJechev} & Product Owner & ML engineer / Quant Engineer \\
+        F. Kozhevnikov & f.kozhevnikov@innopolis.university & \href{https://github.com/Fedos113}{Fedos113} & Scrum Master & Backend / UI Prototyping \\
+        A. Gafarov & a.gafarov@innopolis.university & \href{https://github.com/omarichev}{omarichev} & Developer & Backend / Data pipeline \\
+        A. Mindubaev & a.mindubaev@innopolis.university & \href{https://github.com/pug228}{pug228} & Developer & Backend / Data pipeline \\
+        M. Bezborodov & m.bezborodov@innopolis.university & \href{https://github.com/MikhailBezborodov024}{Mikhail...} & Developer & Frontend / UI implementation \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+% =========================================================================
+% SECTION 2: SUMMARY OF INDIVIDUAL CONTRIBUTIONS
+% =========================================================================
+\section{Summary of Individual Contributions}
+A concise breakdown of specific, verifiable engineering tasks completed by each team member during the Week 2 cycle:\subsection{Review Distribution and Session Artifacts}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Sanitized English Transcript:} Located on the default branch at \texttt{reports/week2/customer-meeting-transcript.md}. The customer explicitly permitted public repository logging during the pre-session consensus check.
+    \item \textbf{Secure Meeting Session Recording Repository Access URL:} \\
+    \small \url{https://drive.google.com/drive/folders/PLACEHOLDER_PASTE_YOUR_SECURE_TA_ONLY_DRIVE_LINK} \\
+    \textit{Note: Access permissions are configured exclusively for Innopolis University instruction and grading staffs.}
+\end{itemize}
+
+% =========================================================================
+% SECTION 6: MVP V0 ACCESS \& SMOKE-CHECK SCENARIO GUIDE
+% =========================================================================
+\section{MVP v0 Access and Smoke-Check Evaluation Guide}
+To evaluate the underlying technical codebase foundation compiled for MVP v0, the Teaching Assistant (TA) can quickly spin up and execute the repeatable smoke-test script using any standard bash container environment:
+
+\begin{verbatim}
+# 1. Pull the official submission tree matching the target commit hash
+git clone https://github.com/DaniilJechev/SWP_TickFrame_28_team.git
+cd SWP_TickFrame_28_team
+git checkout YOUR_FULL_COMMIT_HASH_HERE
+
+# 2. Replicate the environment architecture structure using the sanitized mock layout
+cp .env.example .env
+
+# 3. Initialize execution of the repeatable internal smoke check command logic
+python main.py --symbol BTC/USDT --smoke-check
+\end{verbatim}
+
+\textbf{Expected Smoke Check Output Logs:} The execution engine will initialize data-broker connection channels, parse mock environment configuration arrays without leaking personal identifiable data (PII) or secrets, and print a terminal success statement verifying code health.
+
+\vspace{0.8cm}
+
+% =========================================================================
+% SECTION 7: APPENDIX - LEGAL CONSENT SNIPPET
+% =========================================================================
+\section{Appendix: Proof of MIT Model Public Consent}
+Below is the verified screenshot showing the customer's written consent to the public development model under the MIT license, captured before the repository creation:
+
+\vspace{0.4cm}
+\begin{figure}[h!]
+    \centering
+    % Un-comment the line below and place the image file in the same folder in Overleaf
+    % \includegraphics[width=0.8\textwidth]{consent_proof.png}
+    \framebox{\begin{minipage}{0.8\textwidth}\centering\vspace{2cm} [Place Customer Chat/Email MIT Consent Screenshot Here] \vspace{2cm}\end{minipage}}
+    \caption{Customer's formal written confirmation regarding the MIT Public Repository model.}
+\end{figure}
+
+\end{document}
