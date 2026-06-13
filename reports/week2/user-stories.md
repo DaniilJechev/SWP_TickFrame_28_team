@@ -18,7 +18,8 @@ so that I can find trading patterns faster than manual review.
 
 ### Notes and constraints
 - The system should support at least one cryptocurrency symbol and daily or hourly candles.
-- Initial MVP can use saved sample data.
+- Current implementation: real OHLCV data fetched from Bybit v5 kline API (spot and linear markets), supports 11 intervals from 1m to 1M, with in-memory CandleCache auto-refreshing every 60 seconds.
+- Mock data fallback available via `--mock` flag.
 
 ## US-02: Detect chart patterns with ML support
 **Requirement status:** Active
@@ -30,7 +31,8 @@ so that I can prioritize the most promising market opportunities.
 
 ### Notes and constraints
 - The pattern detector may use XGBoost or another supervised model.
-- The initial version can return pattern confidence scores only.
+- Current implementation: mock ML detector returns a predefined pattern name (Head and Shoulders, Double Bottom, Bull Flag, etc.) with a randomized confidence score (75–99%) for the last 50 candles. Real XGBoost model integration is pending for MVP v1.
+- Accessible via `tickframe analyze` CLI command and "Analyze for patterns" button in the web dashboard.
 
 ## US-03: View scan results in a report-friendly format
 **Requirement status:** Active
@@ -43,6 +45,7 @@ so that the TA and customer can evaluate the output easily.
 ### Notes and constraints
 - The initial output may be a Markdown report or JSON summary.
 - The report should include timestamps, symbols, and detected patterns.
+- Current implementation: output available in four formats: (1) formatted OHLCV table in terminal (`scan`), (2) JSON file (`scan --output`), (3) Markdown report file (`report`), (4) interactive candlestick chart in web dashboard (`serve`).
 
 ## US-04: Maintain a public repository with MIT license
 **Requirement status:** Active

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TickFrame — Chart Scanner</title>
+<script src="https://unpkg.com/lightweight-charts@4.2.1/dist/lightweight-charts.standalone.production.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#131722;color:#d1d4dc;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;overflow:hidden}
+#toolbar{display:flex;align-items:center;gap:16px;padding:10px 16px;background:#1e222d;border-bottom:1px solid #2a2e39;user-select:none}
+#toolbar h1{font-size:16px;font-weight:600;color:#2962ff}
+#analyze-btn{padding:7px 18px;background:#2962ff;color:#fff;border:none;border-radius:4px;cursor:pointer;font-weight:600;font-size:13px}
+#analyze-btn:hover{background:#1e4fd9}
+#analyze-btn:disabled{background:#555;cursor:not-allowed}
+#status{font-size:13px;color:#9598a1}
+#result-panel{padding:8px 16px;background:#1e222d;border-top:1px solid #2a2e39;font-size:15px;min-height:36px;display:flex;align-items:center;gap:8px}
+#result-panel .label{color:#9598a1;font-size:12px}
+#result-panel .value{font-weight:700;color:#d1d4dc}
+#result-panel .value.highlight{color:#2962ff}
+#chart-container{width:100vw;height:calc(100vh - 56px - 36px)}
+</style>
+</head>
+<body>
+
+<div id="toolbar">
+<h1>TickFrame</h1>
+<button id="analyze-btn">Analyze for patterns</button>
+<span id="status">Ready</span>
+</div>
+
+<div id="chart-container"></div>
+
+<div id="result-panel">
+<span class="label">Last scan:</span>
+<span id="result-text" class="value">—</span>
+</div>
+
+<script>
+const API = '';
+const chartContainer = document.getElementById('chart-container');
+const analyzeBtn = document.getElementById('analyze-btn');
+const statusEl = document.getElementById('status');
+const resultText = document.getElementById('result-text');
+
+const chart = LightweightCharts.createChart(chartContainer, {
+    layout: {
+        background: { type: 'solid', color: '#131722' },
+        textColor: '#d1d4dc',
+    },
+    grid: {
+        vertLines: { color: '#2a2e39' },
+        horzLines: { color: '#2a2e39' },
+    },
+    rightPriceScale: {
+        scaleMargins: { top: 0.33, bottom: 0.33 },
+        borderColor: '#2a2e39',
+        entireTextOnly: true,
+    },
+    timeScale: {
+        borderColor: '#2a2e39',
+        timeVisible: true,
+        secondsVisible: false,
+        rightOffset: 6,
+        shiftVisibleRangeOnNewBar: true,
+    },
+    crosshair: {
+        mode: LightweightCharts.CrosshairMode.Normal,
+    },
+    handleScroll: { vertTouchDrag: false },
+});
+
+chart.applyOptions({
+    watermark: {
+        visible: true,
+        text: 'TickFrame',
+        color: 'rgba(41, 98, 255, 0.1)',
+        fontSize: 72,
+    },
+});
+
+const candlestickSeries = chart.addCandlestickSeries({
+    upColor: '#26a69a',
+    downColor: '#ef5350',
+    borderUpColor: '#26a69a',
+    borderDownColor: '#ef5350',
+    wickUpColor: '#26a69a',
+    wickDownColor: '#ef5350',
+});
+
+let loadedCandles = [];
+let markersVisible = false;
+
+function toLwcTime(timestamp) {
+    return Math.floor(new Date(timestamp).getTime() / 1000);
+}
+
+function formatResult(data) {
+    if (!data || !data.pattern || data.pattern === 'None') {
+        return 'No patterns detected';
+    }
+    return `${data.pattern} — ${(data.confidence * 100).toFixed(0)}% confidence`;
+}
+
+async function loadCandles() {
+    try {
+        const resp = await fetch(`${API}/api/candles`);
+        if (!resp.ok) throw new Error('Failed to fetch');
+        loadedCandles = await resp.json();
+        updateChart();
+        statusEl.textContent = `Loaded ${loadedCandles.length} candles`;
+    } catch (e) {
+        statusEl.textContent = 'Error loading candles';
+    }
+}
+
+function updateChart() {
+    if (!loadedCandles.length) return;
+
+    const lwcData = loadedCandles.map(c => ({
+        time: toLwcTime(c.timestamp),
+        open: c.open,
+        high: c.high,
+        low: c.low,
+        close: c.close,
+    }));
+
+    candlestickSeries.setData(lwcData);
+    chart.timeScale().scrollToRealTime();
+}
+
+function updateMarkers() {
+    if (!loadedCandles.length) return;
+
+    const len = loadedCandles.length;
+    const startIdx = Math.max(0, len - 50);
+    const startTime = toLwcTime(loadedCandles[startIdx].timestamp);
+    const endTime = toLwcTime(loadedCandles[len - 1].timestamp);
+
+    candlestickSeries.setMarkers([
+        {
+            time: startTime,
+            position: 'inBar',
+            shape: 'arrowUp',
+            color: '#2962ff',
+            text: '50-candle window',
+        },
+        {
+            time: endTime,
+            position: 'inBar',
+            shape: 'arrowDown',
+            color: '#2962ff',
+            text: '',
+        },
+    ]);
+    markersVisible = true;
+}
+
+async function analyze() {
+    analyzeBtn.disabled = true;
+    statusEl.textContent = 'Analyzing...';
+
+    try {
+        const resp = await fetch(`${API}/api/analyze`, { method: 'POST' });
+        if (!resp.ok) throw new Error('Analysis failed');
+        const result = await resp.json();
+        resultText.textContent = formatResult(result);
+        resultText.className = 'value highlight';
+        updateMarkers();
+        statusEl.textContent = 'Done';
+    } catch (e) {
+        statusEl.textContent = 'Analysis error';
+        resultText.textContent = 'Error';
+        resultText.className = 'value';
+    } finally {
+        analyzeBtn.disabled = false;
+    }
+}
+
+analyzeBtn.addEventListener('click', analyze);
+
+async function refresh() {
+    try {
+        const resp = await fetch(`${API}/api/candles`);
+        if (!resp.ok) return;
+        const fresh = await resp.json();
+
+        if (fresh.length !== loadedCandles.length) {
+            loadedCandles = fresh;
+            updateChart();
+            statusEl.textContent = `Loaded ${loadedCandles.length} candles`;
+        } else if (fresh.length > 0 && loadedCandles.length > 0) {
+            const lastFresh = fresh[fresh.length - 1];
+            const lastLoaded = loadedCandles[loadedCandles.length - 1];
+            if (lastFresh.timestamp !== lastLoaded.timestamp ||
+                lastFresh.close !== lastLoaded.close) {
+                loadedCandles = fresh;
+                updateChart();
+                statusEl.textContent = `Refreshed ${loadedCandles.length} candles`;
+            }
+        }
+    } catch (_) {}
+}
+
+loadCandles();
+setInterval(refresh, 10000);
+
+window.addEventListener('resize', () => {
+    chart.resize(chartContainer.clientWidth, chartContainer.clientHeight);
+});
+</script>
+</body>
+</html>
