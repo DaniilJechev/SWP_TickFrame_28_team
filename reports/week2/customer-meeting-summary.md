@@ -1,16 +1,24 @@
 # Customer Meeting Summary
 
 ## Date
-- TODO: add meeting date.
+- 13.06.2026 
 
 ## Participants
-- TODO: list participants by role.
+- Product Manager - @Fedos113
+- LLM Engineer - @DaniilJechev
+- Frontend - @MikhailBezborodov024
+- Backend - @pug228
+- Backend - @omarichev
 
 ## Artifacts demonstrated
-- `.github` repository automation
+- .github repository automation
 - Week 2 report index and user story documentation
 - MVP v0 foundation and smoke-check plan
 
 ## Decisions and approvals
-- TODO: record customer approvals for the public MIT license and proposed MVP v1 scope.
-- TODO: capture any requested changes or clarifications.
+Requested Modifications and Clarifications:
+- Rectify UI aesthetic inconsistencies.
+- Implement a flexible scheduling system.
+- Enhance frontend architecture.
+- Optimize backend infrastructure and select a framework.
+- Define the final release feature set.
