@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>TickFrame</title>
+    <link rel="stylesheet" href="/css/styles.css">
+  </head>
+  <body>
+    <div class="app">
+      <aside class="sidebar">
+        <div class="logo">TickFrame</div>
+        <div class="search"><input id="search" placeholder="Search coins or symbol"></div>
+        <div class="status" id="status">OFFLINE</div>
+        <div class="watchlist" id="watchlist"></div>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div class="title" id="marketTitle">Market charts - Bitcoin</div>
+          <div class="controls">
+            <div class="timeframes" id="timeframes">
+              <button data-tf="5m" class="active">5m</button>
+            </div>
+            <button id="themeBtn">Theme</button>
+          </div>
+        </header>
+
+        <section class="content">
+          <div class="chart-container">
+            <div id="chart"></div>
+            <div class="watermark-mask" aria-hidden="true"></div>
+          </div>
+        </section>
+
+        <div class="analysis-stack">
+          <div class="pattern-analysis">
+            <button class="analyze-btn">ANALYZE PATTERNS</button>
+            <div class="result-text">RESULT: Pattern detection coming soon...</div>
+          </div>
+          <div class="confidence-panel">
+            <div class="confidence-label">CONFIDENCE</div>
+            <div class="confidence-value">0%</div>
+            <div class="confidence-text">ML model is in development.</div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.development.js"></script>
+    <script src="/js/sidebar.js"></script>
+    <script src="/js/charts.js"></script>
+    <script src="/js/app.js"></script>
+  </body>
+</html>
