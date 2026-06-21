@@ -103,7 +103,7 @@ async function loadCandles(symbol, interval = '5m') {
   window.currentSymbol = symbol;
   currentInterval = interval;
   try {
-    const resp = await fetch(`/api/coins/${symbol}/candles?interval=${interval}&limit=200`);
+    const resp = await fetch(`/api/coins/${symbol}/candles?interval=${interval}&limit=1000`);
     if (!resp.ok) throw new Error('Failed to load candles');
     const payload = await resp.json();
     const data = Array.isArray(payload) ? payload : (payload.candles || []);

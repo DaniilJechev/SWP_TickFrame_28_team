@@ -1,0 +1,247 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{titlesec}
+\usepackage{longtable}
+\usepackage[left=1cm, right=1cm, top=2.5cm, bottom=2.5cm]{geometry}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,
+    urlcolor=cyan,
+    pdftitle={Assignment 3 Moodle Submission Report - Team 28},
+}
+
+\titleformat{\section}{\large\bfseries}{\thesection}{1em}{}[{\titlerule[0.5pt]}]
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{1em}{}
+
+\begin{document}
+
+% =========================================================================
+% HEADER
+% =========================================================================
+\begin{center}
+    {\large \textbf{INNOPOLIS UNIVERSITY}} \\
+    \vspace{0.1cm}
+    {\large \textbf{Software Project (SWP) — Spring 2026}} \\
+    \vspace{0.5cm}
+    \textbf{\Large Assignment 3: MVP v1 Delivery Report} \\
+    \vspace{0.3cm}
+    \textbf{Project Name:} SWP TickFrame \quad | \quad \textbf{Team Number:} Team 28 \\
+    \textbf{Submission Date:} \today
+\end{center}
+
+\vspace{0.5cm}
+
+% =========================================================================
+% SECTION 1: TEAM STRUCTURE
+% =========================================================================
+\section{Team Structure}
+
+\begin{table}[h!]
+\centering
+\small
+\begin{tabular}{lllll}
+    \toprule
+    \textbf{Full Name} & \textbf{University Email} & \textbf{GitHub} & \textbf{Scrum Role} & \textbf{Technical Domain} \\
+    \midrule
+    Daniil Zhechev      & d.zhechev@innopolis.university    & \href{https://github.com/DaniilJechev}{DaniilJechev}           & Product Owner & ML / Quant Engineer \\
+    F. Kozhevnikov      & f.kozhevnikov@innopolis.university & \href{https://github.com/Fedos113}{Fedos113}                   & Scrum Master  & Backend / UI Prototyping \\
+    A. Gafarov          & a.gafarov@innopolis.university    & \href{https://github.com/omarichev}{omarichev}                 & Developer     & Backend / Data pipeline \\
+    A. Mindubaev        & a.mindubaev@innopolis.university  & \href{https://github.com/pug228}{pug228}                       & Developer     & Backend / Data pipeline \\
+    M. Bezborodov       & m.bezborodov@innopolis.university & \href{https://github.com/MikhailBezborodov024}{MikhailBezborodov024} & Developer & Frontend / UI \\
+    \bottomrule
+\end{tabular}
+\caption{Team members, GitHub usernames, assigned roles, and university identity mapping.}
+\end{table}
+
+% =========================================================================
+% SECTION 2: SUMMARY OF CONTRIBUTIONS
+% =========================================================================
+\section{Summary of Contributions}
+
+% TODO: Fill in each member's concrete contributions for Week 3 / MVP v1.
+% Keep entries short and verifiable (link to issues or commits where possible).
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Daniil Zhechev (Product Owner):} TODO — product backlog prioritisation, MVP v1 scope definition, customer review facilitation.
+    \item \textbf{F. Kozhevnikov (Scrum Master):} TODO — sprint planning, process documentation, release management.
+    \item \textbf{A. Gafarov (Developer):} Updated \texttt{docs/user-stories.md} (closes \#21, \#24); merged branch \texttt{user-stories-docs-upd} into main.
+    \item \textbf{A. Mindubaev (Developer):} TODO — backend/data pipeline tasks in Sprint 2.
+    \item \textbf{M. Bezborodov (Developer):} TODO — frontend/UI implementation tasks in Sprint 2.
+\end{itemize}
+
+% =========================================================================
+% SECTION 3: COMMIT-HASH PERMALINKS
+% =========================================================================
+\section{Commit-Hash Permalinks}
+
+\subsection{reports/week3/README.md}
+% Replace COMMIT_HASH_WEEK3_README with the actual full SHA of the commit that
+% last touched reports/week3/README.md on the protected default branch (main).
+% Run: git log --follow -1 --format="%H" reports/week3/README.md
+\url{https://github.com/Fedos113/SWP_TickFrame_28_team/blob/COMMIT_HASH_WEEK3_README/reports/week3/README.md}
+
+\subsection{Submission commit — repository tree}
+% Replace SUBMISSION_COMMIT_HASH with the full SHA of the submission commit on main.
+% The latest known main tip at packaging time: f1a0d72bfde44a2b1e323cd3588f40a50e8dad23
+% Verify it is on the protected default branch before submission.
+\url{https://github.com/Fedos113/SWP_TickFrame_28_team/tree/f1a0d72bfde44a2b1e323cd3588f40a50e8dad23}
+
+% =========================================================================
+% SECTION 4: LIVE BOARD AND BACKLOG LINKS
+% =========================================================================
+\section{Live Board and Backlog Links}
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Product Backlog board/view:} \\
+          % TODO: Replace with the actual GitHub Projects URL for the Product Backlog view.
+          \url{https://github.com/users/Fedos113/projects/1/views/1}
+
+    \item \textbf{Current Sprint Backlog board/view:} \\
+          % TODO: Replace with the Sprint 2 board/view URL.
+          \url{https://github.com/users/Fedos113/projects/1/views/1}
+
+    \item \textbf{Current Sprint milestone:} \\
+          \url{https://github.com/Fedos113/SWP_TickFrame_28_team/milestone/2}
+
+    \item \textbf{MVP v1 scope (version field / grouped view):} \\
+          % TODO: Link to the filtered Project view or label/milestone that groups MVP v1 PBIs.
+          \url{https://github.com/users/Fedos113/projects/1/views/1}
+
+    \item \textbf{SemVer release mapped to MVP v1:} \\
+          % TODO: Replace with the GitHub Release URL once the tag is published (e.g. v1.0.0).
+          \url{https://github.com/Fedos113/SWP_TickFrame_28_team/releases/tag/SemVer-MVPv1}
+
+    \item \textbf{Delivered MVP v1 deployment / runnable artifact:} \\
+          % TODO: Link to the deployment URL, Docker image, or the release artifact download.
+          \url{http://10.93.26.164:8000/}
+
+    \item \textbf{Public sanitized video demonstration ($<$2 min):} \\
+          % TODO: Paste the public video URL (YouTube unlisted, Loom, etc.).
+          \url{https://TODO_PUBLIC_VIDEO_URL}
+\end{itemize}
+
+% =========================================================================
+% SECTION 5: LIVE DOCUMENTATION LINKS
+% =========================================================================
+\section{Live Documentation Links}
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{docs/user-stories.md:} \url{https://github.com/Fedos113/SWP_TickFrame_28_team/blob/main/docs/user-stories.md}
+    \item \textbf{docs/roadmap.md:} \url{https://github.com/Fedos113/SWP_TickFrame_28_team/blob/main/docs/roadmap.md}
+    \item \textbf{docs/definition-of-done.md:} \url{https://github.com/Fedos113/SWP_TickFrame_28_team/blob/main/docs/definition-of-done.md}
+    \item \textbf{CHANGELOG.md:} \url{https://github.com/Fedos113/SWP_TickFrame_28_team/blob/main/CHANGELOG.md}
+\end{itemize}
+
+% =========================================================================
+% SECTION 6: REVIEWED ISSUE-LINKED PR/MR EVIDENCE
+% =========================================================================
+\section{Reviewed Issue-Linked PRs / MRs (Assignment 3 Evidence)}
+
+% List each PR used as evidence. Each PR must be linked to an issue and must
+% have at least one review from a different team member.
+\begin{itemize}[leftmargin=*]
+    \item \textbf{PR \#TODO:} TODO — short description. Closes issue \#TODO. Reviewer: TODO. \\
+          \url{https://github.com/Fedos113/SWP_TickFrame_28_team/pull/TODO}
+
+    \item \textbf{PR \#TODO:} TODO — short description. Closes issue \#TODO. Reviewer: TODO. \\
+          \url{https://github.com/Fedos113/SWP_TickFrame_28_team/pull/TODO}
+
+    % Add more PRs as needed.
+\end{itemize}
+
+% =========================================================================
+% SECTION 7: MVP v1 ACCESS INSTRUCTIONS
+% =========================================================================
+\section{MVP v1 Access Instructions}
+
+\begin{enumerate}[leftmargin=*]
+    \item Clone the repository at the submission commit:
+\begin{verbatim}
+git clone https://github.com/Fedos113/SWP_TickFrame_28_team.git
+cd SWP_TickFrame_28_team
+git checkout f1a0d72bfde44a2b1e323cd3588f40a50e8dad23
+\end{verbatim}
+
+    \item Copy the environment template and fill in credentials:
+\begin{verbatim}
+cp .env.example .env
+# Edit .env — set BYBIT_API_KEY and BYBIT_API_SECRET (read-only testnet keys)
+\end{verbatim}
+
+    \item Install dependencies (Python 3.10+):
+\begin{verbatim}
+pip install -r requirements.txt
+\end{verbatim}
+
+    \item Run the CLI or start the web dashboard:
+\begin{verbatim}
+python -m tickframe scan --symbol BTCUSDT --interval 1h --limit 10
+python -m tickframe serve --port 5000
+\end{verbatim}
+
+    \item Open \texttt{http://localhost:5000} in a browser to access the interactive chart dashboard.
+\end{enumerate}
+
+% =========================================================================
+% SECTION 8: CUSTOMER RECORDING
+% =========================================================================
+\section{Customer Review Recording}
+
+% Choose one of the three scenarios below and delete the others.
+
+% --- SCENARIO A: Recording permitted, private instructor sharing only ---
+% \textbf{Recording link (instructor access only):} \\
+% \url{https://TODO_PRIVATE_DRIVE_LINK} \\
+% \textit{Permissions are restricted to Innopolis University instructors and graders.}
+
+% --- SCENARIO B: Recording refused / not made ---
+% No recording was made or the customer refused recording. See Section 9 for
+% detailed notes from the review session.
+
+% --- SCENARIO C: Recording permitted, public ---
+% \textbf{Public recording:} \url{https://TODO_PUBLIC_VIDEO_URL}
+
+% TODO: Remove placeholder text above and keep only the applicable scenario.
+TODO — confirm with the customer which scenario applies and replace this block.
+
+% =========================================================================
+% SECTION 9: CUSTOMER REVIEW TRANSCRIPT / NOTES
+% =========================================================================
+\section{Customer Review Transcript and Notes}
+
+% If the sanitized transcript can be published, paste its path / link:
+% Sanitized English transcript: \texttt{reports/week3/customer-review-transcript.md}
+
+% If recording or public sharing was refused, provide detailed English notes here:
+\subsection{Review date and participants}
+% TODO: Date, team members present, customer name/role.
+TODO
+
+\subsection{Artifacts reviewed}
+\begin{itemize}
+    \item Current MVP v1 scope (Product Backlog, Sprint Backlog)
+    \item Delivered MVP v1 increment (demo / deployment)
+\end{itemize}
+
+\subsection{Customer feedback summary}
+% TODO: Concise summary of what the customer said — what they approved, what they
+% requested changed, any open questions.
+TODO
+
+\subsection{Approvals and requested changes}
+% TODO: List explicit approvals ("customer approved the pattern detection UI").
+% List requested changes ("customer requested real-time price updates in the sidebar").
+TODO
+
+\subsection{Resulting Product Backlog updates}
+% TODO: Which PBIs were added, re-prioritised, or removed as a result of the feedback?
+% Reference issue numbers where applicable.
+TODO
+
+\end{document}
