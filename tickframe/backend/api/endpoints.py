@@ -37,7 +37,7 @@ async def get_price(symbol: str, cache: MemoryMarketCache = Depends(get_cache)) 
 async def get_candles(
     symbol: str,
     interval: str = Query(default="5m", pattern="^(5m)$"),
-    limit: int = Query(default=200, ge=10, le=500),
+    limit: int = Query(default=200, ge=10, le=1000),
     cache: MemoryMarketCache = Depends(get_cache),
 ) -> dict:
     payload = await cache.get_candles(symbol, interval, limit)

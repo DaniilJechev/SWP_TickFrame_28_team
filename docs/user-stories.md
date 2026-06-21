@@ -4,7 +4,7 @@ This file is the authoritative registry of stable user-story IDs and current iss
 
 | ID | Short title | MoSCoW priority | Issue | Requirement status | Work Status | Sprint |
 |---|---|---|---|---|---|---|
-| US-01 | Detect chart patterns with ML support | Must Have | [#005](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/5) | Active | To Do | [Sprint 2](https://github.com/Fedos113/SWP_TickFrame_28_team/milestone/2) |
+| US-01 | Detect chart patterns with ML support | Must Have | [#005](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/5) | Active | To Do | - |
 | US-02 | View scan results in a report-friendly format | Must Have | [#006](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/6) | Active | To Do | — |
 | US-03 | Maintain a public repository with MIT license | Must Have | [#007](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/7) | Active | Done | [Sprint 1](https://github.com/Fedos113/SWP_TickFrame_28_team/milestone/1) |
 | US-04 | Provide a reusable environment variable template | Should Have | [#010](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/10) | Active | Done | [Sprint 1](https://github.com/Fedos113/SWP_TickFrame_28_team/milestone/1) |
@@ -19,6 +19,7 @@ This file is the authoritative registry of stable user-story IDs and current iss
 | US-12 | Crypto Fear and Greed Index | Could Have | [#014](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/14) | Active | To Do | — |
 | US-13 | Toggle between day theme and night theme | Could Have | [#016](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/16) | Active | To Do | [Sprint 2](https://github.com/Fedos113/SWP_TickFrame_28_team/milestone/2) |
 | US-14 | Customise chart colors in settings | Could Have | [#017](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/17) | Active | To Do | — |
+| US-15 | Update user interface | Must Have | [#041](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/41) | Active | In Progress | [Sprint 2](https://github.com/Fedos113/SWP_TickFrame_28_team/milestone/2) |
 
 > Notes:
 > - Add one row per active story, ordered by MoSCoW priority, then by Sprint, then by stable ID.

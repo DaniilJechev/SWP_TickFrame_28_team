@@ -63,7 +63,7 @@ async def market_stream(websocket: WebSocket) -> None:
 async def candle_stream(websocket: WebSocket, symbol: str) -> None:
     cache = get_cache(websocket)
     interval = normalize_interval(websocket.query_params.get("interval", "5m"))
-    limit = int(websocket.query_params.get("limit", "200"))
+    limit = int(websocket.query_params.get("limit", "1000"))
     pair = normalize_symbol(symbol)
     await websocket.accept()
     try:
