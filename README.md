@@ -41,7 +41,6 @@ Bybit API keys are optional — public endpoints work without authentication.
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
-uvicorn tickframe.backend.main:app --reload --host 127.0.0.1 --port 8000
 ```
 
 ### Windows (PowerShell)
@@ -50,10 +49,46 @@ uvicorn tickframe.backend.main:app --reload --host 127.0.0.1 --port 8000
 python -m venv .venv
 .venv\Scripts\Activate.ps1
 pip install -r requirements.txt
+```
+
+---
+
+## Running the Web Dashboard
+
+Start the FastAPI server with uvicorn:
+
+```bash
+# Linux / macOS
+uvicorn tickframe.backend.main:app --reload --host 127.0.0.1 --port 8000
+
+# Windows (PowerShell) — same command
 uvicorn tickframe.backend.main:app --reload --host 127.0.0.1 --port 8000
 ```
 
 Open **http://127.0.0.1:8000** in your browser.
+
+---
+
+## CLI Usage
+
+The CLI allows scanning, analyzing, and reporting without the web interface:
+
+```bash
+# Fetch real candle data from Bybit
+python -m tickframe scan --symbol BTCUSDT --interval 1h --limit 10
+
+# Run pattern analysis on cached candles
+python -m tickframe analyze --symbol BTCUSDT --interval 5m
+
+# Generate a Markdown report
+python -m tickframe report --symbol BTCUSDT --interval 1h --limit 10
+
+# Use mock data (no API call)
+python -m tickframe scan --symbol BTCUSDT --interval 1h --limit 10 --mock
+
+# Smoke-check verification
+python main.py --symbol BTCUSDT --smoke-check
+```
 
 ---
 
@@ -119,29 +154,6 @@ tickframe/
 ├── Dockerfile               # Container image
 ├── docker-compose.yml       # Container orchestration
 └── .env.example             # Environment variable template
-```
-
----
-
-## CLI Usage
-
-The legacy CLI is still available alongside the web dashboard:
-
-```bash
-# Fetch real candle data from Bybit
-python -m tickframe scan --symbol BTCUSDT --interval 1h --limit 10
-
-# Run pattern analysis on cached candles
-python -m tickframe analyze --symbol BTCUSDT --interval 5m
-
-# Generate a Markdown report
-python -m tickframe report --symbol BTCUSDT --interval 1h --limit 10
-
-# Use mock data (no API call)
-python -m tickframe scan --symbol BTCUSDT --interval 1h --limit 10 --mock
-
-# Smoke-check verification
-python main.py --symbol BTCUSDT --smoke-check
 ```
 
 ---
