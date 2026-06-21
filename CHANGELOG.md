@@ -8,8 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- Nothing yet.
-
+- Added Jupyter Notebook with XGBoost ML pipeline for pattern recognition (#45)
+- 
 ### Changed
 - Nothing yet.
 
