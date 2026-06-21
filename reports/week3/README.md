@@ -136,12 +136,6 @@ Screenshots should be placed in `reports/week3/images/`. Below are the required 
 **Product Backlog View**
 ![Product Backlog](images/product-backlog.png)
 
-**Sprint Backlog View**
-![Sprint Backlog](images/sprint-backlog.png)
-
-**Sprint Milestone**
-![Sprint Milestone](images/sprint-milestone.png)
-
 ### MVP and Release Evidence
 **MVP Version Field / Grouped View**
 ![MVP v1 Scope View](images/mvp-version-view.png)
