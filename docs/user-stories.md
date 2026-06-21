@@ -5,7 +5,7 @@ This file is the authoritative registry of stable user-story IDs and current iss
 | ID | Short title | MoSCoW priority | Issue | Requirement status | Work Status | Sprint |
 |---|---|---|---|---|---|---|
 | US-01 | Detect chart patterns with ML support | Must Have | [#005](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/5) | Active | To Do | [Sprint 2](https://github.com/Fedos113/SWP_TickFrame_28_team/milestone/2) |
-| US-02 | View scan results in a report-friendly format | Must Have | [#006](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/6) | Active | To Do | [Sprint 2](https://github.com/Fedos113/SWP_TickFrame_28_team/milestone/2) |
+| US-02 | View scan results in a report-friendly format | Must Have | [#006](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/6) | Active | To Do | — |
 | US-03 | Maintain a public repository with MIT license | Must Have | [#007](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/7) | Active | Done | [Sprint 1](https://github.com/Fedos113/SWP_TickFrame_28_team/milestone/1) |
 | US-04 | Provide a reusable environment variable template | Should Have | [#010](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/10) | Active | Done | [Sprint 1](https://github.com/Fedos113/SWP_TickFrame_28_team/milestone/1) |
 | US-05 | Keep a PR template for review consistency | Could Have | [#012](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/12) | Active | Done | [Sprint 1](https://github.com/Fedos113/SWP_TickFrame_28_team/milestone/1) |
