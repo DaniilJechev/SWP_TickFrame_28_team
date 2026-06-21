@@ -2,10 +2,6 @@ import argparse
 import json
 from datetime import datetime
 
-from .exchange.bybit import fetch_klines
-from .data.cache import CandleCache
-from .detection import mock as mock_detection
-
 SAMPLE_PATTERNS = [
     {"pattern": "Head and Shoulders", "confidence": 0.64},
     {"pattern": "Double Bottom", "confidence": 0.58},
@@ -30,6 +26,8 @@ def get_demo_scan(symbol: str, interval: str, limit: int):
 
 
 def run_scan(args):
+    from .exchange.bybit import fetch_klines
+
     if args.mock:
         data = get_demo_scan(args.symbol, args.interval, args.limit)
         print("Mock scan result summary")
@@ -56,6 +54,8 @@ def run_scan(args):
 
 
 def run_report(args):
+    from .exchange.bybit import fetch_klines
+
     if args.mock:
         records = get_demo_scan(args.symbol, args.interval, 3)
         body = "\n## Detected patterns\n\n"
@@ -84,6 +84,9 @@ def run_report(args):
 
 
 def run_analyze(args):
+    from .data.cache import CandleCache
+    from .detection import mock as mock_detection
+
     cache = CandleCache(symbol=args.symbol, interval=args.interval, max_candles=args.limit)
     candles = cache.candles
     result = mock_detection.analyze(candles)
@@ -104,8 +107,9 @@ def run_analyze(args):
 
 
 def run_serve(args):
-    from .web.server import run_server
-    run_server(host=args.host, port=args.port, symbol=args.symbol)
+    import uvicorn
+
+    uvicorn.run("tickframe.backend.main:app", host=args.host, port=args.port, reload=True)
     return 0
 
 

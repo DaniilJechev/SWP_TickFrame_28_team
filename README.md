@@ -1,9 +1,9 @@
 # SWP TickFrame — Team 28
 
 ## Project Description
-An analytical platform designed for automated historical cryptocurrency chart scanning and chart pattern verification using trained XGBoost machine learning models.
+TickFrame is a FastAPI-based crypto chart workstation for Bybit market data, real-time price streaming, and multi-panel candle charts.
 
-Current implementation: MVP v0 with Bybit API integration, real-time candle cache, interactive web dashboard, and mock ML pattern detection.
+This MVP keeps the pattern-detector placeholder but replaces the old HTTP server with a FastAPI backend, websocket streams, in-memory caching, and a TradingView Lightweight Charts frontend.
 
 ## Navigation & Reports
 - [Week 2 Report Index](reports/week2/README.md)
@@ -12,37 +12,56 @@ Current implementation: MVP v0 with Bybit API integration, real-time candle cach
 - [Product interface documentation](docs/interface.md)
 - [MIT License](LICENSE)
 
-## Local Setup Instructions
-1. Clone the repository.
-2. Copy `.env.example` to `.env` and fill in your details.
-3. Install Python 3.10 or later.
-4. Install dependencies: `pip install -r requirements.txt`
-5. Verify the CLI: `python -m tickframe --help`
+## Local Setup
+1. Install Python 3.11 or later.
+2. Install dependencies: `pip install -r requirements.txt`
+3. Start the app from the repository root: `python -m uvicorn tickframe.backend.main:app --reload --host 127.0.0.1 --port 8000`
+4. Open `http://127.0.0.1:8000`
 
 ## Usage
 ```bash
-# Fetch real candle data from Bybit
-python -m tickframe scan --symbol BTCUSDT --interval 1h --limit 10
+# Option A - from the repository root
+cd E:\InnoStudy\SummerSem1year\SoftwareProject\SWP_TickFrame_28_team
+python -m uvicorn tickframe.backend.main:app --reload --host 127.0.0.1 --port 8000
 
-# Run pattern analysis on cached candles
-python -m tickframe analyze --symbol BTCUSDT --interval 5m
+# Option B - from inside tickframe/
+cd tickframe
+python -m uvicorn backend.main:app --reload --host 127.0.0.1 --port 8000
 
-# Start the interactive web dashboard
-python -m tickframe serve --port 5000
+# Option C - with PYTHONPATH on Windows PowerShell
+$env:PYTHONPATH="E:\InnoStudy\SummerSem1year\SoftwareProject\SWP_TickFrame_28_team"
+python -m uvicorn tickframe.backend.main:app --reload --host 127.0.0.1 --port 8000
 ```
 
-## Project structure
+## API
+- `GET /api/coins`
+- `GET /api/coins/{symbol}/candles`
+- `GET /api/coins/{symbol}/price`
+- `WebSocket /ws/market`
+- `WebSocket /ws/candles/{symbol}`
+
+## Frontend
+The frontend lives in `tickframe/frontend/` and uses plain HTML/CSS/JavaScript with TradingView Lightweight Charts loaded from a CDN.
+
+## Project Structure
 ```
 tickframe/
-├── cli.py              # CLI entry point
-├── exchange/
-│   └── bybit.py        # Bybit API client
-├── data/
-│   └── cache.py        # Candle cache with auto-refresh
-├── detection/
-│   └── mock.py         # Mock ML pattern detector
-└── web/
-    ├── server.py       # HTTP server
-    └── static/
-        └── index.html  # Chart frontend
+├── backend/
+│   ├── main.py
+│   ├── api/
+│   │   ├── endpoints.py
+│   │   └── websocket.py
+│   ├── services/
+│   │   ├── bybit_client.py
+│   │   └── cache.py
+│   └── models/
+│       └── schemas.py
+└── frontend/
+    ├── index.html
+    ├── css/styles.css
+    └── js/
+        ├── app.js
+        ├── sidebar.js
+        ├── charts.js
+        └── websocket.js
 ```
