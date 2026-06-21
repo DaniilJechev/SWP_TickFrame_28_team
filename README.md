@@ -6,17 +6,14 @@ FastAPI-based cryptocurrency chart workstation for real-time Bybit market data, 
 
 ---
 
-## Prerequisites
+## Quick Start (Docker)
 
-- **Git**
-- **Python 3.11+** (for local installation)
-- **Docker** (optional — for containerized installation)
+### Prerequisites
 
----
+- [Docker](https://docs.docker.com/get-docker/)
+- [Git](https://git-scm.com/downloads)
 
-## Installation
-
-### 1. Clone the repository
+### 1. Clone
 
 ```bash
 git clone https://github.com/Fedos113/SWP_TickFrame_28_team.git
@@ -31,9 +28,27 @@ cp .env.example .env
 
 Bybit API keys are optional — public endpoints work without authentication.
 
+### 3. Build and run
+
+```bash
+docker compose up --build
+```
+
+### 4. Open in browser
+
+```bash
+http://<YOUR_VM_IP>:8000
+```
+
+Replace `<YOUR_VM_IP>` with your machine's actual IP address, or use:
+- **`localhost`** if running locally
+- **`<VM_IP>`** if running on a VM or remote server
+
 ---
 
-## Local Setup
+## Local Development (without Docker)
+
+Use this if you want to edit the code. Dependencies only — no server command needed.
 
 ### Linux / macOS
 
@@ -51,61 +66,28 @@ python -m venv .venv
 pip install -r requirements.txt
 ```
 
----
-
-## Running the Web Dashboard
-
-Start the FastAPI server with uvicorn:
+Then run via Docker (see above) or start the server manually:
 
 ```bash
-# Linux / macOS
-uvicorn tickframe.backend.main:app --reload --host 127.0.0.1 --port 8000
-
-# Windows (PowerShell) — same command
-uvicorn tickframe.backend.main:app --reload --host 127.0.0.1 --port 8000
+uvicorn tickframe.backend.main:app --host 0.0.0.0 --port 8000
 ```
-
-Open **http://127.0.0.1:8000** in your browser.
 
 ---
 
 ## CLI Usage
 
-The CLI allows scanning, analyzing, and reporting without the web interface:
+The CLI works with or without Docker:
 
 ```bash
-# Fetch real candle data from Bybit
+# Using Docker
+docker compose run --rm tickframe scan --symbol BTCUSDT --interval 1h --limit 10
+
+# Or locally (after pip install)
 python -m tickframe scan --symbol BTCUSDT --interval 1h --limit 10
-
-# Run pattern analysis on cached candles
 python -m tickframe analyze --symbol BTCUSDT --interval 5m
-
-# Generate a Markdown report
 python -m tickframe report --symbol BTCUSDT --interval 1h --limit 10
-
-# Use mock data (no API call)
-python -m tickframe scan --symbol BTCUSDT --interval 1h --limit 10 --mock
-
-# Smoke-check verification
 python main.py --symbol BTCUSDT --smoke-check
 ```
-
----
-
-## Docker Setup
-
-### Prerequisites
-
-- [Docker](https://docs.docker.com/get-docker/)
-- [Docker Compose](https://docs.docker.com/compose/install/) (included with Docker Desktop)
-
-### Build and run
-
-```bash
-docker compose up --build
-```
-
-The dashboard will be available at **http://localhost:8000**.
 
 ---
 
