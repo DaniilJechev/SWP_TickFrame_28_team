@@ -30,7 +30,7 @@
 
 **Planned items:**
 
-- [#005](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/5) US-01 — Detect chart patterns with ML support
+- [#041](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/5) US-15 — Update user interface
 - [#016](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/16) US-13 — Toggle between day and night theme
 
 ---
@@ -41,6 +41,7 @@ Features accepted into the backlog but not yet assigned to a sprint.
 
 | Issue | Story | Priority |
 |---|---|---|
+| [#005](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/5) | US-01 - Detect chart patterns with ML support | Must Have |
 | [#006](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/6) | US-02 — Scan results in report-friendly format | Must Have |
 | [#015](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/15) | US-06 — Sidebar with 10 trading pairs and live prices | Must Have |
 | [#018](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/18) | US-07 — Choose chart timeframe | Must Have |
