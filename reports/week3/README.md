@@ -89,14 +89,13 @@ The MVP v1 is fully deployed and operational:
 
 ### Contribution Traceability
 
-| Team Member | Role | Issues Created/Assigned | PRs/MRs Created | PRs/MRs Reviewed | Meaningful Review Comments |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| Fedor Kozhevnikov | Product Owner | [#3](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/3), [#8](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/8) | [#20](https://github.com/Fedos113/SWP_TickFrame_28_team/pull/20), [#37](https://github.com/Fedos113/SWP_TickFrame_28_team/pull/37), [#39](https://github.com/Fedos113/SWP_TickFrame_28_team/pull/39), [#40](https://github.com/Fedos113/SWP_TickFrame_28_team/pull/40) | [#34](https://github.com/Fedos113/SWP_TickFrame_28_team/pull/34), [#43](https://github.com/Fedos113/SWP_TickFrame_28_team/pull/43) | Review on roadmap and user-stories documentation PRs |
-| Amir Gafarov | Developer (Backend / Data pipeline) | [#21](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/21), [#24](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/24), [#36](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/36) | [#23](https://github.com/Fedos113/SWP_TickFrame_28_team/pull/23), [#25](https://github.com/Fedos113/SWP_TickFrame_28_team/pull/25), [#27](https://github.com/Fedos113/SWP_TickFrame_28_team/pull/27), [#43](https://github.com/Fedos113/SWP_TickFrame_28_team/pull/43) | — | — |
-| Alan Mindubaev | Developer (Frontend / Backend) | — | [#30](https://github.com/Fedos113/SWP_TickFrame_28_team/pull/30) | — | Customer review documentation |
-| Mikhail Bezborodov | Developer (Frontend / UI) | [#5](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/5), [#16](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/16) | [#28](https://github.com/Fedos113/SWP_TickFrame_28_team/pull/28) | — | — |
-| Daniil Zhechev | Scrum Master / ML Engineer | — | [#9](https://github.com/Fedos113/SWP_TickFrame_28_team/pull/9) (early sprint) | — | Customer meeting facilitation |
-
+| Team Member | Role | Issues Created/Assigned | PRs/MRs Created | PRs/MRs Reviewed |
+| :--- | :--- | :--- | :--- | :--- |
+| Fedor Kozhevnikov | Product Owner | [#3](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/3), [#8](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/8) | [#20](https://github.com/Fedos113/SWP_TickFrame_28_team/pull/20), [#37](https://github.com/Fedos113/SWP_TickFrame_28_team/pull/37), [#39](https://github.com/Fedos113/SWP_TickFrame_28_team/pull/39), [#40](https://github.com/Fedos113/SWP_TickFrame_28_team/pull/40) | [#34](https://github.com/Fedos113/SWP_TickFrame_28_team/pull/34), [#43](https://github.com/Fedos113/SWP_TickFrame_28_team/pull/43) |
+| Amir Gafarov | Developer (Backend / Data pipeline) | [#21](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/21), [#24](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/24), [#36](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/36) | [#23](https://github.com/Fedos113/SWP_TickFrame_28_team/pull/23), [#25](https://github.com/Fedos113/SWP_TickFrame_28_team/pull/25), [#27](https://github.com/Fedos113/SWP_TickFrame_28_team/pull/27), [#43](https://github.com/Fedos113/SWP_TickFrame_28_team/pull/43) | [#51](https://github.com/Fedos113/SWP_TickFrame_28_team/pull/51) |
+| Alan Mindubaev | Developer (Frontend / Backend) | [#50](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/50) | [#30](https://github.com/Fedos113/SWP_TickFrame_28_team/pull/30) | [#28](https://github.com/Fedos113/SWP_TickFrame_28_team/pull/28) | 
+| Mikhail Bezborodov | Developer (Frontend / UI) | [#5](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/5), [#16](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/16) | [#28](https://github.com/Fedos113/SWP_TickFrame_28_team/pull/28) | [#30](https://github.com/Fedos113/SWP_TickFrame_28_team/pull/30) |
+| Daniil Zhechev | Scrum Master / ML Engineer | [#45](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/45) | [#46](https://github.com/Fedos113/SWP_TickFrame_28_team/pull/46) | [#38](https://github.com/Fedos113/SWP_TickFrame_28_team/pull/38) |
 ---
 
 ## 5. Artifacts and Workflow Links
