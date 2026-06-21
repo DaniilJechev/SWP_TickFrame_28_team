@@ -1,15 +1,15 @@
 # SWP TickFrame — Team 28
 
-Analytical platform for automated historical cryptocurrency chart scanning and pattern verification using XGBoost machine learning models.
+FastAPI-based cryptocurrency chart workstation for real-time Bybit market data, live price streaming via WebSockets, and multi-panel candlestick charts with TradingView Lightweight Charts.
 
-**Current implementation:** MVP v0 with Bybit API integration, real-time candle cache, interactive web dashboard, and mock ML pattern detection.
+**Current implementation:** MVP v1 with FastAPI backend, async Bybit client with Binance fallback, WebSocket market/candle streams, in-memory cache with auto-refresh, and a feature-separated frontend.
 
 ---
 
 ## Prerequisites
 
 - **Git**
-- **Python 3.10+** (for local installation)
+- **Python 3.11+** (for local installation)
 - **Docker** (optional — for containerized installation)
 
 ---
@@ -19,17 +19,17 @@ Analytical platform for automated historical cryptocurrency chart scanning and p
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/your-org/SWP_TickFrame_28_team.git
+git clone https://github.com/Fedos113/SWP_TickFrame_28_team.git
 cd SWP_TickFrame_28_team
 ```
 
-### 2. Configure environment
+### 2. Configure environment (optional)
 
 ```bash
 cp .env.example .env
 ```
 
-Edit `.env` to set your Bybit API keys (optional — public endpoints work without keys).
+Bybit API keys are optional — public endpoints work without authentication.
 
 ---
 
@@ -41,6 +41,7 @@ Edit `.env` to set your Bybit API keys (optional — public endpoints work witho
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
+uvicorn tickframe.backend.main:app --reload --host 127.0.0.1 --port 8000
 ```
 
 ### Windows (PowerShell)
@@ -49,13 +50,10 @@ pip install -r requirements.txt
 python -m venv .venv
 .venv\Scripts\Activate.ps1
 pip install -r requirements.txt
+uvicorn tickframe.backend.main:app --reload --host 127.0.0.1 --port 8000
 ```
 
-### Verify installation
-
-```bash
-python -m tickframe --help
-```
+Open **http://127.0.0.1:8000** in your browser.
 
 ---
 
@@ -72,17 +70,62 @@ python -m tickframe --help
 docker compose up --build
 ```
 
-The web dashboard will be available at **http://localhost:5000**.
+The dashboard will be available at **http://localhost:8000**.
 
-To run a specific command instead of the dashboard:
+---
 
-```bash
-docker compose run --rm tickframe scan --symbol BTCUSDT --interval 1h --limit 10
+## API Endpoints
+
+| Method | Path | Description |
+|---|---|---|
+| GET | `/api/health` | Health check |
+| GET | `/api/coins` | List available coins with prices |
+| GET | `/api/coins/{symbol}/price` | Current price for a symbol |
+| GET | `/api/coins/{symbol}/candles?interval=5m&limit=200` | Candlestick data |
+| WS | `/ws/market` | Market snapshot stream (5s interval) |
+| WS | `/ws/candles/{symbol}?interval=5m&limit=200` | Real-time candle updates |
+
+---
+
+## Architecture
+
+```
+tickframe/
+├── backend/
+│   ├── main.py              # FastAPI app creation, lifespan, static mounts
+│   ├── api/
+│   │   ├── endpoints.py     # REST endpoints (health, coins, candles, price)
+│   │   └── websocket.py     # WebSocket streams (market, candles)
+│   ├── services/
+│   │   ├── bybit_client.py  # Async Bybit v5 client with Binance fallback
+│   │   └── cache.py         # MemoryMarketCache with 5s auto-refresh
+│   └── models/
+│       └── schemas.py       # Pydantic models (CoinSummary, Candle, etc.)
+├── frontend/
+│   ├── index.html           # Main page
+│   ├── css/styles.css       # Dark/light theme styles
+│   └── js/
+│       ├── app.js           # App initialization, theme toggle
+│       ├── charts.js        # TradingView Lightweight Charts integration
+│       ├── sidebar.js       # Coin list sidebar
+│       └── websocket.js     # WebSocket connection management
+├── data/                    # Legacy candle cache (CLI)
+├── detection/               # Mock pattern detector (placeholder)
+├── exchange/                # Legacy Bybit client (CLI)
+├── web/                     # Legacy HTTP server (CLI)
+├── cli.py                   # CLI entry point (scan, report, analyze, serve)
+├── main.py                  # Top-level smoke-check entry point
+├── requirements.txt         # Python dependencies
+├── Dockerfile               # Container image
+├── docker-compose.yml       # Container orchestration
+└── .env.example             # Environment variable template
 ```
 
 ---
 
-## Usage
+## CLI Usage
+
+The legacy CLI is still available alongside the web dashboard:
 
 ```bash
 # Fetch real candle data from Bybit
@@ -93,9 +136,6 @@ python -m tickframe analyze --symbol BTCUSDT --interval 5m
 
 # Generate a Markdown report
 python -m tickframe report --symbol BTCUSDT --interval 1h --limit 10
-
-# Start the interactive web dashboard
-python -m tickframe serve --port 5000
 
 # Use mock data (no API call)
 python -m tickframe scan --symbol BTCUSDT --interval 1h --limit 10 --mock
@@ -110,27 +150,11 @@ python main.py --symbol BTCUSDT --smoke-check
 
 | Resource | Link |
 |---|---|
-| Week 2 Reports | [reports/week2/](reports/week2/README.md) |
-| MVP v0 Report | [reports/week2/mvp-v0-report.md](reports/week2/mvp-v0-report.md) |
-| Smoke-Check Guide | [reports/week2/smoke-check-evaluation-guide.md](reports/week2/smoke-check-evaluation-guide.md) |
 | Product Interface | [docs/interface.md](docs/interface.md) |
+| Definition of Done | [docs/definition-of-done.md](docs/definition-of-done.md) |
+| Roadmap | [docs/roadmap.md](docs/roadmap.md) |
+| User Stories | [docs/user-stories.md](docs/user-stories.md) |
+| Changelog | [CHANGELOG.md](CHANGELOG.md) |
+| Week 2 Reports | [reports/week2/](reports/week2/README.md) |
+| Week 3 Reports | [reports/week3/](reports/week3/README.md) |
 | License | [MIT](LICENSE) |
-
----
-
-## Project Structure
-
-```
-tickframe/
-├── cli.py              # CLI entry point
-├── exchange/
-│   └── bybit.py        # Bybit API client
-├── data/
-│   └── cache.py        # Candle cache with auto-refresh
-├── detection/
-│   └── mock.py         # Mock ML pattern detector
-└── web/
-    ├── server.py       # HTTP server
-    └── static/
-        └── index.html  # Chart frontend
-```

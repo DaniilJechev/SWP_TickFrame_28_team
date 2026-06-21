@@ -4,9 +4,6 @@ services:
   tickframe:
     build: .
     ports:
-      - "5000:5000"
+      - "8000:8000"
     env_file:
       - .env
-    volumes:
-      - .:/app
-    command: serve --port 5000
