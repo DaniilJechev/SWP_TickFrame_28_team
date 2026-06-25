@@ -1,16 +1,174 @@
-# Assignment 4 — Part 9: Deploy & Release the Sprint Increment
+# Assignment 4 — Development, Testing, and Release Plan
 
-> **Prerequisite reading:** [Assignment_04.md](Assignment_04.md) (Part 9), [Repository_Requirements.md](Repository_Requirements.md)
+> Based on [Assignment_04.md](Assignment_04.md)
 >
-> **Part 9 in the overall flow:** After implementation and CI (Parts 5–8), before UAT and Sprint Review (Parts 10–11).
+> **Prerequisite:** `4part1-plan.md` completed — Sprint 3 milestone created, PBIs defined, CI workflows in place.
+>
+> **Parts covered:** 4 (QRTs), 5 (Implementation), 7 (Testing), 9 (Deploy & Release)
+>
+> **Repository:** https://github.com/Fedos113/SWP_TickFrame_28_team — **Default branch:** `main`
 
 ---
 
-## What Part 9 Requires
+## User Checklist (do this BEFORE sending to AI)
+
+### PBI Selection — Choose What to Develop
+
+Select which PBIs to implement this Sprint. The AI needs to know what you want built.
+
+| PBI | Type | SP | Notes |
+|-----|------|----|-------|
+| **US-06** — Multi-coin sidebar with 10 pairs | Feature | — | Live price list sidebar |
+| **US-07** — Timeframe selector (5m, 15m, 1h) | Feature | — | Chart interval switching |
+| **US-08** — Drawing tools toolbar | Feature | — | Line, trend, annotation tools |
+| **US-09** — Coin search/filter | Feature | — | Search bar for coin list |
+| **US-10** — Volume sub-chart | Feature | — | Volume bars below candles |
+| **US-11** — RSI indicator sub-chart | Feature | — | RSI line below candles |
+| **US-12** — Fear & Greed Index | Feature | — | Market sentiment widget |
+| **US-14** — Real-time dashboard | Feature | — | Auto-refreshing dashboard |
+| **US-15** — UI polish pass | Feature | — | Layout, spacing, responsive fixes |
+| **QR-001** — Performance (chart redraw \<2s) | Quality | — | Requires QRT-001 test automation |
+| **QR-002** — Security (no secret leaks) | Quality | — | Requires QRT-002 test automation |
+| **QR-003** — Accuracy (candle data ~0.1%) | Quality | — | Requires QRT-003 test automation |
+| **QRT-001/002/003** — Automated QRTs | Automation | — | Wire each QR to a `pytest` test |
+| **Testing** — Unit tests for critical modules | QA | — | bybit_client, cache, schemas, detection |
+| **Testing** — Integration tests (API, WS) | QA | — | FastAPI TestClient, WebSocket |
+| **Coverage** — ≥30% line coverage on critical modules | QA | — | Configure `pytest-cov`, `.coveragerc` |
+| **Additional QA check** — e.g., `bandit` / `safety` | QA | — | Pick one, add to CI |
+
+> Fill in SP (Story Points) for each selected PBI. Tell the AI: which PBIs to implement, who implements each, who reviews.
+
+### Development info to share
+
+- [ ] **Selected PBIs** — which of the above you want implemented (list issue numbers)
+- [ ] **Story Points per PBI** — estimate each one
+- [ ] **Implementer + reviewer** per PBI (must be different people)
+- [ ] **Deployment target** — Docker compose (existing) or cloud VM or local-only
+- [ ] **Demo video link** (if already recorded) — or tell the AI you'll provide it later
+
+---
+
+## Part 4: Define and Automate Quality Requirement Tests
+
+> Prerequisite: `docs/quality-requirements.md` exists (created in `4part1-plan.md` Part 3).
+
+### What the AI does
+
+1. **Create [`docs/quality-requirement-tests.md`](../docs/quality-requirement-tests.md)**
+2. **Define at least 1 automated QRT per quality requirement** (minimum 3). Each includes:
+   - Stable ID (QRT-001 etc.)
+   - Which QR it tests
+   - Automation approach (`pytest`)
+   - Test file path
+   - Which CI job runs it
+   - What evidence it produces
+3. **Create `tests/requirements/` directory** with real test files:
+
+```
+tests/
+├── requirements/
+│   ├── test_performance.py      # QRT-001
+│   ├── test_security.py         # QRT-003
+│   └── test_accuracy.py         # QRT-004
+├── conftest.py
+└── requirements.txt  # pytest, pytest-asyncio, httpx
+```
+
+4. **Wire pytest QRTs into CI** (the CI workflow from Part 8 already includes a `test` job)
+5. **Link each QRT** from the docs to its actual test file
+
+### What you do
+
+- [ ] Run `pip install -r tests/requirements.txt && pytest tests/` — all pass
+- [ ] Verify each QRT actually tests what it claims
+- [ ] Push [`docs/quality-requirement-tests.md`](../docs/quality-requirement-tests.md) and all `tests/` files
+
+---
+
+## Part 5: Implement Product and Quality Improvements
+
+> Prerequisite: Sprint PBIs are created and assigned to the Sprint 3 milestone (done in `4part1-plan.md` Part 1).
+
+### What the AI does
+
+1. **Implement sprint PBIs** through issue-linked PRs:
+   - Branch naming: `feature/<issue-number>-<short-description>` or `fix/<issue-number>-<short-description>`
+   - Every PR references the issue (`Closes #XX`)
+   - Every PR has a reviewer who isn't the implementer
+2. **Tackle quality improvements** along the way (error handling, input validation, log sanitization)
+3. **Update [`CHANGELOG.md`](../CHANGELOG.md)** — add user-visible changes under `[Unreleased]`
+4. **Update [`README.md`](../README.md)** if run/deploy instructions changed
+5. **Follow the existing PR template** at `.github/pull_request_template.md`
+
+### What you do
+
+- [ ] Review each PR — code quality, acceptance criteria, tests
+- [ ] Assign a different reviewer than whoever implemented
+- [ ] Merge approved PRs into `main`
+- [ ] Ensure CI passes after merge
+
+---
+
+## Part 7: Add Automated Testing and QA Checks
+
+### What the AI does
+
+1. **Create [`docs/testing.md`](../docs/testing.md)** covering:
+   - **Testing approach**: unit tests for services, integration tests for API + WebSocket
+   - **Critical modules** (from the actual codebase):
+     - `tickframe/backend/services/bybit_client.py`
+     - `tickframe/backend/services/cache.py`
+     - `tickframe/backend/api/endpoints.py`
+     - `tickframe/backend/api/websocket.py`
+     - `tickframe/detection/mock.py`
+     - `tickframe/backend/models/schemas.py`
+   - **Per-module target**: ≥30% line coverage
+   - Test layout: `tests/unit/`, `tests/integration/`
+
+2. **Write unit tests** in `tests/unit/`:
+   - `test_bybit_client.py` — mock HTTP responses, test parsing
+   - `test_cache.py` — set/get/clear
+   - `test_schemas.py` — validation edge cases
+   - `test_detection.py` — pattern detection logic
+   - Using `pytest` + `pytest-asyncio` + `unittest.mock`
+
+3. **Write integration tests** in `tests/integration/`:
+   - `test_api_endpoints.py` — FastAPI TestClient
+   - `test_websocket.py` — WebSocket connect/message
+   - `test_scan_workflow.py` — end-to-end CLI scan → report
+
+4. **Set up coverage:**
+   - Add `pytest-cov`
+   - Add `.coveragerc` or `pyproject.toml` with `[tool.coverage.run]`
+   - Wire `--cov=tickframe --cov-report=term --cov-report=xml` into CI
+
+5. **Pick an additional QA check** (can't be linting, formatting, type checking, build, tests, coverage, or link checking):
+   - `pip-audit` / `safety` — dependency vulnerabilities
+   - `bandit` — Python security linter
+   - `vulture` — dead code
+   - `pylint` — deeper static analysis
+   - `mypy --strict` — strict type checking
+   - Document the choice in `docs/testing.md`, add to CI, list limitations
+
+### What you do
+
+- [ ] Run `pytest --cov=tickframe tests/` — verify passes and ≥30% on critical modules
+- [ ] Fix any failing tests
+- [ ] Review `docs/testing.md`
+- [ ] Take screenshots of coverage report and QA check result
+- [ ] Push all test files, `docs/testing.md`, and `.coveragerc` or `pyproject.toml`
+
+---
+
+## Part 9: Deploy and Release the Sprint Increment
+
+> Prerequisite: All Sprint PBIs merged to `main`, CI green, `CHANGELOG.md` populated.
+
+### Requirements
 
 | # | Requirement | Source |
 |---|-------------|--------|
-| 1 | Deploy the Sprint increment so customer + TA can access it | Assignment_04.md §9.2 |
+| 1 | Deploy the Sprint increment so customer + TA can access it | §9.2 |
 | 2 | Make it available **before** UAT | §9.3 |
 | 3 | Keep it accessible until grading is done | §9.4 |
 | 4 | Create a SemVer release tagged `v`*[version]* on the protected default branch | §9.5 |
@@ -18,40 +176,21 @@
 | 6 | Update `CHANGELOG.md` — move `[Unreleased]` into a dated `[x.y.z]` section | §9.7 |
 | 7 | Preserve release, tag, deployment, and quality evidence for later Sprints | §9.8 |
 
----
-
-## Prerequisites Checklist
-
-- [ ] **Part 5 (Implementation) done** — all Sprint PBIs merged to `main`
-- [ ] **Part 8 (CI) green** — latest `main` CI run passes (lint, type-check, tests, coverage, QRTs, additional QA check, Lychee)
-- [ ] **`docs/` up to date** — `roadmap.md`, `definition-of-done.md`, `README.md` reflect the current Sprint
-- [ ] **`CHANGELOG.md` populated** — `[Unreleased]` section has all user-visible changes from this Sprint
-- [ ] **Public demo video recorded** (< 2 min, sanitized data only, hosted publicly — YouTube unlisted or Google Drive)
-
----
-
-## Step-by-Step Actions
-
-### Step 1: Verify CI and Default Branch
+### Step 1 — Verify readiness
 
 ```bash
-# Confirm you're on main with all Sprint work merged
-git checkout main
-git pull origin main
-
-# Check the latest CI run — must be green
-# Visit: https://github.com/Fedos113/SWP_TickFrame_28_team/actions
+git checkout main && git pull origin main
 ```
 
-**What to check:**
-- [ ] Latest `main` CI run is passing
+- [ ] Latest `main` CI run is passing (https://github.com/Fedos113/SWP_TickFrame_28_team/actions)
 - [ ] All Sprint PRs are merged
 - [ ] `CHANGELOG.md` has `[Unreleased]` entries for this Sprint
 - [ ] `README.md` has correct run/deploy instructions
+- [ ] Public demo video recorded (< 2 min, sanitized data)
 
-### Step 2: Update CHANGELOG.md
+### Step 2 — Update CHANGELOG.md
 
-Replace `[Unreleased]` with the new version and date. Add a new empty `[Unreleased]` section above it.
+Replace `[Unreleased]` with the new version and date. Add empty `[Unreleased]` above:
 
 ```markdown
 ## [Unreleased]
@@ -86,38 +225,35 @@ Replace `[Unreleased]` with the new version and date. Add a new empty `[Unreleas
 
 - [ ] Move `[Unreleased]` entries into `[0.2.0]`
 - [ ] Add empty `[Unreleased]` section at top
-- [ ] Add `[0.2.0]:` reference link pointing to `.../releases/tag/v0.2.0`
+- [ ] Add `[0.2.0]:` reference link
 - [ ] Update `[Unreleased]:` compare link to `compare/v0.2.0...HEAD`
 - [ ] Commit and push to `main`
 
-### Step 3: Deploy the Increment
+### Step 3 — Deploy
 
-**Option A — Docker deployment (existing setup):**
+**Option A — Docker:**
 ```bash
 docker compose up --build -d
 ```
-Verify: `http://<host-ip>:8000/` responds with the dashboard.
 
-**Option B — Local access for TA:**
+**Option B — Local access:**
 - Update `README.md` with exact run instructions
-- Ensure Docker Compose or `pip install -r requirements.txt && python -m tickframe serve` works
+- Ensure `pip install -r requirements.txt && python -m tickframe serve` works
 
-- [ ] Product reachable at the documented URL
+- [ ] Product reachable at documented URL
 - [ ] `README.md` has accurate run/deploy instructions
-- [ ] Link to deployed product added to `reports/week4/README.md`
+- [ ] Link to deployed product in `reports/week4/README.md`
 
-### Step 4: Create the SemVer Release on GitHub
+### Step 4 — Create the SemVer Release
 
-**Using `gh` CLI:**
+**Using `gh`:**
 ```bash
 gh release create v0.2.0 \
   --title "v0.2.0 — Assignment 4 Sprint Increment" \
-  --notes "Assignment 4 Sprint increment.
-
-**Milestone:** https://github.com/Fedos113/SWP_TickFrame_28_team/milestone/3
-**Deployment:** [URL or run instructions in README.md]
-**Demo video:** [public video link]
-**Changelog:** [CHANGELOG.md](./CHANGELOG.md)" \
+  --notes "**Milestone:** https://github.com/Fedos113/SWP_TickFrame_28_team/milestone/3
+**Deployment:** [URL]
+**Demo video:** [link]
+**Changelog:** ./CHANGELOG.md" \
   --target main
 ```
 
@@ -125,64 +261,53 @@ gh release create v0.2.0 \
 1. Go to https://github.com/Fedos113/SWP_TickFrame_28_team/releases/new
 2. Tag: `v0.2.0` — Target: `main`
 3. Title: `v0.2.0 — Assignment 4 Sprint Increment`
-4. Description includes:
-   - Link to Sprint 3 milestone: `https://github.com/Fedos113/SWP_TickFrame_28_team/milestone/3`
-   - Link to deployment or run instructions: `[README.md](./README.md)`
-   - Link to public demo video
-   - Link to `CHANGELOG.md`
-5. Publish release
+4. Description includes Sprint milestone link, deploy instructions link, demo video link
+5. Publish
 
 **Release must include:**
-- [x] SemVer tag prefixed with `v` (`v0.2.0`)
-- [x] Points to a commit on `main`
+- [x] SemVer tag `v0.2.0`
+- [x] Points to commit on `main`
 - [x] Identifies as Assignment 4 Sprint increment
-- [x] Links to Assignment 4 Sprint milestone
-- [x] Links to deployment or run instructions
+- [x] Links to Sprint 3 milestone
+- [x] Links to deployment/run instructions
 - [x] Links to public sanitized demo video
-- [ ] Links to relevant built artifacts (optional — add if Docker image or package is published)
+- [ ] Links to relevant built artifacts (optional)
 
-### Step 5: Update Week 4 Report
+### Step 5 — Update Week 4 Report
 
-In `reports/week4/README.md`, update:
+Update `reports/week4/README.md`:
 
-| Section | Field |
-|---------|-------|
+| Section | Update |
+|---------|--------|
 | §3. Deployed Product | Actual deployment URL |
-| §11. Release | Replace `v0.2.0` placeholder with real release link, add demo video link |
+| §11. Release | Replace placeholder with real release link, add demo video link |
 
-Take a screenshot of the release page → save as `reports/week4/images/semver-release.png`.
+Screenshot the release page → `reports/week4/images/semver-release.png`.
 
-### Step 6: Final Verification
+### Step 6 — Final Verify
 
 - [ ] `https://github.com/Fedos113/SWP_TickFrame_28_team/releases/tag/v0.2.0` returns 200
 - [ ] Release description links work
-- [ ] `CHANGELOG.md` shows `[0.2.0]` section with dated entries
-- [ ] `CHANGELOG.md` `[Unreleased]` compare link is `compare/v0.2.0...HEAD`
-- [ ] Deployed product is reachable by customer and TA
-- [ ] Screenshot taken → `reports/week4/images/semver-release.png`
+- [ ] `CHANGELOG.md` has `[0.2.0]` with dated entries
+- [ ] Deployed product reachable by customer and TA
+- [ ] Screenshot saved → `reports/week4/images/semver-release.png`
 
 ---
 
-## Links Between Part 9 and Other Parts
-
-| Part | Relationship to Part 9 |
-|------|-----------------------|
-| **Part 5** (Implementation) | All Sprint PRs must be merged to `main` before release |
-| **Part 7** (Testing) | Tests must pass on `main` before tagging |
-| **Part 8** (CI) | CI must be green on `main`; CI config is a maintained asset |
-| **Part 10** (UAT) | Deployment must be ready **before** UAT session |
-| **Part 11** (Sprint Review) | Release is shown/discussed during Sprint Review |
-| **Part 15** (Demo video) | Video must be hosted and linked from the release |
-| **Report** (§11 Release) | Release link appears in `reports/week4/README.md` |
-
----
-
-## Required Evidence in the Repository
+## Required Evidence
 
 | Evidence | Location |
 |----------|----------|
+| QRT documentation | [`docs/quality-requirement-tests.md`](../docs/quality-requirement-tests.md) |
+| QRT test files | `tests/requirements/test_*.py` |
+| Product changes | Merged PRs into `main` |
+| Updated CHANGELOG | [`CHANGELOG.md`](../CHANGELOG.md) |
+| Updated README | [`README.md`](../README.md) |
+| Testing strategy | [`docs/testing.md`](../docs/testing.md) |
+| Unit + integration tests | `tests/unit/`, `tests/integration/` |
+| Coverage config | `.coveragerc` or `pyproject.toml` |
+| Additional QA check in CI | `.github/workflows/ci.yml` |
 | SemVer release | `https://github.com/Fedos113/SWP_TickFrame_28_team/releases/tag/v0.2.0` |
-| Updated CHANGELOG | `CHANGELOG.md` §[0.2.0] |
-| Deployed product | Documented URL in `reports/week4/README.md` §3 |
-| Run/deploy instructions | `README.md` |
+| Deployed product | URL in `reports/week4/README.md` |
 | Release screenshot | `reports/week4/images/semver-release.png` |
+| Coverage + QA screenshots | `reports/week4/images/` |
