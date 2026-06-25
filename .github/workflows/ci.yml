@@ -1,0 +1,90 @@
+# CI Pipeline
+
+> **Template — Assignment 4, Part 8**
+>
+> Instructions:
+> - Replace with actual CI jobs for the project stack (Python 3.11 / FastAPI)
+> - Keep the Lychee workflow separate (`.github/workflows/lychee.yml`)
+> - Add the `qa-check` job with the selected additional QA tool
+> - Ensure all jobs run on push/PR to `main`
+> - Branch protection must require all status checks to pass
+
+---
+
+```yaml
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install linter
+        run: pip install ruff
+      - name: Run linter
+        run: ruff check .
+
+  type-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install type checker
+        run: pip install mypy
+      - name: Run type checker
+        run: mypy tickframe/
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install pytest pytest-asyncio httpx pytest-cov
+      - name: Run tests with coverage
+        run: pytest --cov=tickframe --cov-report=term --cov-report=xml tests/
+      # Optional: upload coverage to Codecov
+      # - uses: codecov/codecov-action@v5
+      #   with:
+      #     file: ./coverage.xml
+
+  qa-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install QA tool
+        run: pip install bandit
+      - name: Run security linter
+        run: bandit -r tickframe/ -ll
+```
+
+---
+
+## Branch Protection
+
+Enable on GitHub at: https://github.com/Fedos113/SWP_TickFrame_28_team/settings/branches
+
+Required settings for `main`:
+- [ ] Require a pull request before merging
+- [ ] Require status checks to pass (select: `CI / lint`, `CI / type-check`, `CI / test`, `CI / qa-check`, `Links Checker (Lychee)`)
+- [ ] Require branches to be up to date
+- [ ] Require at least 1 review
+- [ ] Dismiss stale reviews when new commits are pushed
