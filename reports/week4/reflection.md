@@ -67,6 +67,6 @@ _How the team will respond in the next Sprint or assignment:_
 
 | Issue | Planned action | Links |
 |---|---|---|
-|[e.g., Low WebSocket coverage]| Write WebSocket integration test with mocked connection | [#XX](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/XX) |
+|[e.g., Low WebSocket coverage]| Write WebSocket integration test with mocked connection | _#XX (replace with real link)_ |
 |[e.g., Only 5m interval]| Add multi-interval support to Bybit client | US-07 |
 |[e.g., Slow PR reviews]| Set 24h max review SLA | — |

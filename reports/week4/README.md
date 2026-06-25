@@ -27,7 +27,7 @@
 |---|---|
 | Product Backlog board | https://github.com/Fedos113/SWP_TickFrame_28_team/issues |
 | Sprint Backlog board | https://github.com/users/Fedos113/projects/1/views/1 |
-| Assignment 4 Sprint milestone | https://github.com/Fedos113/SWP_TickFrame_28_team/milestone/3 |
+| Assignment 4 Sprint milestone | _https://github.com/Fedos113/SWP_TickFrame_28_team/milestone/3 (replace after creation)_ |
 
 - **Sprint Goal:** _[e.g., "Deliver a quality-gated increment with automated tests, CI, and UAT-ready product"]_
 - **Sprint dates:** _[start date]_ → _[end date]_
@@ -48,7 +48,7 @@ _List key changes with PR links:_
 
 ## 3. Deployed Product
 
-- **URL:** _[deployment URL or "http://localhost:8000" for local-only]_
+- **URL:** _[deployment URL or `http://localhost:8000` for local-only]_
 - **Run instructions:** [README.md](../../README.md)
 - **Access method:** _[Docker, cloud link, etc.]_
 
@@ -58,8 +58,8 @@ _List key changes with PR links:_
 
 | Feedback point | Resulting PBI | Status | Response |
 |---|---|---|---|
-| _[e.g., Customer could not find saved items]_ | [#XX](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/XX) | Done | _[Response]_ |
-| _[e.g., Customer requested more timeframes]_ | [#XX](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/XX) | Not planned | _[Explanation]_ |
+| _[e.g., Customer could not find saved items]_ | _#XX (replace with real issue link)_ | Done | _[Response]_ |
+| _[e.g., Customer requested more timeframes]_ | _#XX (replace with real issue link)_ | Not planned | _[Explanation]_ |
 
 **Unaddressed feedback:** _[Explain any feedback not addressed with justification + linked backlog items]_
 
@@ -129,13 +129,13 @@ _ISO/IEC 25010 sub-characteristics selected:_
 
 | Screenshot | Image |
 |---|---|
-| Sprint 3 milestone | ![sprint-milestone](images/sprint-milestone.png) |
-| Latest CI run (passing) | ![ci-pass](images/ci-pass.png) |
-| Branch protection rules | ![branch-protection](images/branch-protection.png) |
-| Coverage report | ![coverage-report](images/coverage-report.png) |
-| Additional QA check result | ![qa-check](images/qa-check.png) |
-| SemVer release (v0.2.0) | ![semver-release](images/semver-release.png) |
-| Example reviewed PR | ![reviewed-pr](images/reviewed-pr.png) |
+| Sprint 3 milestone | ![sprint-milestone](images/sprint-milestone.png) _(add screenshot)_ |
+| Latest CI run (passing) | ![ci-pass](images/ci-pass.png) _(add screenshot)_ |
+| Branch protection rules | ![branch-protection](images/branch-protection.png) _(add screenshot)_ |
+| Coverage report | ![coverage-report](images/coverage-report.png) _(add screenshot)_ |
+| Additional QA check result | ![qa-check](images/qa-check.png) _(add screenshot)_ |
+| SemVer release (v0.2.0) | ![semver-release](images/semver-release.png) _(add screenshot)_ |
+| Example reviewed PR | ![reviewed-pr](images/reviewed-pr.png) _(add screenshot)_ |
 
 _Optional additional screenshots: Product Backlog board, Sprint Backlog board, deployed product view._
 
@@ -155,7 +155,7 @@ _Explain how the Assignment 4 tests, CI checks, QRTs, and DoD continue to govern
 
 | Item | Link |
 |---|---|
-| SemVer release v0.2.0 | https://github.com/Fedos113/SWP_TickFrame_28_team/releases/tag/v0.2.0 |
+| SemVer release v0.2.0 | _https://github.com/Fedos113/SWP_TickFrame_28_team/releases/tag/v0.2.0 (replace after creation)_ |
 | CHANGELOG | [CHANGELOG.md](../../CHANGELOG.md) |
 | Public sanitized demo video | _[YouTube/Drive link — < 2 min]_ |
 
@@ -237,7 +237,7 @@ in this Sprint will continue to apply."]_
 
 ## 20. Presentation
 
-- **Public slides (optional):** [reports/week4/presentation.pdf](presentation.pdf)
+- **Public slides (optional):** `reports/week4/presentation.pdf` _(add file if publishing sanitized slides)_
 - **Moodle slides:** Submitted via dedicated Moodle slide submission
 - **Rehearsed presentation video:** Submitted via Moodle PDF
 

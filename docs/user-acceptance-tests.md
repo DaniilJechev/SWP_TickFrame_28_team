@@ -18,7 +18,7 @@
 | **ID** | UAT-001 |
 | **Title** | Scan and view chart patterns |
 | **Preconditions** | Application is running (Docker or local) on a machine with internet access |
-| **Test steps** | 1. Open terminal 2. Run `python -m tickframe scan --symbol BTCUSDT --interval 5m --limit 100` 3. Wait for scan completion 4. Run `python -m tickframe serve` 5. Open browser to http://localhost:8000 6. Observe chart with pattern markers |
+| **Test steps** | 1. Open terminal 2. Run `python -m tickframe scan --symbol BTCUSDT --interval 5m --limit 100` 3. Wait for scan completion 4. Run `python -m tickframe serve` 5. Open browser to `http://localhost:8000` 6. Observe chart with pattern markers |
 | **Expected result** | Chart displays candlestick data with detected pattern markers. Clicking a marker shows analysis details. |
 | **Status** | ✅ Pass / ❌ Fail / ⏳ Blocked |
 | **Execution history** | _[Date — Result — Notes]_ |
@@ -31,7 +31,7 @@
 |---|---|
 | **ID** | UAT-002 |
 | **Title** | Toggle between chart timeframes |
-| **Preconditions** | Web dashboard is open (http://localhost:8000) with chart displayed |
+| **Preconditions** | Web dashboard is open (`http://localhost:8000`) with chart displayed |
 | **Test steps** | 1. Locate timeframe selector (5m, 15m, 1h, 4h, 1d) 2. Click each timeframe 3. Observe chart redraw for each selection |
 | **Expected result** | Chart loads new candle data for each timeframe within 2 seconds. All timeframes display correctly. |
 | **Status** | ✅ Pass / ❌ Fail / ⏳ Blocked |
