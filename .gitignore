@@ -8,6 +8,7 @@ __pycache__/
 .ipynb_checkpoints/
 .venv/
 venv/
+*.log
 
 # OS and IDE files
 .DS_Store
