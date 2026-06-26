@@ -7,6 +7,17 @@ let isDarkTheme = true;
 let patternShapes = [];
 let patternMarkers = [];
 let chartInitMode = null;
+let _zoomSub = null;
+let _loadMoreTimer = null;
+let _currentAbort = null;
+let _currentLoadSymbol = '';
+const _MAX_CANDLES = 55000;
+var _candleCache = {};
+
+function showLoading(show) {
+  var el = document.getElementById('chartLoading');
+  if (el) el.classList.toggle('visible', show);
+}
 
 function isChartingLibAvailable() {
   return typeof TradingView !== 'undefined';
@@ -130,6 +141,60 @@ function createLightweightChart(container) {
       });
     } catch (_) {}
   }
+
+  _zoomSub = chart.timeScale().subscribeVisibleTimeRangeChange(onVisibleRangeChanged);
+}
+
+function onVisibleRangeChanged(range) {
+  if (!range || !lastCandles.length) return;
+  if (range.from < lastCandles[0].time) {
+    if (_loadMoreTimer) clearTimeout(_loadMoreTimer);
+    _loadMoreTimer = setTimeout(function () {
+      loadMoreBefore(currentSymbol, currentInterval, lastCandles[0].time);
+    }, 400);
+  }
+}
+
+async function loadMoreBefore(symbol, interval, before) {
+  try {
+    var resp = await fetch('/api/coins/' + symbol + '/candles?interval=' + interval + '&limit=5000&before=' + before);
+    if (!resp.ok) return;
+    var payload = await resp.json();
+    var data = Array.isArray(payload) ? payload : (payload.candles || []);
+    if (!data.length) return;
+
+    var newCandles = data.map(function (c) {
+      return {
+        time: c.time || c.t || Math.floor(new Date(c[0] || c.ts || Date.now()).getTime() / 1000),
+        open: +c.open, high: +c.high, low: +c.low, close: +c.close,
+      };
+    });
+
+    var merged = newCandles.concat(lastCandles);
+    var seen = {};
+    var deduped = [];
+    for (var i = 0; i < merged.length; i++) {
+      var t = merged[i].time;
+      if (!seen[t]) {
+        seen[t] = true;
+        deduped.push(merged[i]);
+      }
+    }
+    if (deduped.length > _MAX_CANDLES) {
+      deduped = deduped.slice(deduped.length - _MAX_CANDLES);
+    }
+
+    lastCandles = deduped;
+    _candleCache[symbol + '|' + interval] = deduped;
+    var series = window.candleSeries;
+    if (series) series.setData(deduped);
+    if (window.LightweightToolbar) {
+      window.LightweightToolbar.setData(deduped);
+    }
+    if (window.DrawingOverlay) window.DrawingOverlay.render();
+  } catch (err) {
+    console.error('loadMoreBefore error', err);
+  }
 }
 
 function applyChartTheme(darkMode) {
@@ -159,11 +224,15 @@ function applyChartTheme(darkMode) {
 }
 
 async function loadCandles(symbol, interval) {
+  if (_currentLoadSymbol === symbol && currentInterval === interval) return;
+
   currentSymbol = symbol;
   window.currentSymbol = symbol;
   currentInterval = interval;
+  _currentLoadSymbol = symbol;
 
   if (chartInitMode === 'advanced') {
+    showLoading(true);
     const datafeed = window._datafeed;
     if (datafeed) {
       datafeed.symbol = symbol;
@@ -174,65 +243,88 @@ async function loadCandles(symbol, interval) {
       chart.setSymbol(symbol, interval);
     }
     clearPatternShapes();
+    window._hideChartLoading = function () { showLoading(false); window._hideChartLoading = null; };
+    setTimeout(function () { if (window._hideChartLoading) { window._hideChartLoading(); } }, 5000);
     return;
   }
 
-  try {
-    // Step 1: quick batch for immediate display
-    const quickResp = await fetch(`/api/coins/${symbol}/candles?interval=${interval}&limit=2000`);
-    if (!quickResp.ok) throw new Error('Failed to load candles');
-    var quickPayload = await quickResp.json();
-    var quickData = Array.isArray(quickPayload) ? quickPayload : (quickPayload.candles || []);
-    lastCandles = quickData.map(function (c) {
-      return {
-        time: c.time || c.t || Math.floor(new Date(c[0] || c.ts || Date.now()).getTime() / 1000),
-        open: +c.open, high: +c.high, low: +c.low, close: +c.close
-      };
-    });
-    candleSeries.setData(lastCandles);
-    // Zoom to last 500 candles initially
-    if (lastCandles.length > 500) {
+  window._hideChartLoading = null;
+
+  if (_zoomSub) {
+    try { chart.timeScale().unsubscribeVisibleTimeRangeChange(_zoomSub); } catch (_) {}
+    _zoomSub = null;
+  }
+
+  if (_currentAbort) {
+    _currentAbort.abort();
+    _currentAbort = null;
+  }
+
+  var cacheKey = symbol + '|' + interval;
+  var cached = _candleCache[cacheKey];
+
+  if (cached) {
+    lastCandles = cached;
+    var series = window.candleSeries;
+    if (series) series.setData(lastCandles);
+    if (lastCandles.length > 1) {
       chart.timeScale().setVisibleRange({
-        from: lastCandles[lastCandles.length - 500].time,
+        from: lastCandles[Math.max(0, lastCandles.length - 10000)].time,
         to: lastCandles[lastCandles.length - 1].time,
       });
-    } else if (lastCandles.length > 1) {
-      chart.timeScale().fitContent();
     }
     if (window.DrawingOverlay) window.DrawingOverlay.setSymbol(symbol);
     if (window.LightweightToolbar) {
       window.LightweightToolbar.setData(lastCandles);
       window.LightweightToolbar.clearAll();
     }
+    _zoomSub = chart.timeScale().subscribeVisibleTimeRangeChange(onVisibleRangeChanged);
+  } else {
+    showLoading(true);
+  }
 
-    // Step 2: load full 150k in background
-    var fullResp = await fetch(`/api/coins/${symbol}/candles?interval=${interval}&limit=50000`);
-    if (fullResp.ok) {
-      var fullPayload = await fullResp.json();
-      var fullData = Array.isArray(fullPayload) ? fullPayload : (fullPayload.candles || []);
-      var fullNormalized = fullData.map(function (c) {
-        return {
-          time: c.time || c.t || Math.floor(new Date(c[0] || c.ts || Date.now()).getTime() / 1000),
-          open: +c.open, high: +c.high, low: +c.low, close: +c.close
-        };
+  _currentAbort = new AbortController();
+  var signal = _currentAbort.signal;
+
+  try {
+    var resp = await fetch('/api/coins/' + symbol + '/candles?interval=' + interval + '&limit=10000', { signal: signal });
+    if (signal.aborted) return;
+    if (!resp.ok) throw new Error('Failed to load candles');
+    var payload = await resp.json();
+    if (signal.aborted) return;
+    var data = Array.isArray(payload) ? payload : (payload.candles || []);
+    var normalized = data.map(function (c) {
+      return {
+        time: c.time || c.t || Math.floor(new Date(c[0] || c.ts || Date.now()).getTime() / 1000),
+        open: +c.open, high: +c.high, low: +c.low, close: +c.close
+      };
+    });
+    lastCandles = normalized;
+    _candleCache[cacheKey] = normalized;
+    var series = window.candleSeries;
+    if (series) series.setData(lastCandles);
+    if (lastCandles.length > 1) {
+      chart.timeScale().setVisibleRange({
+        from: lastCandles[Math.max(0, lastCandles.length - 10000)].time,
+        to: lastCandles[lastCandles.length - 1].time,
       });
-      if (fullNormalized.length > lastCandles.length) {
-        lastCandles = fullNormalized;
-        candleSeries.setData(fullNormalized);
-        if (window.LightweightToolbar) {
-          window.LightweightToolbar.setData(fullNormalized);
-        }
-        // Keep zoom at last 10000 candles
-        if (fullNormalized.length > 10000) {
-          chart.timeScale().setVisibleRange({
-            from: fullNormalized[fullNormalized.length - 10000].time,
-            to: fullNormalized[fullNormalized.length - 1].time,
-          });
-        }
-      }
+    }
+    if (window.DrawingOverlay) window.DrawingOverlay.setSymbol(symbol);
+    if (window.LightweightToolbar) {
+      window.LightweightToolbar.setData(lastCandles);
+      window.LightweightToolbar.clearAll();
+    }
+    if (!cached) {
+      _zoomSub = chart.timeScale().subscribeVisibleTimeRangeChange(onVisibleRangeChanged);
     }
   } catch (err) {
+    if (err.name === 'AbortError') return;
     console.error('loadCandles error', err);
+  } finally {
+    showLoading(false);
+    if (_currentAbort && _currentAbort.signal === signal) {
+      _currentAbort = null;
+    }
   }
 }
 
@@ -262,18 +354,19 @@ function startCandleWs(symbol, interval) {
           const newCandles = msg.candles.map(c => ({
             time: c.time, open: +c.open, high: +c.high, low: +c.low, close: +c.close,
           }));
-          // Only update if snapshot has more data than what we currently show
           if (newCandles.length > lastCandles.length) {
             lastCandles = newCandles;
-            candleSeries.setData(newCandles);
+            _candleCache[currentSymbol + '|' + currentInterval] = newCandles;
+            var series = window.candleSeries;
+            if (series) series.setData(newCandles);
           }
           const s = document.getElementById('status');
           if (s) s.innerText = 'LIVE';
         } else if (msg.type === 'update' && msg.candle) {
           const c = msg.candle;
-          if (c && c.time && candleSeries) {
+          if (c && c.time && window.candleSeries) {
             const point = { time: c.time, open: +c.open, high: +c.high, low: +c.low, close: +c.close };
-            candleSeries.update(point);
+            window.candleSeries.update(point);
             if (lastCandles.length) {
               var last = lastCandles[lastCandles.length - 1];
               if (last.time === point.time) {
@@ -281,6 +374,7 @@ function startCandleWs(symbol, interval) {
               } else {
                 lastCandles.push(point);
               }
+              _candleCache[currentSymbol + '|' + currentInterval] = lastCandles;
             }
           }
           const s = document.getElementById('status');
@@ -353,7 +447,10 @@ function renderLightweightPatterns(patterns) {
   const newMarkers = [];
   patterns.forEach((p) => {
     const ts = p.timestamp;
-    const idx = lastCandles.findIndex(c => c.time === ts);
+    var series = window.candleSeries;
+    if (!series) return;
+    var data = lastCandles;
+    const idx = data.findIndex(c => c.time === ts);
     if (idx === -1) return;
 
     newMarkers.push({
@@ -365,8 +462,9 @@ function renderLightweightPatterns(patterns) {
     });
   });
   patternMarkers = newMarkers;
-  if (typeof candleSeries?.setMarkers === 'function') {
-    candleSeries.setMarkers(newMarkers);
+  var series = window.candleSeries;
+  if (series && typeof series.setMarkers === 'function') {
+    series.setMarkers(newMarkers);
   }
 }
 
@@ -380,11 +478,9 @@ async function analyzePatterns() {
   btn.disabled = true;
   resultEl.innerText = 'Loading all candles...';
 
-  // Clear previous pattern drawings
   if (window.DrawingOverlay) window.DrawingOverlay.clearPatternDrawings();
 
   try {
-    // Load ALL available candles (up to 150k)
     const resp = await fetch(`/api/coins/${currentSymbol}/candles?interval=${currentInterval}&limit=50000`);
     if (!resp.ok) throw new Error('Failed to load candles');
     const payload = await resp.json();
@@ -437,7 +533,7 @@ async function analyzePatterns() {
             }
           });
         }
-      } catch (_) { /* skip failed window */ }
+      } catch (_) { }
     }
 
     if (found.length === 0) {
@@ -457,10 +553,8 @@ async function analyzePatterns() {
 function renderDetectedPatterns(patterns) {
   if (!window.DrawingOverlay || !chart) return;
   patterns.forEach(p => {
-    // Two red dashed vertical lines at start and end
     var startOpts = { color: '#ff0000', width: 2, lineStyle: 'dashed', opacity: 1 };
     var endOpts = { color: '#ff0000', width: 2, lineStyle: 'dashed', opacity: 1 };
-    // Use the canvas overlay to draw — add vline drawings
     var startV = { id: -Date.now() - Math.random(), type: 'vline', _isPattern: true,
       points: [{ time: p.startTime, price: 0 }], opts: startOpts };
     var endV = { id: -Date.now() - Math.random() - 1, type: 'vline', _isPattern: true,
@@ -468,7 +562,6 @@ function renderDetectedPatterns(patterns) {
     window.DrawingOverlay.addPatternDrawing(startV);
     window.DrawingOverlay.addPatternDrawing(endV);
 
-    // Text label at the center
     var midTime = Math.floor((p.startTime + p.endTime) / 2);
     var label = p.pattern_type + ' ' + (p.confidence * 100).toFixed(0) + '%';
     var textD = { id: -Date.now() - Math.random() - 2, type: 'text', _isPattern: true,
@@ -485,8 +578,4 @@ window.TFChart = {
 
 document.addEventListener('DOMContentLoaded', () => {
   createChart();
-  loadCandles(currentSymbol, currentInterval);
-  if (chartInitMode === 'lightweight') {
-    startCandleWs(currentSymbol, currentInterval);
-  }
 });
