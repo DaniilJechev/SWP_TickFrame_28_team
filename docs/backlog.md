@@ -68,6 +68,9 @@ A PBI is **Done** when:
 | [#61](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/61) | PBI-110 | Coin Sidebar — Full Ticker, Trend Colors, 6-Digit Price Format | 3 | Done |
 | [#71](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/71) | PBI-111 | Theme Persistence + Light Theme Fix + Theme-Aware Drawing Colors | 3 | Done |
 | [#72](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/72) | — | Bug Fixes Batch (drag undo, delete undo, race condition, canvas leak, dead code, etc.) | — | Done |
+| [#74](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/74) | PBI-112 | API Rate Limiting, DB Query Optimisation & Candle Performance | 8 | Done |
+| [#75](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/75) | PBI-113 | Coin Switch Stability & Loading Overlay | 5 | Done |
+| [#76](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/76) | PBI-114 | Frontend Candle Cache & Zoom-Out Lazy Loading | 5 | Done |
 
 ---
 
