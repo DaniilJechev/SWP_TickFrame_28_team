@@ -14,6 +14,23 @@ let _currentLoadSymbol = '';
 const _MAX_CANDLES = 55000;
 var _candleCache = {};
 
+function _getPriceFormat(data) {
+  if (!data || !data.length) return { type: 'price', precision: 4, minMove: 0.0001 };
+  var min = Infinity, max = -Infinity;
+  for (var i = 0; i < data.length; i++) {
+    if (data[i].low < min) min = data[i].low;
+    if (data[i].high > max) max = data[i].high;
+  }
+  var avg = (min + max) / 2;
+  if (avg < 0.01) return { type: 'price', precision: 6, minMove: 0.000001 };
+  if (avg < 0.1) return { type: 'price', precision: 5, minMove: 0.00001 };
+  if (avg < 1) return { type: 'price', precision: 4, minMove: 0.0001 };
+  if (avg < 10) return { type: 'price', precision: 3, minMove: 0.001 };
+  if (avg < 100) return { type: 'price', precision: 2, minMove: 0.01 };
+  if (avg < 1000) return { type: 'price', precision: 1, minMove: 0.1 };
+  return { type: 'price', precision: 0, minMove: 1 };
+}
+
 function showLoading(show) {
   var el = document.getElementById('chartLoading');
   if (el) el.classList.toggle('visible', show);
@@ -112,6 +129,7 @@ function createLightweightChart(container) {
   candleSeries = lwChart.addSeries(SeriesType, {
     upColor: '#26a69a', downColor: '#ef5350', borderVisible: false,
     wickUpColor: '#26a69a', wickDownColor: '#ef5350',
+    priceFormat: { type: 'price', precision: 4, minMove: 0.0001 },
   });
 
   window.chart = lwChart;
@@ -187,7 +205,10 @@ async function loadMoreBefore(symbol, interval, before) {
     lastCandles = deduped;
     _candleCache[symbol + '|' + interval] = deduped;
     var series = window.candleSeries;
-    if (series) series.setData(deduped);
+    if (series) {
+      series.setData(deduped);
+      series.applyOptions({ priceFormat: _getPriceFormat(deduped) });
+    }
     if (window.LightweightToolbar) {
       window.LightweightToolbar.setData(deduped);
     }
@@ -266,7 +287,10 @@ async function loadCandles(symbol, interval) {
   if (cached) {
     lastCandles = cached;
     var series = window.candleSeries;
-    if (series) series.setData(lastCandles);
+    if (series) {
+      series.setData(lastCandles);
+      series.applyOptions({ priceFormat: _getPriceFormat(lastCandles) });
+    }
     if (lastCandles.length > 1) {
       chart.timeScale().setVisibleRange({
         from: lastCandles[Math.max(0, lastCandles.length - 10000)].time,
@@ -302,7 +326,10 @@ async function loadCandles(symbol, interval) {
     lastCandles = normalized;
     _candleCache[cacheKey] = normalized;
     var series = window.candleSeries;
-    if (series) series.setData(lastCandles);
+    if (series) {
+      series.setData(lastCandles);
+      series.applyOptions({ priceFormat: _getPriceFormat(lastCandles) });
+    }
     if (lastCandles.length > 1) {
       chart.timeScale().setVisibleRange({
         from: lastCandles[Math.max(0, lastCandles.length - 10000)].time,
