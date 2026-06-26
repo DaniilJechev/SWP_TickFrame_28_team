@@ -7,13 +7,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Nothing yet.
+
+### Changed
+- Nothing yet.
+
+### Fixed
+- Nothing yet.
+
+---
+
+## [1.1.0] — 2026-06-26
+
+### Added
 - **API rate limiting**: Token-bucket `RateLimiter` (10 req/s, burst 5) on all Bybit/Binance candle requests — prevents 429 errors during warmup and zoom-out pagination.
 - **DB query optimisation**: `load_last_n_candles()` with exact `ORDER BY time DESC LIMIT N` (sub-millisecond, no cooldown), `load_candles_before()`, `get_candle_range()`; indexed PK queries avoid loading 55k rows.
 - **Frontend candle cache**: `_candleCache` map (keyed by `symbol|interval`) returns cached data instantly on coin re-switch, then refreshes in background.
 - **Zoom-out lazy loading**: `before` query parameter on `/api/coins/{symbol}/candles`; `loadMoreBefore()` fetches older candles via pagination and appends to chart.
 - **Coin switch loading overlay**: Animated spinner overlay (`<div id="chartLoading">`) for both lightweight and advanced (TradingView) modes; auto-hides via `window._hideChartLoading` callback when candles arrive; 5s fallback timeout.
 - **`end_ms` pagination parameter**: `fetch_candles(end_ms)` and `_fetch_binance_candles(endTime)` support fetching candles before a timestamp — enables sequential per-coin fill up to 55000.
+- **Drawing toolbar engine**: 13 drawing tools on canvas overlay (Trend Line, H-Line, V-Line, Ray, Cross Line, Fibonacci, Price Range %, Rectangle, Circle, Arrow, Text, Brush, Redact). ([#62](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/62))
+- **Advanced drawing tools**: Fibonacci retracement, Price Range %, Text tool with custom modal. ([#64](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/64))
+- **Redact mode**: Chart freeze, selection, drag-to-move/reshape for drawings. ([#63](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/63))
+- **Undo system**: Full undo/redo stack for add, modify (drag), and delete operations. ([#66](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/66))
+- **Per-drawing settings panel**: Color, width, line style, font size with SVG icons. ([#65](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/65))
+- **SQLite persistence**: Drawings, settings, and candle data survive container restart. ([#67](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/67))
+- **WebSocket heartbeat**: Backend sends heartbeat every 5s; frontend shows LIVE status indicator. ([#69](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/69))
+- **Pattern Analysis UI**: Sliding window (50 candles, step 10), red dashed vertical lines + labels, confidence threshold slider. ([#70](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/70))
+- **Coin sidebar enhancements**: Full ticker badges, trend-colored prices, 6-digit price formatting. ([#61](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/61))
+- **Theme persistence**: Theme saved to SQLite, restored on reload, drawing colors adapt to theme. ([#71](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/71))
+- **Quality requirements**: QR-001 (Performance), QR-002 (Security), QR-003 (Accuracy) documented in `docs/quality-requirements.md`.
 - **Quality requirement tests**: Automated QRT-001 (performance), QRT-002 (security), QRT-003 (accuracy) in `tests/requirements/`.
+- **CI pipeline**: GitHub Actions workflow with lint (ruff), type-check (mypy), test (pytest + coverage), QA (bandit). ([#86](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/86))
+- **Testing strategy doc**: `docs/testing.md` covering unit, integration, and QRT testing.
+- **Sprint 3 planning**: 20+ PBIs created and assigned to Sprint 3 milestone.
 
 ### Changed
 - **Candle limit increased**: Maximum per request from 1000 to 50000 (all endpoints, datafeed, frontend).
@@ -21,8 +48,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Removed exchange freshness check on DB hit**: `load_last_n_candles` now uses the exact `limit` (e.g. 10000) instead of hardcoded `MAX_CANDLES`; WS live updates keep data fresh without burning API calls on coin switch.
 - **Warmup configurable**: Changed from hardcoded 50 to `max(50, min(limit // 4, 500))`.
 - **DB transaction**: `_save_candles()` uses explicit `BEGIN`/`COMMIT` for 50k-row performance.
-- **Definition of Done**: Updated with CI checks, coverage, QRT requirements.
-- **Roadmap**: Updated with Sprint 3 and Sprint 4.
+- **Definition of Done**: Restructured with CI check table, quality requirements, code quality criteria.
+- **Roadmap**: Updated with Sprint 3 PBI list and Sprint 4 plan.
 
 ### Fixed
 - **Coin switch race condition (chart stuck on BTC)**: `window.candleSeries` now used everywhere instead of local `candleSeries` variable — toolbar.js `switchChartType()` reassigns the global when user changes chart type, leaving local references stale.
@@ -68,8 +95,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-[Unreleased]: https://github.com/Fedos113/SWP_TickFrame_28_team/compare/SemVer...HEAD
-[1.0.0]: https://github.com/Fedos113/SWP_TickFrame_28_team/releases/tag/SemVer
+[Unreleased]: https://github.com/Fedos113/SWP_TickFrame_28_team/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/Fedos113/SWP_TickFrame_28_team/releases/tag/v1.1.0
+[1.0.0]: https://github.com/Fedos113/SWP_TickFrame_28_team/releases/tag/v1.0.0
 
 [#8]: https://github.com/Fedos113/SWP_TickFrame_28_team/issues/8
 [#16]: https://github.com/Fedos113/SWP_TickFrame_28_team/issues/16
