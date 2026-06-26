@@ -88,19 +88,18 @@ class ManagedSocket {
   }
 }
 
-export class MarketSocket extends ManagedSocket {
+window.ManagedSocket = ManagedSocket;
+window.MarketSocket = class MarketSocket extends ManagedSocket {
   constructor(handlers = {}) {
     super(`${getWsBase()}/ws/market`, handlers);
   }
-}
-
-export class CandleSocket extends ManagedSocket {
+};
+window.CandleSocket = class CandleSocket extends ManagedSocket {
   constructor(symbol, interval, limit, handlers = {}) {
     const query = new URLSearchParams({ interval, limit: String(limit) });
     super(`${getWsBase()}/ws/candles/${encodeURIComponent(symbol)}?${query.toString()}`, handlers);
   }
-}
-
-export function apiBaseUrl() {
+};
+window.apiBaseUrl = function () {
   return getApiBase();
-}
+};

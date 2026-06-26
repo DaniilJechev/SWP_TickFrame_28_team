@@ -1,7 +1,5 @@
 # Project Roadmap
 
-
-
 ## Sprint 1 — Repository & Process Foundation
 
 | Field | Value |
@@ -30,25 +28,56 @@
 
 **Planned items:**
 
-- [#041](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/5) US-15 — Update user interface
+- [#005](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/5) US-01 — Detect chart patterns with ML support
 - [#016](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/16) US-13 — Toggle between day and night theme
+
+---
+
+## Sprint 3 — v1.2.0 TradingView Advanced Charts + Real ML
+
+| Field | Value |
+|---|---|
+| **Milestone** | Sprint 3 |
+| **Dates** | Week 4 |
+| **Goal** | Deliver v1.2.0 with TradingView Advanced Charts, real ML pattern detection, multi-coin support. |
+| **Focus** | Charting upgrade, ML API integration, quality gates |
+
+**Planned items:**
+
+- PBI-101 — Merge ML API service
+- PBI-102 — Real ML client (tickframe → ml-service)
+- PBI-103 — Pattern analysis API endpoint
+- PBI-104 — TradingView Advanced Charts
+- PBI-105 — Pattern visualization on chart
+- PBI-106 — Real analysis button
+- PBI-107 — Multi-coin support (10 pairs)
+- PBI-108 — Documentation and QRT tests
+
+---
+
+## Sprint 4 — Planned
+
+| Field | Value |
+|---|---|
+| **Milestone** | Sprint 4 |
+| **Goal** | Drawing tools, volume/RSI sub-charts, user settings. |
+| **Focus** | Feature depth, usability polish |
+
+**Planned items:**
+
+- US-08 — Drawing toolbar (figures, Fibonacci, brush)
+- US-10 — Volume chart below main chart
+- US-11 — RSI chart below main chart
+- US-12 — Crypto Fear and Greed Index
+- US-14 — Customize chart colors in settings
+- Additional QA and coverage improvements
 
 ---
 
 ## Backlog — Unscheduled
 
-Features accepted into the backlog but not yet assigned to a sprint.
-
 | Issue | Story | Priority |
 |---|---|---|
-| [#005](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/5) | US-01 - Detect chart patterns with ML support | Must Have |
 | [#006](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/6) | US-02 — Scan results in report-friendly format | Must Have |
-| [#015](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/15) | US-06 — Sidebar with 10 trading pairs and live prices | Must Have |
-| [#018](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/18) | US-07 — Choose chart timeframe | Must Have |
-| [#008](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/8) | US-08 — Drawing toolbar (figures, Fibonacci, brush) | Should Have |
 | [#009](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/9) | US-09 — View chart for different time periods | Should Have |
-| [#011](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/11) | US-10 — Volume chart below main chart | Should Have |
-| [#013](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/13) | US-11 — RSI chart below main chart | Should Have |
-| [#014](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/14) | US-12 — Crypto Fear and Greed Index | Could Have |
-| [#017](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/17) | US-14 — Customise chart colors in settings | Could Have |
 | [#022](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/22) | US-08-1 — Customizable figure colors | Could Have |

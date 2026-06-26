@@ -10,6 +10,9 @@ __pycache__/
 venv/
 *.log
 
+# User data (auto-created SQLite database)
+tickframe/data/tickframe.db
+
 # OS and IDE files
 .DS_Store
 .idea/

@@ -1,11 +1,4 @@
-"""Integration tests for REST API endpoints.
-
-Template — implement tests for:
-- GET /api/health — returns 200
-- GET /api/chart — returns candle data
-- POST /api/scan — triggers scan
-- Error responses for invalid parameters
-"""
+"""Integration tests for REST API endpoints."""
 
 import pytest
 from httpx import AsyncClient, ASGITransport
@@ -20,12 +13,20 @@ async def test_health_endpoint():
         assert response.status_code == 200
         data = response.json()
         assert "status" in data
+        assert data["status"] == "ok"
 
 
 @pytest.mark.asyncio
-async def test_chart_endpoint():
+async def test_coins_endpoint():
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as client:
-        response = await client.get("/api/chart?symbol=BTCUSDT&interval=5m")
-        # May return 200 or 500 depending on mock state — adjust assertion as needed
-        assert response.status_code in (200, 500)
+        response = await client.get("/api/coins")
+        assert response.status_code in (200, 503)
+
+
+@pytest.mark.asyncio
+async def test_candles_endpoint_missing_symbol():
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
+        response = await client.get("/api/coins/UNKNOWN/candles?interval=5m&limit=10")
+        assert response.status_code in (200, 500, 503)

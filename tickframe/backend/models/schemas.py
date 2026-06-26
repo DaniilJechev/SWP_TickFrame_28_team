@@ -15,6 +15,7 @@ class CoinSummary(BaseModel):
     change_24h: float = 0.0
     volume_24h: float = 0.0
     source: str = "cache"
+    trend: str = "neutral"
 
 
 class Candle(BaseModel):
@@ -47,3 +48,16 @@ class PriceResponse(BaseModel):
 class MarketSnapshot(BaseModel):
     updated_at: str
     coins: list[CoinSummary]
+
+
+class Pattern(BaseModel):
+    timestamp: int
+    pattern_type: str
+    confidence: float
+
+
+class AnalyzeResponse(BaseModel):
+    symbol: str
+    interval: str
+    limit: int
+    patterns: list[Pattern]

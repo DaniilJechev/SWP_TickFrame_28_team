@@ -14,6 +14,8 @@ from .api.endpoints import router as api_router
 from .api.websocket import market_hub, router as ws_router
 from .services.bybit_client import BybitClient
 from .services.cache import MemoryMarketCache
+from .services.database import DatabaseService
+from .services.ml_client import MlClient
 
 LOGGER = logging.getLogger("tickframe.backend")
 BACKEND_DIR = Path(__file__).resolve().parent
@@ -42,10 +44,15 @@ async def market_refresh_loop(app: FastAPI) -> None:
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     client = BybitClient()
-    cache = MemoryMarketCache(client)
+    db = DatabaseService()
+    await db.init()
+    cache = MemoryMarketCache(client, db=db)
+    ml_client = MlClient()
     app.state.client = client
     app.state.cache = cache
+    app.state.ml_client = ml_client
     app.state.market_hub = market_hub
+    app.state.database = db
 
     # Do not block application startup on upstream market data.
     with suppress(Exception):
@@ -58,6 +65,7 @@ async def lifespan(app: FastAPI):
         with suppress(asyncio.CancelledError):
             await refresh_task
         await client.aclose()
+        await ml_client.aclose()
 
 
 def create_app() -> FastAPI:
@@ -75,6 +83,7 @@ def create_app() -> FastAPI:
     # Serve static assets at the URLs referenced by index.html.
     app.mount("/css", StaticFiles(directory=str(FRONTEND_DIR / "css"), html=False), name="css")
     app.mount("/js", StaticFiles(directory=str(FRONTEND_DIR / "js"), html=False), name="js")
+    app.mount("/lib", StaticFiles(directory=str(FRONTEND_DIR / "lib"), html=False), name="lib")
     app.mount("/static", StaticFiles(directory=str(FRONTEND_DIR), html=False), name="static")
 
     @app.get("/", include_in_schema=False)
