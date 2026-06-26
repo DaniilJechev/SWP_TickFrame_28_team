@@ -83,3 +83,5 @@ See [`docs/definition-of-done.md`](../../docs/definition-of-done.md) for the ful
 - **Roadmap:** [`docs/roadmap.md`](../../docs/roadmap.md)
 - **CI Workflow:** [`.github/workflows/ci.yml`](../../.github/workflows/ci.yml)
 - **CHANGELOG:** [`CHANGELOG.md`](../../CHANGELOG.md)
+- **Release v1.1.0:** https://github.com/Fedos113/SWP_TickFrame_28_team/releases/tag/v1.1.0
+- **Deployed product:** http://localhost:8000 (Docker Compose)
