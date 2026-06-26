@@ -356,7 +356,7 @@ class BybitClient:
             return snapshots
         except Exception as exc:
             LOGGER.warning("Bybit snapshot failed, trying Binance for each pair: %s", exc)
-            snapshots: list[Snapshot] = []
+            snapshots = []
             for pair in requested:
                 try:
                     snapshots.append(await self._fetch_binance_ticker(pair))

@@ -1,7 +1,7 @@
 """Unit tests for Bybit client."""
 
 import pytest
-from unittest.mock import patch, AsyncMock
+from unittest.mock import patch
 
 from tickframe.backend.services.bybit_client import BybitClient
 

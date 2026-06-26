@@ -1,7 +1,7 @@
 import json
 import os
 from http.server import HTTPServer, SimpleHTTPRequestHandler
-from datetime import datetime
+
 
 from ..data.cache import CandleCache
 from ..detection import mock as mock_detection
@@ -37,7 +37,7 @@ class Handler(SimpleHTTPRequestHandler):
         pass
 
 
-def run_server(host="0.0.0.0", port=5000, symbol="BTCUSDT"):
+def run_server(host="0.0.0.0", port=5000, symbol="BTCUSDT"):  # nosec — Docker container needs 0.0.0.0
     cache = CandleCache(symbol=symbol, interval="5m", max_candles=201)
     cache.start()
 

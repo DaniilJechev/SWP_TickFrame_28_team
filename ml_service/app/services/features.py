@@ -53,7 +53,8 @@ def add_smart_features(df: pd.DataFrame) -> pd.DataFrame:
         h_win = high_windows[i].copy()
         available_h = np.ones(WINDOW_SIZE, dtype=bool)
         for step in range(3):
-            if not np.any(available_h): break
+            if not np.any(available_h):
+                break
             idx = np.argmax(np.where(available_h, h_win, -np.inf))
             macro_high_indices[i, step] = WINDOW_SIZE - idx
             macro_high_prices[i, step] = h_win[idx]
@@ -62,7 +63,8 @@ def add_smart_features(df: pd.DataFrame) -> pd.DataFrame:
         l_win = low_windows[i].copy()
         available_l = np.ones(WINDOW_SIZE, dtype=bool)
         for step in range(3):
-            if not np.any(available_l): break
+            if not np.any(available_l):
+                break
             idx = np.argmin(np.where(available_l, l_win, np.inf))
             macro_low_indices[i, step] = WINDOW_SIZE - idx
             macro_low_prices[i, step] = l_win[idx]

@@ -1,4 +1,4 @@
-from tickframe.backend.main import app
+from tickframe.backend.main import app  # noqa: F401 — used by uvicorn via "main:app"
 
 
 if __name__ == "__main__":

@@ -4,7 +4,6 @@ import asyncio
 import logging
 import threading
 import time
-from dataclasses import asdict
 from typing import TYPE_CHECKING
 
 from .bybit_client import BybitClient, CandlePayload, DEFAULT_COIN_METADATA, Snapshot, normalize_interval, normalize_symbol, utc_now
@@ -61,6 +60,8 @@ class MemoryMarketCache:
             await asyncio.gather(*tasks)
 
     async def _load_one_db_pair(self, pair: str, iv: str) -> None:
+        if not self.db:
+            return
         try:
             count = await self.db.count_candles(pair, iv)
             if count > 0:
@@ -96,7 +97,7 @@ class MemoryMarketCache:
                 LOGGER.info("Filling %s/%s: have %d, fetching %d older candles before ts=%d", pair, interval, current, need, earliest_ts)
                 try:
                     # Fetch candles older than earliest_ts (in ms)
-                    candle_payload = await self.client.fetch_candles(pair, interval, need, end_ms=earliest_ts * 1000)
+                    candle_payload = await self.client.fetch_candles(pair, interval, need, end_ms=int(earliest_ts * 1000))
                     if candle_payload.candles:
                         with self._lock:
                             cached = self._candles.get(key)
@@ -132,7 +133,7 @@ class MemoryMarketCache:
     # Coin / Price helpers
     # ------------------------------------------------------------------
 
-    def _merge_coin(self, pair: str, snapshot: Snapshot | None) -> dict:
+    def _merge_coin(self, pair: str, snapshot: Snapshot | None) -> dict[str, object]:
         meta = self._coin_meta.get(pair, {"symbol": pair.removesuffix("USDT"), "pair": pair, "name": pair.removesuffix("USDT")})
         result = dict(meta)
         if snapshot is None:

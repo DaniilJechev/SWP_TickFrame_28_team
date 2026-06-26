@@ -142,7 +142,7 @@ def main():
     analyze_parser.add_argument("--output", help="Optional JSON output file")
 
     serve = subparsers.add_parser("serve", help="Start the web dashboard")
-    serve.add_argument("--host", default="0.0.0.0", help="Host to bind to")
+    serve.add_argument("--host", default="0.0.0.0", help="Host to bind to")  # nosec — Docker container needs 0.0.0.0
     serve.add_argument("--port", type=int, default=5000, help="Port to listen on")
     serve.add_argument("--symbol", default="BTCUSDT", help="Cryptocurrency symbol")
 

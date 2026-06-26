@@ -5,7 +5,7 @@ import logging
 from fastapi import APIRouter, Body, Depends, HTTPException, Query, Request
 from pydantic import BaseModel
 
-from ..models.schemas import AnalyzeResponse, CandleResponse, CoinSummary, Pattern, PriceResponse
+from ..models.schemas import AnalyzeResponse, CandleResponse, CoinSummary, PriceResponse
 from ..services.cache import MemoryMarketCache
 from ..services.database import DatabaseService
 from ..services.ml_client import MlClient

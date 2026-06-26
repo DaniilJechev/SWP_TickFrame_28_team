@@ -1,5 +1,4 @@
 import threading
-import time
 
 from ..exchange.bybit import fetch_klines
 
