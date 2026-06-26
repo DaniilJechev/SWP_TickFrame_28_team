@@ -28,6 +28,13 @@ class TickFrameDatafeed {
   }
 
   resolveSymbol(symbolName, onResolve, onError) {
+    var ps = 100;
+    var sym = this.symbol || symbolName;
+    if (sym.includes('BTC') || sym.includes('ETH')) ps = 1;
+    else if (sym.includes('BNB') || sym.includes('SOL')) ps = 10;
+    else if (sym.includes('AVAX') || sym.includes('DOT') || sym.includes('LINK')) ps = 100;
+    else if (sym.includes('XRP') || sym.includes('ADA')) ps = 1000;
+    else if (sym.includes('DOGE')) ps = 10000;
     onResolve({
       name: this.symbol,
       ticker: this.symbol,
@@ -36,7 +43,7 @@ class TickFrameDatafeed {
       session: '24x7',
       timezone: 'Etc/UTC',
       minmov: 1,
-      pricescale: 100,
+      pricescale: ps,
       has_intraday: true,
       has_daily: true,
       has_weekly_and_monthly: true,

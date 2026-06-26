@@ -14,6 +14,19 @@ let _currentLoadSymbol = '';
 const _MAX_CANDLES = 55000;
 var _candleCache = {};
 
+function _formatChartPrice(price) {
+  if (price == null || isNaN(price)) return '--';
+  var abs = Math.abs(price);
+  var dec;
+  if (abs >= 1000) dec = 2;
+  else if (abs >= 100) dec = 3;
+  else if (abs >= 10) dec = 4;
+  else if (abs >= 1) dec = 5;
+  else if (abs >= 0.01) dec = 6;
+  else dec = 8;
+  return price.toFixed(dec).replace(/\.?0+$/, '');
+}
+
 function showLoading(show) {
   var el = document.getElementById('chartLoading');
   if (el) el.classList.toggle('visible', show);
@@ -106,12 +119,14 @@ function createLightweightChart(container) {
     rightPriceScale: { borderColor: '#2a2e39' },
     timeScale: { borderColor: '#2a2e39', timeVisible: true, secondsVisible: false },
     crosshair: { mode: LightweightCharts.CrosshairMode.Normal },
+    localization: { priceFormatter: _formatChartPrice },
   });
 
   const SeriesType = window.LightweightCharts.CandlestickSeries || 'Candlestick';
   candleSeries = lwChart.addSeries(SeriesType, {
     upColor: '#26a69a', downColor: '#ef5350', borderVisible: false,
     wickUpColor: '#26a69a', wickDownColor: '#ef5350',
+    priceFormat: { type: 'price', precision: 6, minMove: 0.000001 },
   });
 
   window.chart = lwChart;
@@ -212,12 +227,14 @@ function applyChartTheme(darkMode) {
     rightPriceScale: { borderColor: '#2a2e39' },
     timeScale: { borderColor: '#2a2e39', timeVisible: true, secondsVisible: false },
     crosshair: { mode: LightweightCharts.CrosshairMode.Normal },
+    localization: { priceFormatter: _formatChartPrice },
   } : {
     layout: { background: { type: 'solid', color: '#f5f7fb' }, textColor: '#111827' },
     grid: { vertLines: { color: '#e5e7eb' }, horzLines: { color: '#e5e7eb' } },
     rightPriceScale: { borderColor: '#d1d5db' },
     timeScale: { borderColor: '#d1d5db', timeVisible: true, secondsVisible: false },
     crosshair: { mode: LightweightCharts.CrosshairMode.Normal },
+    localization: { priceFormatter: _formatChartPrice },
   };
 
   chart.applyOptions(theme);
@@ -275,7 +292,6 @@ async function loadCandles(symbol, interval) {
     }
     if (window.DrawingOverlay) window.DrawingOverlay.setSymbol(symbol);
     if (window.LightweightToolbar) {
-      window.LightweightToolbar.setData(lastCandles);
       window.LightweightToolbar.clearAll();
     }
     _zoomSub = chart.timeScale().subscribeVisibleTimeRangeChange(onVisibleRangeChanged);
@@ -476,71 +492,24 @@ async function analyzePatterns() {
   const origText = btn.innerText;
   btn.innerText = 'ANALYZING...';
   btn.disabled = true;
-  resultEl.innerText = 'Loading all candles...';
+  resultEl.innerText = 'Loading candles from database...';
 
   if (window.DrawingOverlay) window.DrawingOverlay.clearPatternDrawings();
 
   try {
-    const resp = await fetch(`/api/coins/${currentSymbol}/candles?interval=${currentInterval}&limit=50000`);
-    if (!resp.ok) throw new Error('Failed to load candles');
-    const payload = await resp.json();
-    const candles = (payload.candles || []);
+    const totalLimit = lastCandles.length || 50000;
+    const mlResp = await fetch(`/api/analyze/${currentSymbol}?interval=${currentInterval}&limit=${totalLimit}&confidence_threshold=${parseFloat(window._analysisThreshold || '0.80')}`, {
+      method: 'POST',
+    });
+    if (!mlResp.ok) throw new Error('Analysis failed');
+    const mlData = await mlResp.json();
+    const patterns = mlData.patterns || [];
 
-    if (candles.length < 50) {
-      resultEl.innerText = 'Not enough candle data (need at least 50).';
-      return;
-    }
-
-    resultEl.innerText = `Analyzing ${candles.length} candles...`;
-    const threshold = parseFloat(window._analysisThreshold || '0.80');
-    const windowSize = 50;
-    const step = 10;
-    const found = [];
-    let analyzed = 0;
-
-    for (let i = 0; i + windowSize <= candles.length; i += step) {
-      const windowCandles = candles.slice(i, i + windowSize);
-      const startTime = windowCandles[0].time;
-      const endTime = windowCandles[windowSize - 1].time;
-
-      const mlCandles = windowCandles.map(c => ({
-        timestamp: c.time, open: c.open, high: c.high,
-        low: c.low, close: c.close, volume: c.volume || 0,
-      }));
-
-      try {
-        const mlResp = await fetch(`/api/analyze/${currentSymbol}?interval=${currentInterval}&limit=${windowSize}&confidence_threshold=${threshold}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ candles: mlCandles }),
-        });
-        analyzed++;
-        if (analyzed % 50 === 0) {
-          resultEl.innerText = `Analyzing ${candles.length} candles... (${Math.round(i / candles.length * 100)}%)`;
-        }
-        if (mlResp.ok) {
-          const mlData = await mlResp.json();
-          const patterns = mlData.patterns || [];
-          patterns.forEach(p => {
-            if (p.confidence >= threshold) {
-              found.push({
-                pattern_type: p.pattern_type,
-                confidence: p.confidence,
-                startTime: startTime,
-                endTime: endTime,
-                timestamp: p.timestamp || Math.floor((startTime + endTime) / 2),
-              });
-            }
-          });
-        }
-      } catch (_) { }
-    }
-
-    if (found.length === 0) {
-      resultEl.innerText = `No patterns detected above ${(threshold * 100).toFixed(0)}% threshold across ${candles.length} candles.`;
+    if (patterns.length === 0) {
+      resultEl.innerText = `No patterns detected above threshold across ${totalLimit} candles.`;
     } else {
-      resultEl.innerText = `Found ${found.length} pattern(s) above ${(threshold * 100).toFixed(0)}% across ${candles.length} candles.`;
-      renderDetectedPatterns(found);
+      resultEl.innerText = `Found ${patterns.length} pattern(s) across ${totalLimit} candles.`;
+      renderDetectedPatterns(patterns);
     }
   } catch (err) {
     resultEl.innerText = `Analysis failed: ${err.message}`;
@@ -553,21 +522,33 @@ async function analyzePatterns() {
 function renderDetectedPatterns(patterns) {
   if (!window.DrawingOverlay || !chart) return;
   patterns.forEach(p => {
-    var startOpts = { color: '#ff0000', width: 2, lineStyle: 'dashed', opacity: 1 };
-    var endOpts = { color: '#ff0000', width: 2, lineStyle: 'dashed', opacity: 1 };
-    var startV = { id: -Date.now() - Math.random(), type: 'vline', _isPattern: true,
-      points: [{ time: p.startTime, price: 0 }], opts: startOpts };
-    var endV = { id: -Date.now() - Math.random() - 1, type: 'vline', _isPattern: true,
-      points: [{ time: p.endTime, price: 0 }], opts: endOpts };
-    window.DrawingOverlay.addPatternDrawing(startV);
-    window.DrawingOverlay.addPatternDrawing(endV);
-
-    var midTime = Math.floor((p.startTime + p.endTime) / 2);
-    var label = p.pattern_type + ' ' + (p.confidence * 100).toFixed(0) + '%';
-    var textD = { id: -Date.now() - Math.random() - 2, type: 'text', _isPattern: true,
-      points: [{ time: midTime, price: 0, label: label }],
-      opts: { color: '#ff0000', fontSize: 12 } };
-    window.DrawingOverlay.addPatternDrawing(textD);
+    if (p.startTime !== undefined && p.endTime !== undefined) {
+      var startOpts = { color: '#ff0000', width: 2, lineStyle: 'dashed', opacity: 1 };
+      var endOpts = { color: '#ff0000', width: 2, lineStyle: 'dashed', opacity: 1 };
+      var startV = { id: -Date.now() - Math.random(), type: 'vline', _isPattern: true,
+        points: [{ time: p.startTime, price: 0 }], opts: startOpts };
+      var endV = { id: -Date.now() - Math.random() - 1, type: 'vline', _isPattern: true,
+        points: [{ time: p.endTime, price: 0 }], opts: endOpts };
+      window.DrawingOverlay.addPatternDrawing(startV);
+      window.DrawingOverlay.addPatternDrawing(endV);
+      var midTime = Math.floor((p.startTime + p.endTime) / 2);
+      var label = p.pattern_type + ' ' + (p.confidence * 100).toFixed(0) + '%';
+      var textD = { id: -Date.now() - Math.random() - 2, type: 'text', _isPattern: true,
+        points: [{ time: midTime, price: 0, label: label }],
+        opts: { color: '#ff0000', fontSize: 12 } };
+      window.DrawingOverlay.addPatternDrawing(textD);
+    } else {
+      var ts = p.timestamp;
+      var opts = { color: '#ff0000', width: 2, lineStyle: 'dashed', opacity: 1 };
+      var vline = { id: -Date.now() - Math.random(), type: 'vline', _isPattern: true,
+        points: [{ time: ts, price: 0 }], opts: opts };
+      window.DrawingOverlay.addPatternDrawing(vline);
+      var label = p.pattern_type + ' ' + (p.confidence * 100).toFixed(0) + '%';
+      var textD = { id: -Date.now() - Math.random() - 2, type: 'text', _isPattern: true,
+        points: [{ time: ts, price: 0, label: label }],
+        opts: { color: '#ff0000', fontSize: 12 } };
+      window.DrawingOverlay.addPatternDrawing(textD);
+    }
   });
 }
 

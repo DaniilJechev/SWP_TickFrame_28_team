@@ -18,21 +18,63 @@ git clone https://github.com/Fedos113/SWP_TickFrame_28_team.git
 cd SWP_TickFrame_28_team
 ```
 
-### 2. Build and run
+### 2. Check for port conflicts
+
+Other applications (e.g. VS Code extensions, dev servers) may already be listening on port `8000`. Check with:
+
+```bash
+netstat -ano | findstr ":8000"
+```
+
+If you see a non-Docker process on port `8000`, the Docker container will be unreachable on that port. The docker-compose.yml maps `8080:8000` to avoid the most common conflict — adjust the host port in `docker-compose.yml` if needed.
+
+### 3. Build and run
 
 ```bash
 docker compose up --build
 ```
 
-### 3. Open in browser
+### 4. Open in browser
 
 ```
-http://localhost:8000
+http://localhost:8080
 ```
 
 For a remote VM, replace `localhost` with the VM's IP address.
 
 > The first load may take 10–30 seconds while historical candle data is fetched from the exchange. Once cached in SQLite, subsequent loads are instant.
+
+---
+
+### Full Docker rebuild guide
+
+If file changes aren't reflected after `--build`, Docker may be using cached layers. Steps for a guaranteed clean deployment:
+
+```bash
+# 1. Stop and remove all containers + network
+docker compose down
+
+# 2. (Optional) Remove old images to reclaim space
+docker compose rm
+
+# 3. Rebuild from scratch (ignores ALL cache layers)
+docker compose build --no-cache
+
+# 4. Start containers in detached mode
+docker compose up -d
+
+# 5. Verify both services are healthy
+curl http://localhost:8080/api/health
+curl http://localhost:8001/health
+
+# Expected output:
+# {"status":"ok"}
+# {"status":"success","model_loaded":true}
+```
+
+**Why `--no-cache` is required:** Docker's `COPY . .` step caches the build context. Even when source files change, `docker compose up --build` reuses the cached layer unless `--no-cache` is explicitly passed.
+
+**Port conflicts:** The host port in `docker-compose.yml` (`8080:8000`) is the only port you should use on your host machine. The container's internal port `8000` is only reachable from inside the Docker network. A host process on port `8000` (e.g., VS Code, Python dev server) will silently intercept traffic before Docker, even when Docker is running — use a different host port or stop the conflicting process.
 
 ---
 

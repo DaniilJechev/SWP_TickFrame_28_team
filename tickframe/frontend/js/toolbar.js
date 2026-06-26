@@ -32,12 +32,14 @@
         upColor: '#26a69a', downColor: '#ef5350',
         borderVisible: false,
         wickUpColor: '#26a69a', wickDownColor: '#ef5350',
+        priceFormat: { type: 'price', precision: 6, minMove: 0.000001 },
       });
       newSeries.setData(data);
     } else if (type === 'line') {
       newSeries = chart.addSeries(LightweightCharts.LineSeries, {
         color: '#2962ff', lineWidth: 2,
         lastValueVisible: true, priceLineVisible: true,
+        priceFormat: { type: 'price', precision: 6, minMove: 0.000001 },
       });
       newSeries.setData(data.map(function (c) { return { time: c.time, value: c.close }; }));
     } else if (type === 'area') {
@@ -46,6 +48,7 @@
         topColor: 'rgba(41,98,255,0.3)',
         bottomColor: 'rgba(41,98,255,0.05)',
         lastValueVisible: true, priceLineVisible: true,
+        priceFormat: { type: 'price', precision: 6, minMove: 0.000001 },
       });
       newSeries.setData(data.map(function (c) { return { time: c.time, value: c.close }; }));
     }
