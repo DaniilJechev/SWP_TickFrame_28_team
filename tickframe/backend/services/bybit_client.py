@@ -1,8 +1,10 @@
 from __future__ import annotations
 
+import asyncio
 import hashlib
 import logging
 import random
+import time
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from typing import Any
@@ -104,6 +106,31 @@ def utc_now() -> str:
     return datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
 
 
+class RateLimiter:
+    """Token-bucket rate limiter to avoid exceeding API rate limits."""
+
+    def __init__(self, rate: float = 10.0, burst: int = 5):
+        self.rate = rate
+        self.burst = burst
+        self._tokens = float(burst)
+        self._last = time.monotonic()
+        self._lock = asyncio.Lock()
+
+    async def acquire(self) -> None:
+        async with self._lock:
+            now = time.monotonic()
+            elapsed = now - self._last
+            self._tokens = min(float(self.burst), self._tokens + elapsed * self.rate)
+            self._last = now
+            if self._tokens >= 1.0:
+                self._tokens -= 1.0
+                return
+            wait = (1.0 - self._tokens) / self.rate
+            self._tokens = 0.0
+            self._last = now + wait
+        await asyncio.sleep(wait)
+
+
 class BybitClient:
     def __init__(self, base_url: str = BASE_URL, timeout: float = 10.0):
         self.base_url = base_url.rstrip("/")
@@ -111,11 +138,13 @@ class BybitClient:
             timeout=timeout,
             headers={"User-Agent": "TickFrame/1.0"},
         )
+        self._rate_limiter = RateLimiter(rate=10.0, burst=5)
 
     async def aclose(self) -> None:
         await self._client.aclose()
 
     async def _request_json(self, path: str, params: dict[str, Any]) -> dict[str, Any]:
+        await self._rate_limiter.acquire()
         response = await self._client.get(f"{self.base_url}{path}", params=params)
         response.raise_for_status()
         data = response.json()
@@ -125,15 +154,16 @@ class BybitClient:
             )
         return data
 
-    async def _fetch_binance_candles(self, pair: str, interval: str, limit: int) -> list[dict[str, float | int]]:
+    async def _fetch_binance_candles(self, pair: str, interval: str, limit: int, end_ms: int | None = None) -> list[dict[str, float | int]]:
         binance_interval = BINANCE_INTERVAL_MAP.get(interval, "5m")
         max_per_request = 1000
         all_candles: list[dict] = []
-        end_time: int | None = None
+        end_time: int | None = end_ms
         try:
             while len(all_candles) < limit:
                 remaining = limit - len(all_candles)
                 batch_limit = min(max_per_request, remaining)
+                await self._rate_limiter.acquire()
                 async with httpx.AsyncClient(timeout=10.0) as client:
                     params = {"symbol": pair, "interval": binance_interval, "limit": batch_limit}
                     if end_time is not None:
@@ -233,19 +263,19 @@ class BybitClient:
         candles.reverse()
         return candles
 
-    async def fetch_candles(self, symbol: str, interval: str = "5m", limit: int = 200) -> CandlePayload:
+    async def fetch_candles(self, symbol: str, interval: str = "5m", limit: int = 200, end_ms: int | None = None) -> CandlePayload:
         pair = normalize_symbol(symbol)
         interval = normalize_interval(interval)
         bybit_interval = INTERVAL_MAP[interval]
         max_per_request = 200
         all_candles: list[dict] = []
-        end_ms: int | None = None
+        _end_ms = end_ms
 
         try:
             while len(all_candles) < limit:
                 remaining = limit - len(all_candles)
                 batch_limit = min(max_per_request, remaining)
-                batch = await self._fetch_bybit_kline_batch(pair, bybit_interval, batch_limit, end_ms)
+                batch = await self._fetch_bybit_kline_batch(pair, bybit_interval, batch_limit, _end_ms)
                 if not batch:
                     break
                 # Deduplicate: skip candles already collected (overlap from time boundary)
@@ -256,7 +286,7 @@ class BybitClient:
                 all_candles.extend(new_candles)
                 # Set end to oldest candle timestamp (exclusive) in ms
                 oldest_ts = min(c["time"] for c in new_candles)
-                end_ms = oldest_ts * 1000
+                _end_ms = oldest_ts * 1000
                 LOGGER.info(
                     "Pagination: fetched %d candles from Bybit for %s (%s) — total=%d limit=%d",
                     len(new_candles), pair, interval, len(all_candles), limit,
@@ -267,11 +297,12 @@ class BybitClient:
             return CandlePayload(symbol=pair, interval=interval, candles=all_candles, source="bybit", updated_at=utc_now())
         except Exception as exc:
             LOGGER.warning("Bybit failed for %s (%s), trying Binance: %s", pair, interval, exc)
-            binance_candles = await self._fetch_binance_candles(pair, interval, limit)
+            binance_candles = await self._fetch_binance_candles(pair, interval, limit, end_ms)
             return CandlePayload(symbol=pair, interval=interval, candles=binance_candles, source="binance", updated_at=utc_now())
 
     async def _fetch_binance_ticker(self, pair: str) -> Snapshot:
         try:
+            await self._rate_limiter.acquire()
             async with httpx.AsyncClient(timeout=10.0) as client:
                 resp = await client.get(
                     f"{BINANCE_BASE_URL}/api/v3/ticker/24hr",
