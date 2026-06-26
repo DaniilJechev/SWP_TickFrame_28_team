@@ -1,250 +1,85 @@
-# Week 4 — Assignment 4 Report
+# SWP TickFrame — Week 4 Report (Assignment 4)
 
-> **Template** — Fill in every section below. Replace `[...]` with actual content.
->
-> Instructions:
-> - This is the **canonical Week 4 public report**
-> - Must contain direct links to every applicable required file and external public artifact
-> - Do NOT include private links (recordings, credentials, etc.) — those go in Moodle PDF
-> - Every link must be a working permalink
-> - See all 42 requirements in Assignment_04.md "Assignment Report in the Repository" section
+**Short Description:** Quality-gated increment: drawing toolbar (13 tools), SQLite persistence, pattern analysis UI, CI pipeline, test coverage, and quality requirements.
+
+**License:** [MIT](../../LICENSE)
 
 ---
 
-## Project
+## Customer Feedback Response — Week 3 Review
 
-**TickFrame** — open-source cryptocurrency chart pattern detection workstation.
+Based on the [Week 3 Customer Review](../week3/customer-review-transcript.md), the following feedback points were addressed:
 
-**Team:** SWP_TickFrame_28
-**Repository:** https://github.com/Fedos113/SWP_TickFrame_28_team
-**Default branch:** `main`
-
----
-
-## 1. Backlog and Sprint Planning
-
-| Item | Link |
-|---|---|
-| Product Backlog board | https://github.com/Fedos113/SWP_TickFrame_28_team/issues |
-| Sprint Backlog board | https://github.com/users/Fedos113/projects/1/views/1 |
-| Assignment 4 Sprint milestone | _https://github.com/Fedos113/SWP_TickFrame_28_team/milestone/3 (replace after creation)_ |
-
-- **Sprint Goal:** _[e.g., "Deliver a quality-gated increment with automated tests, CI, and UAT-ready product"]_
-- **Sprint dates:** _[start date]_ → _[end date]_
-- **Scope summary:** _[e.g., "3 quality requirements, 3 automated QRTs, unit + integration tests, CI pipeline, DoD update, and 2 backlog features"]_
-- **Total Story Points:** _[number]_
-
----
-
-## 2. Delivered Product Changes
-
-_List key changes with PR links:_
-
-- _[e.g., Added CI pipeline with linting, tests, and coverage — PR #XX]_
-- _[e.g., Implemented timeframe selector (US-07) — PR #XX]_
-- _[e.g., Updated Definition of Done for Assignment 4 — PR #XX]_
-
----
-
-## 3. Deployed Product
-
-- **URL:** _[deployment URL or `http://localhost:8000` for local-only]_
-- **Run instructions:** [README.md](../../README.md)
-- **Access method:** _[Docker, cloud link, etc.]_
-
----
-
-## 4. Customer Feedback Response
-
-| Feedback point | Resulting PBI | Status | Response |
+| Feedback Point | Resulting PBI or Issue | Status | Response |
 |---|---|---|---|
-| _[e.g., Customer could not find saved items]_ | _#XX (replace with real issue link)_ | Done | _[Response]_ |
-| _[e.g., Customer requested more timeframes]_ | _#XX (replace with real issue link)_ | Not planned | _[Explanation]_ |
-
-**Unaddressed feedback:** _[Explain any feedback not addressed with justification + linked backlog items]_
-
----
-
-## 5. Documentation
-
-| Document | Link |
-|---|---|
-| Roadmap | [docs/roadmap.md](../../docs/roadmap.md) |
-| Definition of Done | [docs/definition-of-done.md](../../docs/definition-of-done.md) |
-| Quality Requirements | [docs/quality-requirements.md](../../docs/quality-requirements.md) |
-| Quality Requirement Tests | [docs/quality-requirement-tests.md](../../docs/quality-requirement-tests.md) |
-| Testing Strategy | [docs/testing.md](../../docs/testing.md) |
-| User Acceptance Tests | [docs/user-acceptance-tests.md](../../docs/user-acceptance-tests.md) |
+| Add Fear & Greed Index to dashboard | [#14](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/14) US-12 | Not Planned (Sprint 3) | Deferred — quality foundations and CI took priority for this sprint. Revisit in Sprint 4. |
+| Add volume chart below main chart | [#11](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/11) US-10 | Not Planned (Sprint 3) | Deferred — volume sub-chart requires chart infrastructure work. Planned for Sprint 4. |
+| Add RSI indicator sub-chart | [#13](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/13) US-11 | Not Planned (Sprint 3) | Deferred — RSI sub-chart depends on TradingView Advanced Charts integration. Planned for Sprint 4. |
+| Include drawing tools on chart | [#62](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/62) PBI-101, [#64](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/64) PBI-102 | In Progress (Sprint 3) | Fully addressed — 13 drawing tools implemented (Trend Line, Horizontal/Vertical Line, Ray, Cross Line, Fibonacci, Price Range %, Rectangle, Circle, Arrow, Text, Brush, Redact). See PBI-101/102/103/104/105. |
+| Support light and dark themes | [#71](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/71) PBI-111 | In Progress (Sprint 3) | Addressed — theme persistence added (saved to SQLite, restored on reload). Light theme chart colors fixed. Drawing colors adapt to current theme. |
+| Support candle color customization | [#17](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/17) US-14 | Not Planned (Sprint 3) | Deferred — requires settings UI redesign. Planned for Sprint 4. |
+| Registration/authentication not needed for MVP | N/A | Accepted | Confirmed — authentication excluded from MVP scope. |
+| Provide additional Figma screens for pattern visualization | N/A | Out of scope | Design work tracked outside GitHub — team to produce updated Figma screens asynchronously. |
+| Define how metrics will be displayed | [#70](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/70) PBI-109 | In Progress (Sprint 3) | Partially addressed — pattern analysis now shows red dashed vertical lines + labels with pattern type and confidence %. Further refinement planned. |
+| Define behavior for multiple simultaneous patterns | [#70](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/70) PBI-109 | In Progress (Sprint 3) | Multiple patterns rendered as individual vertical lines on chart. Sliding window (step 10) scans entire visible range. |
+| Add dedicated pattern list like coin list | N/A | Not Planned (Sprint 3) | Deferred — pattern list UI requires frontend redesign. Planned for future sprint. |
+| Research TradingView capabilities | N/A | Done | TradingView Charting Library integration available as advanced chart mode (see `datafeed.js` and `charts.js`). Lightweight Charts v4 remains default (free). |
+| Use GitHub Projects for task tracking | N/A | Done | GitHub Projects board active with Sprint 3 view (To Do / In Progress / Review / Done columns). |
+| Continue reviewing Figma updates asynchronously | N/A | Open | Figma updates pending — no additional review meetings scheduled. |
 
 ---
 
-## 6. Quality Model
+## Sprint 3 Progress
 
-_ISO/IEC 25010 sub-characteristics selected:_
+### Scope for Sprint 3
+Sprint 3 delivers a quality-gated increment with focus on:
 
-| QR ID | Sub-characteristic | Brief scenario |
-|---|---|---|
-| QR-001 | Performance Efficiency — Time behaviour | Chart redraws within 2s under 10 concurrent users |
-| QR-002 | Security — Confidentiality | API keys never leaked in logs or responses |
-| QR-003 | Functional Suitability — Accuracy | Candle data within 0.1% of Bybit source |
+**Drawing & Annotation Tools:**
+- 13 drawing tools on a canvas overlay (Trend Line, H-Line, V-Line, Ray, Cross Line, Fibonacci, Price Range %, Rectangle, Circle, Arrow, Text, Brush, Redact)
+- Per-drawing settings (color, width, line style, font size)
+- Undo/redo stack for add, modify, delete operations
+- SQLite persistence for drawings and settings
 
----
+**Chart & Performance:**
+- 50k candle support with two-phase load (instant 2000 + background 50000)
+- Frontend candle cache for instant coin re-switch
+- Zoom-out lazy loading via pagination
+- Rate limiting (token-bucket) on exchange API calls
+- WebSocket heartbeat + LIVE status indicator
 
-## 7. Testing Status
+**Pattern Analysis:**
+- Sliding window analysis (50 candles, step 10)
+- Red dashed vertical lines + labels with pattern type and confidence
+- Confidence threshold slider in settings
 
-**Critical module coverage:**
+**Quality Foundations:**
+- 3 Quality Requirements defined (Performance, Security, Accuracy)
+- 3 QRT automation suites (performance, security, accuracy tests)
+- CI pipeline with lint (ruff), type-check (mypy), test (pytest + coverage), QA (bandit)
+- Updated Definition of Done with CI/coverage/QR criteria
+- Test coverage target: ≥30% for critical modules
 
-| Module | Coverage |
-|---|---|
-| `tickframe/backend/services/bybit_client.py` | _[XX]%_ |
-| `tickframe/backend/services/cache.py` | _[XX]%_ |
-| `tickframe/backend/api/endpoints.py` | _[XX]%_ |
-| `tickframe/backend/api/websocket.py` | _[XX]%_ |
-| `tickframe/detection/mock.py` | _[XX]%_ |
-| `tickframe/backend/models/schemas.py` | _[XX]%_ |
+### Verified CI Jobs
+- **lint:** `ruff check .` — no errors
+- **type-check:** `mypy tickframe/` — no errors
+- **test:** `pytest --cov=tickframe --cov-report=term --cov-report=xml tests/` — all tests pass, coverage reported
+- **qa-check:** `bandit -r tickframe/ -ll` — no high-severity issues
 
-**Global coverage:** _[XX]%_
-
-| Test type | Location |
-|---|---|
-| Unit tests | [tests/unit/](../../tests/unit/) |
-| Integration tests | [tests/integration/](../../tests/integration/) |
-| Quality requirement tests | [tests/requirements/](../../tests/requirements/) |
-
----
-
-## 8. CI Pipeline
-
-| Item | Link |
-|---|---|
-| CI workflow configuration | [.github/workflows/ci.yml](../../.github/workflows/ci.yml) |
-| Lychee link checker | [.github/workflows/lychee.yml](../../.github/workflows/lychee.yml) |
-| Latest passing run on `main` | _[GitHub Actions run URL]_ |
-
-**Branch protection:** Enabled on `main` — see screenshot below.
+### Definition of Done (Updated)
+See [`docs/definition-of-done.md`](../../docs/definition-of-done.md) for the full criteria. Key additions:
+- All CI checks must pass on branch and after merge
+- Line coverage ≥30% for critical modules
+- Quality requirement tests must pass
+- Additional QA check (bandit) must pass
 
 ---
 
-## 9. Screenshots
+## Artifacts and Workflow Links
 
-| Screenshot | Image |
-|---|---|
-| Sprint 3 milestone | ![sprint-milestone](images/sprint-milestone.png) _(add screenshot)_ |
-| Latest CI run (passing) | ![ci-pass](images/ci-pass.png) _(add screenshot)_ |
-| Branch protection rules | ![branch-protection](images/branch-protection.png) _(add screenshot)_ |
-| Coverage report | ![coverage-report](images/coverage-report.png) _(add screenshot)_ |
-| Additional QA check result | ![qa-check](images/qa-check.png) _(add screenshot)_ |
-| SemVer release (v0.2.0) | ![semver-release](images/semver-release.png) _(add screenshot)_ |
-| Example reviewed PR | ![reviewed-pr](images/reviewed-pr.png) _(add screenshot)_ |
-
-_Optional additional screenshots: Product Backlog board, Sprint Backlog board, deployed product view._
-
----
-
-## 10. Quality Gates Continuity
-
-_Explain how the Assignment 4 tests, CI checks, QRTs, and DoD continue to govern later project work:_
-
-- _[e.g., "Tests are maintained product assets. The CI pipeline runs on every PR to main.
-   The DoD requires all CI checks to pass before merge. Future PBIs may not bypass
-   these gates without documented TA-approved exceptions."]_
-
----
-
-## 11. Release
-
-| Item | Link |
-|---|---|
-| SemVer release v0.2.0 | _https://github.com/Fedos113/SWP_TickFrame_28_team/releases/tag/v0.2.0 (replace after creation)_ |
-| CHANGELOG | [CHANGELOG.md](../../CHANGELOG.md) |
-| Public sanitized demo video | _[YouTube/Drive link — < 2 min]_ |
-
----
-
-## 12. UAT Results
-
-| Scenario | Result | Notes |
-|---|---|---|
-| UAT-001 — Scan and view chart patterns | ✅ Pass | _[Notes]_ |
-| UAT-002 — Toggle timeframes | ❌ Fail | _[e.g., 1h option not available]_ |
-| UAT-003 — Export scan results | ✅ Pass | _[Notes]_ |
-| UAT-004 — Real-time sidebar | ✅ Pass | _[Notes]_ |
-| UAT-005 — Theme toggle | ✅ Pass | _[Notes]_ |
-
-**Key feedback:**
-- _[Feedback point 1]_
-- _[Feedback point 2]_
-
-**Resulting PBIs:** _[Links to new issues created from UAT feedback]_
-
----
-
-## 13. Customer Review
-
-| Item | Status |
-|---|---|
-| Transcript | [customer-review-transcript.md](customer-review-transcript.md) — OR — *Shared only via Moodle (publication refused)* |
-| Notes | [customer-review-notes.md](customer-review-notes.md) — *(if recording/sharing refused)* |
-| Summary | [customer-review-summary.md](customer-review-summary.md) |
-
----
-
-## 14. Sprint Retrospective
-
-[reports/week4/retrospective.md](retrospective.md)
-
----
-
-## 15. Reflection
-
-[reports/week4/reflection.md](reflection.md)
-
----
-
-## 16. LLM Report
-
-[reports/week4/llm-report.md](llm-report.md)
-
----
-
-## 17. Current Product Status
-
-_[Summary: e.g., "TickFrame v0.2.0 is deployed with a fully automated CI pipeline,
-3 quality requirements with automated QRTs, and unit/integration tests achieving
-≥30% coverage on critical modules. Two new product features were added: timeframe
-selector and real-time sidebar. Customer UAT confirmed 4/5 scenarios passing."]_
-
----
-
-## 18. Next Steps
-
-_[Summary: e.g., "The next Sprint will focus on remaining backlog features: RSI chart
-(US-11), volume chart (US-10), and drawing tools (US-08). Quality gates established
-in this Sprint will continue to apply."]_
-
----
-
-## 19. Contribution Traceability
-
-| Team member | Issues | PRs | Reviews | Testing | QA | Docs |
-|---|---|---|---|---|---|---|
-| _[@user1]_ | _[#X, #Y]_ | _[#Z]_ | _[#W]_ | _[tests/...]_ | _[CI config]_ | _[docs/...]_ |
-| _[@user2]_ | _[...]_ | _[...]_ | _[...]_ | _[...]_ | _[...]_ | _[...]_ |
-| _[@user3]_ | _[...]_ | _[...]_ | _[...]_ | _[...]_ | _[...]_ | _[...]_ |
-| _[@user4]_ | _[...]_ | _[...]_ | _[...]_ | _[...]_ | _[...]_ | _[...]_ |
-
----
-
-## 20. Presentation
-
-- **Public slides (optional):** `reports/week4/presentation.pdf` _(add file if publishing sanitized slides)_
-- **Moodle slides:** Submitted via dedicated Moodle slide submission
-- **Rehearsed presentation video:** Submitted via Moodle PDF
-
----
-
-> **Verification checklist:**
-> - [ ] All links work (test each one)
-> - [ ] Screenshots are present in `images/` directory
-> - [ ] No private info committed (recordings, credentials, PII)
-> - [ ] Every required item from Assignment_04.md is covered
+- **Sprint 3 Milestone:** https://github.com/Fedos113/SWP_TickFrame_28_team/milestone/3
+- **Product Backlog Board:** https://github.com/users/Fedos113/projects/1/views/1
+- **Quality Requirements:** [`docs/quality-requirements.md`](../../docs/quality-requirements.md)
+- **Definition of Done:** [`docs/definition-of-done.md`](../../docs/definition-of-done.md)
+- **Roadmap:** [`docs/roadmap.md`](../../docs/roadmap.md)
+- **CI Workflow:** [`.github/workflows/ci.yml`](../../.github/workflows/ci.yml)
+- **CHANGELOG:** [`CHANGELOG.md`](../../CHANGELOG.md)

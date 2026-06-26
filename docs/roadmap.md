@@ -33,25 +33,37 @@
 
 ---
 
-## Sprint 3 — v1.2.0 TradingView Advanced Charts + Real ML
+## Sprint 3 — v1.2.0 Drawing Tools + Quality Gates
 
 | Field | Value |
 |---|---|
-| **Milestone** | Sprint 3 |
-| **Dates** | Week 4 |
-| **Goal** | Deliver v1.2.0 with TradingView Advanced Charts, real ML pattern detection, multi-coin support. |
-| **Focus** | Charting upgrade, ML API integration, quality gates |
+| **Milestone** | [Sprint 3 — Assignment 4 — v1.2.0](https://github.com/Fedos113/SWP_TickFrame_28_team/milestone/3) |
+| **Dates** | Week 4 (2026-06-22 – 2026-06-29) |
+| **Goal** | Replace mock pattern analyzer with real ML, deliver drawing toolbar, and establish quality foundations. |
+| **Focus** | Drawing tools, SQLite persistence, pattern analysis UI, quality gates, CI, test coverage |
 
 **Planned items:**
 
-- PBI-101 — Merge ML API service
-- PBI-102 — Real ML client (tickframe → ml-service)
-- PBI-103 — Pattern analysis API endpoint
-- PBI-104 — TradingView Advanced Charts
-- PBI-105 — Pattern visualization on chart
-- PBI-106 — Real analysis button
-- PBI-107 — Multi-coin support (10 pairs)
-- PBI-108 — Documentation and QRT tests
+- [#62](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/62) PBI-101 — Drawing Toolbar Engine (13 tools)
+- [#64](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/64) PBI-102 — Advanced Drawing Tools (Fibonacci, Price Range %, Text)
+- [#63](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/63) PBI-103 — Redact Mode + Selection + Drag
+- [#66](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/66) PBI-104 — Undo System
+- [#65](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/65) PBI-105 — Per-Drawing Settings Panel
+- [#67](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/67) PBI-106 — SQLite Persistence
+- [#68](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/68) PBI-107 — 50k Candle Support
+- [#69](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/69) PBI-108 — WebSocket Heartbeat
+- [#70](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/70) PBI-109 — Pattern Analysis UI
+- [#61](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/61) PBI-110 — Coin Sidebar Enhancements
+- [#71](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/71) PBI-111 — Theme Persistence
+- [#79](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/79) QR-001 — Performance Requirement
+- [#80](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/80) QR-002 — Security Requirement
+- [#81](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/81) QR-003 — Accuracy Requirement
+- [#82](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/82) QRT-001 — Performance Test Automation
+- [#83](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/83) QRT-002 — Security Test Automation
+- [#84](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/84) QRT-003 — Accuracy Test Automation
+- [#85](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/85) — Test Coverage ≥30%
+- [#86](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/86) — CI Pipeline Setup
+- [#72](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/72) — Bug Fixes Batch
 
 ---
 
