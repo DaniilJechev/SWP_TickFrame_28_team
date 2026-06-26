@@ -20,6 +20,8 @@ async function loadSettings() {
   } catch (e) {}
 }
 
+var _initialLoadDone = false;
+
 document.addEventListener('DOMContentLoaded', () => {
   loadSettings();
   const defaultSymbol = 'BTCUSDT';
@@ -41,10 +43,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (titleEl) titleEl.innerText = `Market charts - ${symbolNames[symbol] || symbol}`;
   };
 
+  var origSetActive = window.TFChart?.setActiveSymbol;
   if (window.TFChart) {
     window.TFChart.setActiveSymbol = (symbol) => {
       window.currentSymbol = symbol;
       updateTitle(symbol);
+      _initialLoadDone = true;
     };
   }
 
@@ -77,17 +81,13 @@ document.addEventListener('DOMContentLoaded', () => {
     window.TFChart?.analyzePatterns?.();
   });
 
-  // initialize title and select default coin
+  // Select default coin after chart is ready; skip if user already clicked a coin.
   updateTitle(defaultSymbol);
   setTimeout(() => {
+    if (_initialLoadDone) return;
     const first = document.querySelector('.watchlist .coin');
     if (first) {
       first.click();
-    } else {
-      if (window.TFChart) {
-        window.TFChart.setActiveSymbol?.(defaultSymbol);
-        window.TFChart.loadCandles(defaultSymbol, '5m');
-      }
     }
-  }, 200);
+  }, 300);
 });

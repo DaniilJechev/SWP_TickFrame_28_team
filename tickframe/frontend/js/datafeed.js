@@ -73,8 +73,10 @@ class TickFrameDatafeed {
       }));
       this._barsCache = bars;
       onResult({ bars, meta: { noData: !bars.length } });
+      if (window._hideChartLoading) window._hideChartLoading();
     } catch (err) {
       onError(err);
+      if (window._hideChartLoading) window._hideChartLoading();
     }
   }
 

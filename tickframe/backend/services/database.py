@@ -144,6 +144,32 @@ class DatabaseService:
             ).fetchall()
             return [dict(r) for r in rows]
 
+    def _load_last_n_candles(self, symbol: str, interval: str, n: int) -> list[dict]:
+        with self._conn() as conn:
+            rows = conn.execute(
+                "SELECT time, open, high, low, close, volume FROM candles WHERE symbol = ? AND interval = ? ORDER BY time DESC LIMIT ?",
+                (symbol, interval, n),
+            ).fetchall()
+            return [dict(r) for r in reversed(rows)]
+
+    def _load_candles_before(self, symbol: str, interval: str, n: int, before: int) -> list[dict]:
+        with self._conn() as conn:
+            rows = conn.execute(
+                "SELECT time, open, high, low, close, volume FROM candles WHERE symbol = ? AND interval = ? AND time < ? ORDER BY time DESC LIMIT ?",
+                (symbol, interval, before, n),
+            ).fetchall()
+            return [dict(r) for r in reversed(rows)]
+
+    def _get_candle_range(self, symbol: str, interval: str) -> tuple[int, int] | None:
+        with self._conn() as conn:
+            row = conn.execute(
+                "SELECT MIN(time), MAX(time) FROM candles WHERE symbol = ? AND interval = ?",
+                (symbol, interval),
+            ).fetchone()
+            if row and row[0] is not None:
+                return (int(row[0]), int(row[1]))
+            return None
+
     def _count_candles(self, symbol: str, interval: str) -> int:
         with self._conn() as conn:
             row = conn.execute(
@@ -161,6 +187,18 @@ class DatabaseService:
     async def load_candles(self, symbol: str, interval: str) -> list[dict]:
         loop = asyncio.get_running_loop()
         return await loop.run_in_executor(None, self._load_candles, symbol, interval)
+
+    async def load_last_n_candles(self, symbol: str, interval: str, n: int) -> list[dict]:
+        loop = asyncio.get_running_loop()
+        return await loop.run_in_executor(None, self._load_last_n_candles, symbol, interval, n)
+
+    async def load_candles_before(self, symbol: str, interval: str, n: int, before: int) -> list[dict]:
+        loop = asyncio.get_running_loop()
+        return await loop.run_in_executor(None, self._load_candles_before, symbol, interval, n, before)
+
+    async def get_candle_range(self, symbol: str, interval: str) -> tuple[int, int] | None:
+        loop = asyncio.get_running_loop()
+        return await loop.run_in_executor(None, self._get_candle_range, symbol, interval)
 
     async def count_candles(self, symbol: str, interval: str) -> int:
         loop = asyncio.get_running_loop()

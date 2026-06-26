@@ -54,13 +54,18 @@ async def lifespan(app: FastAPI):
     app.state.market_hub = market_hub
     app.state.database = db
 
-    # Do not block application startup on upstream market data.
-    with suppress(Exception):
-        await asyncio.wait_for(cache.warm_up("BTCUSDT"), timeout=4)
+    # Start warmup in background so the server becomes responsive immediately.
+    # Phase 1 (loading DB candles) completes quickly; phase 2 (sequential
+    # exchange fetches) runs as capacity allows via the rate limiter.
+    warmup_task = asyncio.create_task(cache.warm_up())
+
     refresh_task = asyncio.create_task(market_refresh_loop(app))
     try:
         yield
     finally:
+        warmup_task.cancel()
+        with suppress(asyncio.CancelledError):
+            await warmup_task
         refresh_task.cancel()
         with suppress(asyncio.CancelledError):
             await refresh_task

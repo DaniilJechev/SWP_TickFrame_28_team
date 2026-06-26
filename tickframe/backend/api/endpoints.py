@@ -50,19 +50,24 @@ async def get_price(symbol: str, cache: MemoryMarketCache = Depends(get_cache)) 
     return await cache.get_price(symbol)
 
 
+MAX_CANDLES_LIMIT: int = 55000
+
+
 @router.get("/coins/{symbol}/candles", response_model=CandleResponse)
 async def get_candles(
     symbol: str,
     interval: str = Query(default="5m", pattern="^(1m|3m|5m|15m|30m|1h|2h|4h|1d|1w|1M)$"),
-    limit: int = Query(default=200, ge=10, le=50000),
+    limit: int = Query(default=200, ge=10, le=MAX_CANDLES_LIMIT),
+    before: int | None = Query(default=None, description="Return candles older than this unix timestamp (seconds)"),
     cache: MemoryMarketCache = Depends(get_cache),
 ) -> dict:
-    payload = await cache.get_candles(symbol, interval, limit)
+    payload = await cache.get_candles(symbol, interval, limit, before=before)
     LOGGER.info(
-        "Candles requested symbol=%s interval=%s limit=%s -> returned=%s source=%s",
+        "Candles requested symbol=%s interval=%s limit=%s before=%s -> returned=%s source=%s",
         symbol,
         interval,
         limit,
+        before,
         len(payload.get("candles", [])),
         payload.get("source", "unknown"),
     )
@@ -74,7 +79,7 @@ async def analyze_patterns(
     symbol: str,
     body: AnalyzeRequest | None = Body(None),
     interval: str = Query(default="5m", pattern="^(5m|15m|1h|4h|1d)$"),
-    limit: int = Query(default=200, ge=50, le=50000),
+    limit: int = Query(default=200, ge=50, le=MAX_CANDLES_LIMIT),
     confidence_threshold: float = Query(default=0.80, ge=0.0, le=1.0),
     cache: MemoryMarketCache = Depends(get_cache),
     ml: MlClient = Depends(get_ml_client),
