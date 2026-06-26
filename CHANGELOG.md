@@ -97,7 +97,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [Unreleased]: https://github.com/Fedos113/SWP_TickFrame_28_team/compare/v1.1.0...HEAD
 [1.1.0]: https://github.com/Fedos113/SWP_TickFrame_28_team/releases/tag/v1.1.0
-[1.0.0]: https://github.com/Fedos113/SWP_TickFrame_28_team/releases/tag/v1.0.0
+[1.0.0]: https://github.com/Fedos113/SWP_TickFrame_28_team/releases/tag/SemVer
 
 [#8]: https://github.com/Fedos113/SWP_TickFrame_28_team/issues/8
 [#16]: https://github.com/Fedos113/SWP_TickFrame_28_team/issues/16

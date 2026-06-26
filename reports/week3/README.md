@@ -111,7 +111,7 @@ The MVP v1 is fully deployed and operational:
 - **PR Template:** [.github/pull_request_template.md](../../.github/pull_request_template.md)
 
 ### Releases and Deployments
-- **SemVer Release (MVP v1):** [v1.0.0 Release](https://github.com/Fedos113/SWP_TickFrame_28_team/releases/tag/SemVer-MVPv1)
+- **SemVer Release (MVP v1):** [v1.0.0 Release](https://github.com/Fedos113/SWP_TickFrame_28_team/releases/tag/SemVer)
 - **Delivered MVP v1 Access:** [http://10.93.26.164:8000/](http://10.93.26.164:8000/)
 - **Access/Run Instructions:** [Root README.md](../../README.md)
 - **Video Demonstration:** Pending — see Section 8 of the Moodle submission report.
