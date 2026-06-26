@@ -135,7 +135,7 @@ class MemoryMarketCache:
 
     def _merge_coin(self, pair: str, snapshot: Snapshot | None) -> dict[str, object]:
         meta = self._coin_meta.get(pair, {"symbol": pair.removesuffix("USDT"), "pair": pair, "name": pair.removesuffix("USDT")})
-        result = dict(meta)
+        result: dict[str, object] = dict(meta)
         if snapshot is None:
             result.update({"price": 0.0, "change_24h": 0.0, "volume_24h": 0.0, "source": "cache"})
         else:
@@ -168,7 +168,7 @@ class MemoryMarketCache:
             rows = [self._merge_coin(item["pair"], self._prices.get(item["pair"])) for item in DEFAULT_COIN_METADATA]
             for row in rows:
                 row["updated_at"] = updated_at
-                pair = row["pair"]
+                pair = str(row["pair"])
                 key = (pair, "5m")
                 cached = self._candles.get(key)
                 if cached and cached[1].candles:

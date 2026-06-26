@@ -39,7 +39,7 @@ def fetch_klines(
         f"&limit={limit}"
     )
 
-    resp = requests.get(url, timeout=15, proxies={"http": None, "https": None})
+    resp = requests.get(url, timeout=15, proxies={})
     resp.raise_for_status()
     data = resp.json()
 

@@ -165,7 +165,7 @@ class BybitClient:
                 batch_limit = min(max_per_request, remaining)
                 await self._rate_limiter.acquire()
                 async with httpx.AsyncClient(timeout=10.0) as client:
-                    params = {"symbol": pair, "interval": binance_interval, "limit": batch_limit}
+                    params: dict[str, str | int] = {"symbol": pair, "interval": binance_interval, "limit": batch_limit}
                     if end_time is not None:
                         params["endTime"] = str(end_time)
                     resp = await client.get(f"{BINANCE_BASE_URL}/api/v3/klines", params=params)
