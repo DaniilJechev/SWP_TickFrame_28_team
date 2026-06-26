@@ -4,17 +4,43 @@ All notable user-visible changes to this project will be documented in this file
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-
 ## [Unreleased]
 
 ### Added
-- Added Jupyter Notebook with XGBoost ML pipeline for pattern recognition (#45)
-- 
+- **Drawing toolbar engine**: 13-tool canvas overlay (Trend Line, H-Line, V-Line, Ray, Cross Line, Rectangle, Circle, Arrow, Brush) with SVG icons, coordinate helpers, all renderers, and live preview.
+- **Advanced drawing tools**: Fibonacci (decimal labels 0.0–1.0, draggable endpoints), Price Range % (top/bottom edges, arrow, % change label), Text tool (custom modal dialog, Enter/Escape handlers).
+- **Redact mode**: Chart freeze (no scroll/zoom), crosshair hide, select/drag/reshape drawings.
+- **Undo system**: Full undo stack for add, modify (drag), and delete operations with pre-capture drag points.
+- **Per-drawing settings panel**: Color picker (12 colors), width (1–4pt), line style (solid/dashed/dotted), font size (10–32) — all SVG icons, no text labels.
+- **SQLite persistence**: Auto-created database (`tickframe/data/tickframe.db`, gitignored) with `settings`, `drawings`, `candles` tables; per-coin drawing isolation.
+- **50k candle support**: Maximum per request from 1000 to 50000; two-phase frontend load (2000 instant + 50000 background); default zoom to last 10000.
+- **Pagination**: Bybit max 200/request, Binance max 1000/request with deduplication by timestamp.
+- **WebSocket heartbeat**: Backend sends `{"type":"heartbeat"}` every 5 seconds; frontend shows `LIVE·timestamp` indicator.
+- **Pattern analysis UI**: Sliding window (50 candles, step 10), progress indicator, red dashed vertical lines + text labels, confidence threshold slider (50–99%).
+- **Pattern drawing overlay**: `addPatternDrawing()`/`clearPatternDrawings()` API; pattern drawings excluded from auto-save (`_isPattern` flag).
+- **Coin sidebar enhancements**: Full ticker badges (BTC, ETH, etc.), 5m trend-colored prices (green/red), `formatPrice()` max 6 digits with trailing zero stripping.
+- **Theme persistence**: Theme saved to SQLite, restored on reload; light theme fix (`applyChartTheme(false)` on load).
+- **Theme-aware drawing colors**: `selClr()` helper adapts selection highlight to dark/light mode across all 9 renderers.
+- **Quality requirement tests**: Automated QRT-001 (performance), QRT-002 (security), QRT-003 (accuracy) in `tests/requirements/`.
+
 ### Changed
-- Nothing yet.
+- **Candle limit increased**: Maximum per request from 1000 to 50000 (all endpoints, datafeed, frontend).
+- **Warmup configurable**: Changed from hardcoded 50 to `max(50, min(limit // 4, 500))`.
+- **DB transaction**: `_save_candles()` uses explicit `BEGIN`/`COMMIT` for 50k-row performance.
+- **Definition of Done**: Updated with CI checks, coverage, QRT requirements.
+- **Roadmap**: Updated with Sprint 3 and Sprint 4.
 
 ### Fixed
-- Nothing yet.
+- **Drag undo**: Pre-capture `prevPoints` at drag start (not after mutation).
+- **Delete undo**: Deleted drawings wrapped in `{action:'add'}` envelope for re-insert on undo.
+- **Race condition**: `_loadDrawings()` sequence counter discards stale responses on rapid coin switch.
+- **Canvas state leak**: Brush renderer wrapped in `ctx.save()`/`ctx.restore()`.
+- **Document listener cleanup**: Global click listeners stored in `_listeners` array, removed on `destroy()`.
+- **Per-drawing opts forwarding**: `opacity`, `fill`, `lineStyle`, `fontSize` now set on commit.
+- **Empty catch blocks**: Replaced with `console.warn()`.
+- **Dead code removed**: Unused `preview` variable, `textModalReject`, stray comment separators.
+- **Dead conftest fixtures**: Removed stale fixtures that caused test warnings.
+- Blank QRT test templates replaced with real tests.
 
 ---
 

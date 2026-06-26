@@ -63,11 +63,15 @@ async def market_stream(websocket: WebSocket) -> None:
 async def candle_stream(websocket: WebSocket, symbol: str) -> None:
     cache = get_cache(websocket)
     interval = normalize_interval(websocket.query_params.get("interval", "5m"))
-    limit = int(websocket.query_params.get("limit", "1000"))
+    try:
+        limit = int(websocket.query_params.get("limit", "1000"))
+    except (ValueError, TypeError):
+        limit = 1000
     pair = normalize_symbol(symbol)
     await websocket.accept()
     try:
         previous_signature = None
+        tick = 0
         while True:
             payload = await cache.get_candles(pair, interval, limit)
             candles = payload["candles"]
@@ -86,7 +90,11 @@ async def candle_stream(websocket: WebSocket, symbol: str) -> None:
                 await websocket.send_json({"type": "snapshot", **payload})
             elif current_signature != previous_signature and last_candle is not None:
                 await websocket.send_json({"type": "update", "symbol": pair, "interval": interval, "candle": last_candle, "updated_at": payload["updated_at"]})
+            else:
+                # Heartbeat every 5s so frontend knows connection is alive
+                await websocket.send_json({"type": "heartbeat", "timestamp": payload.get("updated_at", utc_now())})
             previous_signature = current_signature
+            tick += 1
             await asyncio.sleep(5)
     except WebSocketDisconnect:
         pass

@@ -133,12 +133,6 @@ The **real ML API microservice** already exists on `origin/main` (PR #55 — `ml
 - **Fix**: Either integrate the ManagedSocket/classes into charts.js, or remove the file
 - **Impact**: Dead code, confusion about which WebSocket implementation is active
 
-### Bug-003: Only 5m interval supported in backend
-- **File**: `tickframe/backend/services/bybit_client.py:15-17`
-- **Problem**: `INTERVAL_MAP` = `{"5m": "5"}` — all other intervals cause `ValueError` in `normalize_interval()`
-- **Fix**: Add mappings: `1m→1`, `3m→3`, `5m→5`, `15m→15`, `30m→30`, `1h→60`, `2h→120`, `4h→240`, `1d→D`, `1w→W`, `1M→M`
-- **Impact**: UI has only 5m button; any other interval breaks
-
 ### Bug-004: Only BTCUSDT in coin metadata
 - **File**: `tickframe/backend/services/bybit_client.py:20-21`
 - **Problem**: `DEFAULT_COIN_METADATA` only has BTC. Sidebar only shows Bitcoin.
@@ -176,7 +170,7 @@ The **real ML API microservice** already exists on `origin/main` (PR #55 — `ml
 
 ## 4. Plan for Each New Feature and Bug Fix
 
-### Phase 1: Infrastructure & Merge (PBI-101)
+### Phase 1: Infrastructure & Merge
 ```
 Step 1.1: Fetch origin/main and cherry-pick ML service commits
   1. git fetch origin

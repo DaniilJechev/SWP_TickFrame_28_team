@@ -1,0 +1,167 @@
+from __future__ import annotations
+
+import asyncio
+import json
+import sqlite3
+from pathlib import Path
+
+DATA_DIR = Path(__file__).resolve().parent.parent.parent / "data"
+DB_PATH = DATA_DIR / "tickframe.db"
+
+
+class DatabaseService:
+    def __init__(self, db_path: str | Path | None = None):
+        self._db = str(db_path or DB_PATH)
+        DATA_DIR.mkdir(parents=True, exist_ok=True)
+
+    def _conn(self) -> sqlite3.Connection:
+        conn = sqlite3.connect(self._db)
+        conn.row_factory = sqlite3.Row
+        return conn
+
+    def _init_tables(self) -> None:
+        with self._conn() as conn:
+            conn.executescript("""
+                CREATE TABLE IF NOT EXISTS settings (
+                    key   TEXT PRIMARY KEY,
+                    value TEXT NOT NULL
+                );
+            CREATE TABLE IF NOT EXISTS drawings (
+                id        INTEGER PRIMARY KEY,
+                symbol    TEXT NOT NULL DEFAULT '',
+                type      TEXT NOT NULL,
+                points    TEXT NOT NULL,
+                opts      TEXT NOT NULL DEFAULT '{}',
+                selected  INTEGER NOT NULL DEFAULT 0,
+                created   TEXT NOT NULL DEFAULT (datetime('now'))
+            );
+            CREATE TABLE IF NOT EXISTS candles (
+                symbol    TEXT NOT NULL,
+                interval  TEXT NOT NULL,
+                time      INTEGER NOT NULL,
+                open      REAL NOT NULL,
+                high      REAL NOT NULL,
+                low       REAL NOT NULL,
+                close     REAL NOT NULL,
+                volume    REAL NOT NULL DEFAULT 0,
+                updated   TEXT NOT NULL DEFAULT (datetime('now')),
+                PRIMARY KEY (symbol, interval, time)
+            );
+        """)
+            # Add symbol column if missing (migration for existing DBs)
+            cols = [r[1] for r in conn.execute("PRAGMA table_info(drawings)").fetchall()]
+            if "symbol" not in cols:
+                conn.execute("ALTER TABLE drawings ADD COLUMN symbol TEXT NOT NULL DEFAULT ''")
+
+    async def init(self) -> None:
+        loop = asyncio.get_running_loop()
+        await loop.run_in_executor(None, self._init_tables)
+
+    # --- Settings ---
+
+    def _get_setting(self, key: str) -> str | None:
+        with self._conn() as conn:
+            row = conn.execute("SELECT value FROM settings WHERE key = ?", (key,)).fetchone()
+            return row["value"] if row else None
+
+    def _set_setting(self, key: str, value: str) -> None:
+        with self._conn() as conn:
+            conn.execute(
+                "INSERT INTO settings (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value",
+                (key, value),
+            )
+
+    def _all_settings(self) -> dict[str, str]:
+        with self._conn() as conn:
+            rows = conn.execute("SELECT key, value FROM settings").fetchall()
+            return {r["key"]: r["value"] for r in rows}
+
+    async def get_setting(self, key: str) -> str | None:
+        loop = asyncio.get_running_loop()
+        return await loop.run_in_executor(None, self._get_setting, key)
+
+    async def set_setting(self, key: str, value: str) -> None:
+        loop = asyncio.get_running_loop()
+        await loop.run_in_executor(None, self._set_setting, key, value)
+
+    async def get_all_settings(self) -> dict[str, str]:
+        loop = asyncio.get_running_loop()
+        return await loop.run_in_executor(None, self._all_settings)
+
+    # --- Drawings ---
+
+    def _load_drawings(self, symbol: str) -> list[dict]:
+        with self._conn() as conn:
+            rows = conn.execute(
+                "SELECT id, type, points, opts FROM drawings WHERE symbol = ? ORDER BY id",
+                (symbol,),
+            ).fetchall()
+            result = []
+            for r in rows:
+                pts = json.loads(r["points"])
+                d = {"id": r["id"], "type": r["type"], "points": pts}
+                d["opts"] = json.loads(r["opts"])
+                result.append(d)
+            return result
+
+    def _save_drawings(self, symbol: str, drawings: list[dict]) -> None:
+        with self._conn() as conn:
+            conn.execute("DELETE FROM drawings WHERE symbol = ?", (symbol,))
+            for d in drawings:
+                conn.execute(
+                    "INSERT INTO drawings (id, symbol, type, points, opts) VALUES (?, ?, ?, ?, ?)",
+                    (d["id"], symbol, d["type"], json.dumps(d["points"]), json.dumps(d.get("opts", {}))),
+                )
+
+    async def load_drawings(self, symbol: str) -> list[dict]:
+        loop = asyncio.get_running_loop()
+        return await loop.run_in_executor(None, self._load_drawings, symbol)
+
+    async def save_drawings(self, symbol: str, drawings: list[dict]) -> None:
+        loop = asyncio.get_running_loop()
+        await loop.run_in_executor(None, self._save_drawings, symbol, drawings)
+
+    # --- Candles ---
+
+    def _save_candles(self, symbol: str, interval: str, candles: list[dict]) -> None:
+        with self._conn() as conn:
+            conn.execute("BEGIN")
+            conn.executemany(
+                """INSERT OR REPLACE INTO candles (symbol, interval, time, open, high, low, close, volume, updated)
+                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))""",
+                [
+                    (symbol, interval, c["time"], c["open"], c["high"], c["low"], c["close"], c.get("volume", 0))
+                    for c in candles
+                ],
+            )
+            conn.execute("COMMIT")
+
+    def _load_candles(self, symbol: str, interval: str) -> list[dict]:
+        with self._conn() as conn:
+            rows = conn.execute(
+                "SELECT time, open, high, low, close, volume FROM candles WHERE symbol = ? AND interval = ? ORDER BY time",
+                (symbol, interval),
+            ).fetchall()
+            return [dict(r) for r in rows]
+
+    def _count_candles(self, symbol: str, interval: str) -> int:
+        with self._conn() as conn:
+            row = conn.execute(
+                "SELECT COUNT(*) AS cnt FROM candles WHERE symbol = ? AND interval = ?",
+                (symbol, interval),
+            ).fetchone()
+            return row["cnt"] if row else 0
+
+    async def save_candles(self, symbol: str, interval: str, candles: list[dict]) -> None:
+        if not candles:
+            return
+        loop = asyncio.get_running_loop()
+        await loop.run_in_executor(None, self._save_candles, symbol, interval, candles)
+
+    async def load_candles(self, symbol: str, interval: str) -> list[dict]:
+        loop = asyncio.get_running_loop()
+        return await loop.run_in_executor(None, self._load_candles, symbol, interval)
+
+    async def count_candles(self, symbol: str, interval: str) -> int:
+        loop = asyncio.get_running_loop()
+        return await loop.run_in_executor(None, self._count_candles, symbol, interval)

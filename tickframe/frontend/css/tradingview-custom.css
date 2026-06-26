@@ -1,0 +1,121 @@
+:root {
+  --tv-bg: #0f1724;
+  --tv-bg-secondary: #1a2233;
+  --tv-text: #d1d4dc;
+  --tv-border: #243041;
+  --tv-accent: #26a69a;
+  --tv-hover: #1f2937;
+  --tv-toolbar-bg: #0f1724;
+  --tv-toolbar-icon: #8b93a3;
+  --tv-toolbar-icon-active: #26a69a;
+  --tv-button-bg: #1a2233;
+  --tv-button-hover: #243041;
+  --tv-button-active: #0b1220;
+}
+
+body.light {
+  --tv-bg: #ffffff;
+  --tv-bg-secondary: #f5f7fb;
+  --tv-text: #0f172a;
+  --tv-border: #dbe2ea;
+  --tv-accent: #1f9d8f;
+  --tv-hover: #eef2f7;
+  --tv-toolbar-bg: #ffffff;
+  --tv-toolbar-icon: #5b6575;
+  --tv-toolbar-icon-active: #1f9d8f;
+  --tv-button-bg: #f5f7fb;
+  --tv-button-hover: #eef2f7;
+  --tv-button-active: #dff5f2;
+}
+
+html body .chart-page {
+  background: var(--tv-bg) !important;
+}
+
+html body .layout__area--left {
+  background: var(--tv-toolbar-bg) !important;
+  border-right: 1px solid var(--tv-border) !important;
+}
+
+html body .drawing-toolbar {
+  background: var(--tv-toolbar-bg) !important;
+  border: none !important;
+}
+
+html body .drawing-toolbar .button {
+  background: var(--tv-button-bg) !important;
+  border: 1px solid transparent !important;
+  border-radius: 4px !important;
+  margin: 2px 4px !important;
+  width: 32px !important;
+  height: 32px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+html body .drawing-toolbar .button:hover {
+  background: var(--tv-button-hover) !important;
+  border-color: var(--tv-border) !important;
+}
+
+html body .drawing-toolbar .button.active,
+html body .drawing-toolbar .button.selected {
+  background: var(--tv-button-active) !important;
+  border-color: var(--tv-accent) !important;
+}
+
+html body .drawing-toolbar .button svg {
+  fill: var(--tv-toolbar-icon) !important;
+}
+
+html body .drawing-toolbar .button.active svg,
+html body .drawing-toolbar .button.selected svg {
+  fill: var(--tv-toolbar-icon-active) !important;
+}
+
+html body .group {
+  border-bottom: 1px solid var(--tv-border) !important;
+  padding: 4px 0 !important;
+}
+
+html body .group:last-child {
+  border-bottom: none !important;
+}
+
+html body .tv-close-panel {
+  color: var(--tv-toolbar-icon) !important;
+}
+
+html body .tv-close-panel:hover {
+  color: var(--tv-accent) !important;
+}
+
+html body .pane-legend {
+  color: var(--tv-text) !important;
+}
+
+html body .chart-markup-table {
+  background: var(--tv-bg) !important;
+}
+
+html body .chart-markup-table .vertical-grid-line {
+  stroke: var(--tv-border) !important;
+}
+
+html body .chart-markup-table .horizontal-grid-line {
+  stroke: var(--tv-border) !important;
+}
+
+html body .price-axis {
+  color: var(--tv-text) !important;
+  border-color: var(--tv-border) !important;
+}
+
+html body .time-axis {
+  color: var(--tv-text) !important;
+}
+
+html body .values-container > div {
+  color: var(--tv-text) !important;
+}
