@@ -1,14 +1,4 @@
 # Reflection — Assignment 4
-
-> **Template — Assignment 4, Part 13**
->
-> Instructions:
-> - Reflect on the entire Sprint experience
-> - Be honest and specific — generic filler will be flagged
-> - Link to affected PBIs, QRs, UATs, CI checks, milestones, releases, and docs where relevant
-
----
-
 ## Learning Points
 
 _What the team learned from:_
@@ -75,9 +65,9 @@ _How the team will respond in the next Sprint or assignment:_
 | Issue | Planned action | Links |
 |---|---|---|
 | REST-based data retrieval has high latency | Migrate to WebSocket subscription model for real-time candle and ticker updates | New PBI (Sprint 4) |
-| No database caching — all data re-fetched from Bybit on page load | Implement SQLite-based candle caching with background refresh (Fedor: "I will implement a database") | PBI-106 (extension) |
-| Metrics (RSI, Volume, High/Low) missing | Add RSI sub-chart, volume sub-chart, and price metrics to dashboard | US-10, US-11, [#70](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/70) PBI-109 extension |
-| ML model precision is low (19%) due to small training set | Expand labelled dataset with additional manual labelling sessions; investigate data augmentation | QR-003, [#5 US-01](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/5) |
-| Pattern analysis range was 150k (excessive) | Reduce to 50k candles as default; make range configurable via settings | PBI-107 (adjusted) |
-| Only 5-minute timeframe supported | Add multi-interval support (15m, 1h, 4h, 1d) to Bybit client and frontend selector | US-07 |
-| No frontend JavaScript tests | Add JS test framework (Jest/Vitest) and write unit tests for drawing toolbar, chart rendering, and WebSocket client | New PBI (Sprint 4) |
+| No database caching — all data re-fetched from Bybit on page load | Implement SQLite-based candle caching with background refresh | [PBI-106](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/67) (extension) |
+| Metrics (RSI, Volume, High/Low) missing | Add RSI sub-chart, volume sub-chart, and price metrics to dashboard | [US-10](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/11), [US-11](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/13), [PBI-109](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/70) extension |
+| ML model precision is low (19%) due to small training set | Expand labelled dataset with additional manual labelling sessions; investigate data augmentation | [QR-003](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/81), [US-01](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/5) |
+| Pattern analysis range was 150k (excessive) | Reduce to 50k candles as default; make range configurable via settings | [PBI-107](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/68) (adjusted) |
+| Only 5-minute timeframe supported | Add multi-interval support (15m, 1h, 4h, 1d) to Bybit client and frontend selector | [US-07](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/18) |
+
