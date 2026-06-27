@@ -1,14 +1,6 @@
 # Sprint 3 Retrospective — Assignment 4
 
-> **Template — Assignment 4, Part 12**
->
-> Instructions:
-> - Conduct after the Sprint Review
-> - Keep public and sanitized — no sensitive personal info or private conflicts
-> - Include concrete, actionable improvements for next Sprint
-> - Reference the previous Sprint's retrospective to show continuity
 
----
 
 **Date:** 2026-06-26
 

@@ -1,10 +1,6 @@
 # Customer Review Notes — Sprint 3 (Assignment 4)
 
-> **Note:** The customer consented to recording and publication. A sanitized transcript is available in
-> [`customer-review-transcript.md`](./customer-review-transcript.md). These notes are a condensed
-> reference; the transcript contains the full chronological record.
 
----
 
 **Date:** 2026-06-26
 **Meeting type:** Sprint Review / UAT (Combined)
