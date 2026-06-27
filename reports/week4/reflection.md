@@ -14,26 +14,28 @@
 _What the team learned from:_
 
 ### Customer Feedback Response
-_[e.g., "We learned that prioritizing feedback into a clear table with PBI links helps us track
-which customer requests are addressed and which are deferred."]_
+
+The customer's insistence on WebSocket-based data delivery (rather than REST polling) reinforced that architectural decisions around data freshness cannot be deferred. The team initially implemented REST-based candle fetching from Bybit — functional but suboptimal for live updates. The customer explicitly questioned why WebSockets were not used ("you receive data instantly, it is pushed to your channel"). This will drive PBI-108 (WebSocket heartbeat already in place) toward a full WebSocket subscription model in Sprint 4, tracked as a new backlog item.
 
 ### Quality Requirements Definition
-_[e.g., "Defining measurable scenarios forced us to think concretely about what 'good' means
-— not just 'the app should be fast' but 'chart redraws within 2 seconds under 10 users.'"]_
+
+QR-003 (Pattern Detection Accuracy) was stress-tested in this review. Daniel's ML model achieves **6–7× higher recall** than the rule-based baseline (480 real patterns found vs. ~800 rule-based candidates of which only 30% were real), but precision is lower (~19% vs. 30%) due to a tiny training set (400 patterns per class, 7 hours of manual labelling). Defining an F2 ≥ 0.80 target was realistic — the current recall uplift already validates the ML approach. The trade-off between precision and recall is now a documented, measured design decision.
 
 ### QRT Automation
-_[e.g., "Writing automated tests for quality requirements showed us that some QRs
-(e.g., security) are harder to automate than others (e.g., performance)."]_
+
+Automated QRT suites (performance, security, accuracy) were built and integrated into CI ([#82](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/82), [#83](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/83), [#84](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/84)). The performance QRT was particularly valuable — it confirmed that the two-phase candle load (instant 2000 + background 50000) keeps p95 response within the 500 ms target. The accuracy QRT highlighted that deterministic output (same input → same result) is achievable despite the probabilistic nature of ML inference, because weights and architecture are frozen per release.
 
 ### CI Configuration
-_[e.g., "Setting up CI caught several lint and type errors before review, saving reviewer time."]_
+
+The CI pipeline (ruff → mypy → pytest → bandit) was demonstrated as functional and caught several issues pre-merge (dead fixtures, empty catch blocks, stale references). This directly supported the DoD criterion that all CI checks must pass before merge. The customer did not request changes to the CI pipeline itself, confirming it meets project expectations.
 
 ### UAT Execution
-_[e.g., "Watching the customer use the product revealed usability gaps we had not considered."]_
+
+The customer interacted with the live dashboard during the review: clicking the drawing toolbar, toggling themes, and inspecting pattern markers. This uncovered a usability gap — the candle range for pattern analysis (150k candles) was excessive and caused confusion ("12,500 hours — that's about a year and a half"). The team agreed to reduce to 50k candles (PBI-107 scope). The customer also confirmed that confidence threshold sliders and drawing persistence are useful, validating those UI decisions.
 
 ### Sprint Review and Release
-_[e.g., "Releasing a SemVer version with a changelog and demo video made the increment feel
-tangible and gave the customer something concrete to evaluate."]_
+
+The release of v1.1.0 ([CHANGELOG](../../CHANGELOG.md), [milestone](https://github.com/Fedos113/SWP_TickFrame_28_team/milestone/3)) made the increment concrete for the customer. The demo showed 13 drawing tools, SQLite persistence, theme toggle, pattern analysis UI, and WebSocket heartbeat. Having a tagged release with a changelog allowed the customer to evaluate "what changed" directly rather than relying on a walkthrough alone.
 
 ---
 
@@ -43,21 +45,26 @@ _Assumptions or decisions confirmed or rejected during this Sprint:_
 
 | Assumption | Status | Evidence |
 |---|---|---|
-| _[e.g., "Pytest is sufficient for all test levels in this project"]_ | ✅ Confirmed | Unit, integration, and QRTs all run with pytest |
-| _[e.g., "The WebSocket connection will handle 10 concurrent users"]_ | ❌ Rejected | Load test showed connection drops at 5+ users |
-| _[e.g., "FastAPI TestClient can mock Bybit API calls"]_ | ✅ Confirmed | bybit_client tests pass with mocked HTTPX responses |
+| Open-source charting library (lightweight-charts v4) is sufficient for MVP without TradingView's proprietary library | ✅ Confirmed | Customer accepted the demo; TradingView library has a license incompatible with project constraints (Fedor: "it comes with a license — I decided to use this open-source project") |
+| REST polling is adequate for live candle updates | ❌ Rejected | Customer explicitly questioned why WebSockets aren't used ("you receive data instantly — it is pushed to your channel"). PBI-108 heartbeat exists but full WS subscription is needed |
+| 150k candle range for pattern analysis is reasonable | ❌ Rejected | Customer calculated it covers ~1.5 years and called it excessive. Team agreed to reduce to 50k candles |
+| ML model with small dataset (800 patterns) can outperform rule-based approaches in recall | ✅ Confirmed | 6–7× higher recall than rule-based, validating the ML investment despite lower precision |
+| SQLite persistence for drawings and settings is valuable | ✅ Confirmed | Customer agreed saving drawings across sessions is "more convenient — you won't lose your work" |
+| Rule-based pattern detection is too rigid for real-world chart variations | ✅ Confirmed | ML model handles micro/macro variations (e.g., 0.5% shoulder shift) that the rule-based algorithm would miss (Daniel: "rule-based has strict conditions and would fail") |
+| Anomaly detection is out of scope for this project | ✅ Confirmed | Daniel confirmed it is unlikely to be implemented; customer accepted this |
+| Metrics (RSI, Volume, High/Low) are needed but not for this sprint | ✅ Confirmed | Customer asked about metrics → deferred to Sprint 4 with a backlog item |
 
 ---
 
 ## Friction and Gaps
 
-- **Unresolved requirements:** _[e.g., "Timeframe selector only supports 5m — need 15m, 1h"]_
-- **Technical risks:** _[e.g., "Bybit rate limits may affect scan reliability under load"]_
-- **Quality gaps:** _[e.g., "No test coverage for frontend JavaScript"]_
-- **Missing test coverage:** _[e.g., "WebSocket integration test is skipped due to missing mock"]_
-- **Blocked work:** _[e.g., "US-08 drawing toolbar blocked — needs frontend library decision"]_
-- **Process friction:** _[e.g., "Review turnaround was slow for large PRs"]_
-- **Follow-up questions:** _[e.g., "Should bandit warnings be treated as CI failures or warnings?"]_
+- **Unresolved requirements:** Metrics (RSI, Volume, High/Low) not yet implemented — deferred to Sprint 4. Candle color customization (US-14) still unscheduled. Timeframe selector currently only supports 5m.
+- **Technical risks:** No database caching implemented — every page load sends a request to Bybit (customer flagged: "That definitely needs to be changed"). ML model precision (19%) is lower than rule-based baseline (30%) due to small training set. Bybit rate limits may become a bottleneck under higher load.
+- **Quality gaps:** No test coverage for frontend JavaScript. ML model accuracy QRT (F2 ≥ 0.80) may not be achievable with current training dataset size.
+- **Missing test coverage:** WebSocket integration tests not yet written. No load testing for 10+ concurrent users.
+- **Blocked work:** US-10 (volume chart), US-11 (RSI), US-12 (Fear & Greed) blocked pending chart infrastructure decisions.
+- **Process friction:** Some PBIs (e.g., 50k candle support) had to be rescoped mid-sprint when the customer raised the issue during review rather than during planning.
+- **Follow-up questions:** Should the pattern analysis range be configurable by the user or fixed to 50k? Should the WebSocket migration be a single PBI or split across backend (data ingestion) and frontend (event handling)?
 
 ---
 
@@ -67,6 +74,10 @@ _How the team will respond in the next Sprint or assignment:_
 
 | Issue | Planned action | Links |
 |---|---|---|
-|[e.g., Low WebSocket coverage]| Write WebSocket integration test with mocked connection | _#XX (replace with real link)_ |
-|[e.g., Only 5m interval]| Add multi-interval support to Bybit client | US-07 |
-|[e.g., Slow PR reviews]| Set 24h max review SLA | — |
+| REST-based data retrieval has high latency | Migrate to WebSocket subscription model for real-time candle and ticker updates | New PBI (Sprint 4) |
+| No database caching — all data re-fetched from Bybit on page load | Implement SQLite-based candle caching with background refresh (Fedor: "I will implement a database") | PBI-106 (extension) |
+| Metrics (RSI, Volume, High/Low) missing | Add RSI sub-chart, volume sub-chart, and price metrics to dashboard | US-10, US-11, [#70](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/70) PBI-109 extension |
+| ML model precision is low (19%) due to small training set | Expand labelled dataset with additional manual labelling sessions; investigate data augmentation | QR-003, [#5 US-01](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/5) |
+| Pattern analysis range was 150k (excessive) | Reduce to 50k candles as default; make range configurable via settings | PBI-107 (adjusted) |
+| Only 5-minute timeframe supported | Add multi-interval support (15m, 1h, 4h, 1d) to Bybit client and frontend selector | US-07 |
+| No frontend JavaScript tests | Add JS test framework (Jest/Vitest) and write unit tests for drawing toolbar, chart rendering, and WebSocket client | New PBI (Sprint 4) |
