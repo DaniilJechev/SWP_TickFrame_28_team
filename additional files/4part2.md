@@ -25,11 +25,11 @@ When generating content, avoid anything that reads like an AI wrote it:
 ## User Checklist (do these BEFORE sending to AI)
 
 ### Meetings you need to arrange
-- [ ] **Book a UAT session** with the customer (can be combined with Sprint Review)
-- [ ] **Book a Sprint Review** with the customer
-- [ ] **Book a Sprint Retrospective** with your team (after the review)
-- [ ] **Record everything** — ask permission before recording, and it's a separate question for each meeting
-- [ ] **Ask the customer** before the Review:
+- [x] **Book a UAT session** with the customer (can be combined with Sprint Review)
+- [x] **Book a Sprint Review** with the customer
+- [x] **Book a Sprint Retrospective** with your team (after the review)
+- [x] **Record everything** — ask permission before recording, and it's a separate question for each meeting
+- [x] **Ask the customer** before the Review:
   - Can we publish a sanitized transcript publicly?
   - If not, can we share one privately with instructors?
   - If neither, we'll take detailed notes instead
@@ -81,8 +81,8 @@ When generating content, avoid anything that reads like an AI wrote it:
 
 ### What you do
 
-- [ ] Run the UAT session — **the customer should drive**, not the team
-- [ ] Ask permission before recording
+- [x] Run the UAT session — **the customer should drive**, not the team
+- [x] Ask permission before recording
 - [ ] Afterward, give the AI: pass/fail per scenario, customer quotes, any ideas for new issues
 - [ ] Submit the private recording link via **Moodle** only — don't commit it to the repo
 - [ ] If UAT and Sprint Review were the same meeting, note the timecodes
@@ -125,8 +125,8 @@ When generating content, avoid anything that reads like an AI wrote it:
 
 ### What you do
 
-- [ ] **Ask permission before recording** — it's a separate question from UAT permission
-- [ ] Ask about public transcript vs private sharing
+- [x] **Ask permission before recording** — it's a separate question from UAT permission
+- [x] Ask about public transcript vs private sharing
 - [ ] After the meeting, give the AI notes, quotes, decisions, timecodes
 - [ ] If publishing: commit `customer-review-transcript.md`
 - [ ] If not publishing: Moodle-only, note it in the report
