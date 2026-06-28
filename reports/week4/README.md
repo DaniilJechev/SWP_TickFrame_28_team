@@ -14,7 +14,7 @@
 - **Sprint 3 Milestone:** https://github.com/Fedos113/SWP_TickFrame_28_team/milestone/3
 - **Goal:** Drawing toolbar with 13 tools, 50k candle support, SQLite persistence, WebSocket heartbeat, pattern analysis UI, coin sidebar enhancements, redact/undo system
 - **Dates:** 2026-06-22 – 2026-06-29
-- **Total Story Points:** 92
+- **Total Story Points:** 19
 
 ---
 
