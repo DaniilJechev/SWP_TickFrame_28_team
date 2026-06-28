@@ -2,6 +2,8 @@
 
 FastAPI-based cryptocurrency chart workstation with real-time Bybit market data, live price streaming via WebSockets, candlestick charts (Lightweight Charts v4), a canvas-based drawing toolbar (13 tools), SQLite persistence, and ML pattern analysis.
 
+**Latest Release:** [v1.1.0](https://github.com/Fedos113/SWP_TickFrame_28_team/releases/tag/v1.1.0) (Sprint 3 Increment)
+
 ---
 
 ## Quick Start (Docker)
@@ -75,6 +77,48 @@ curl http://localhost:8001/health
 **Why `--no-cache` is required:** Docker's `COPY . .` step caches the build context. Even when source files change, `docker compose up --build` reuses the cached layer unless `--no-cache` is explicitly passed.
 
 **Port conflicts:** The host port in `docker-compose.yml` (`8080:8000`) is the only port you should use on your host machine. The container's internal port `8000` is only reachable from inside the Docker network. A host process on port `8000` (e.g., VS Code, Python dev server) will silently intercept traffic before Docker, even when Docker is running — use a different host port or stop the conflicting process.
+
+---
+
+## Local Development (No Docker)
+
+For development or debugging without Docker:
+
+### 1. Clone and setup
+
+```bash
+git clone https://github.com/Fedos113/SWP_TickFrame_28_team.git
+cd SWP_TickFrame_28_team
+```
+
+### 2. Create virtual environment
+
+```bash
+python -m venv .venv
+.venv\Scripts\Activate.ps1   # Windows
+# source .venv/bin/activate  # Linux/macOS
+```
+
+### 3. Install dependencies
+
+```bash
+pip install -r requirements.txt
+pip install -r tests/requirements.txt
+```
+
+### 4. Start backend server
+
+```bash
+uvicorn tickframe.backend.main:app --host 0.0.0.0 --port 8000
+```
+
+### 5. Open in browser
+
+```
+http://localhost:8000
+```
+
+> Note: ML service must be started separately for pattern analysis to work.
 
 ---
 
@@ -185,15 +229,16 @@ Key variables:
 
 | Resource | Link |
 |---|---|
-| Definition of Done | [docs/definition-of-done.md](docs/definition-of-done.md) |
-| Roadmap | [docs/roadmap.md](docs/roadmap.md) |
-| User Stories | [docs/user-stories.md](docs/user-stories.md) |
-| Changelog | [CHANGELOG.md](CHANGELOG.md) |
-| Quality Requirements | [docs/quality-requirements.md](docs/quality-requirements.md) |
-| Quality Requirement Tests | [docs/quality-requirement-tests.md](docs/quality-requirement-tests.md) |
-| Testing Strategy | [docs/testing.md](docs/testing.md) |
-| User Acceptance Tests | [docs/user-acceptance-tests.md](docs/user-acceptance-tests.md) |
-| Week 4 Reports | [reports/week4/](reports/week4/README.md) |
-| Week 2 Reports | [reports/week2/](reports/week2/README.md) |
-| Week 3 Reports | [reports/week3/](reports/week3/README.md) |
-| License | [MIT](LICENSE) |
+| Definition of Done | [docs/definition-of-done.md](https://github.com/Fedos113/SWP_TickFrame_28_team/blob/main/docs/definition-of-done.md) |
+| Roadmap | [docs/roadmap.md](https://github.com/Fedos113/SWP_TickFrame_28_team/blob/main/docs/roadmap.md) |
+| User Stories | [docs/user-stories.md](https://github.com/Fedos113/SWP_TickFrame_28_team/blob/main/docs/user-stories.md) |
+| Changelog | [CHANGELOG.md](https://github.com/Fedos113/SWP_TickFrame_28_team/blob/main/CHANGELOG.md) |
+| Quality Requirements | [docs/quality-requirements.md](https://github.com/Fedos113/SWP_TickFrame_28_team/blob/main/docs/quality-requirements.md) |
+| Quality Requirement Tests | [docs/quality-requirement-tests.md](https://github.com/Fedos113/SWP_TickFrame_28_team/blob/main/docs/quality-requirement-tests.md) |
+| Testing Strategy | [docs/testing.md](https://github.com/Fedos113/SWP_TickFrame_28_team/blob/main/docs/testing.md) |
+| User Acceptance Tests | [docs/user-acceptance-tests.md](https://github.com/Fedos113/SWP_TickFrame_28_team/blob/main/docs/user-acceptance-tests.md) |
+| Week 4 Reports | [reports/week4/](https://github.com/Fedos113/SWP_TickFrame_28_team/blob/main/reports/week4/README.md) |
+| Week 2 Reports | [reports/week2/](https://github.com/Fedos113/SWP_TickFrame_28_team/blob/main/reports/week2/README.md) |
+| Week 3 Reports | [reports/week3/](https://github.com/Fedos113/SWP_TickFrame_28_team/blob/main/reports/week3/README.md) |
+| License | [MIT](https://github.com/Fedos113/SWP_TickFrame_28_team/blob/main/LICENSE) |
+```
