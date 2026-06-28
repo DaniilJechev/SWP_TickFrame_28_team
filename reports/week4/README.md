@@ -22,21 +22,21 @@
 
 | PBI | Title | Status | PR |
 |-----|-------|--------|----|
-| [#62](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/62) PBI-101 | Drawing Toolbar Engine — 13-tool canvas overlay | Done | _PR link_ |
-| [#64](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/64) PBI-102 | Advanced Drawing Tools — Fibonacci, Price Range %, Text | Done | _PR link_ |
-| [#63](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/63) PBI-103 | Redact Mode + Selection + Drag-to-Move/Reshape | Done | _PR link_ |
-| [#66](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/66) PBI-104 | Undo System — Add/Modify/Delete | Done | _PR link_ |
-| [#65](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/65) PBI-105 | Per-Drawing Settings Panel | Done | _PR link_ |
-| [#67](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/67) PBI-106 | SQLite Persistence — Drawings, Settings, Candles | Done | _PR link_ |
-| [#68](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/68) PBI-107 | 50k Candle Support + Two-Phase Load + Pagination | Done | _PR link_ |
-| [#69](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/69) PBI-108 | WebSocket Heartbeat + LIVE Status Indicator | Done | _PR link_ |
-| [#70](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/70) PBI-109 | Pattern Analysis UI — Sliding Window + Visualization | Done | _PR link_ |
-| [#61](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/61) PBI-110 | Coin Sidebar — Ticker, Trend Colors, Price Format | Done | _PR link_ |
-| [#71](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/71) PBI-111 | Theme Persistence + Theme-Aware Drawing Colors | Done | _PR link_ |
-| [#74](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/74) PBI-112 | API Rate Limiting, DB Optimisation, Candle Performance | Done | _PR link_ |
-| [#75](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/75) PBI-113 | Coin Switch Stability & Loading Overlay | Done | _PR link_ |
-| [#76](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/76) PBI-114 | Frontend Candle Cache & Zoom-Out Lazy Loading | Done | _PR link_ |
-| [#72](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/72) | Bug Fixes Batch (race conditions, dead code, etc.) | Done | _PR link_ |
+| [#62](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/62) PBI-101 | Drawing Toolbar Engine — 13-tool canvas overlay | Done | [#73](https://github.com/Fedos113/SWP_TickFrame_28_team/pull/73) |
+| [#64](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/64) PBI-102 | Advanced Drawing Tools — Fibonacci, Price Range %, Text | Done | [#73](https://github.com/Fedos113/SWP_TickFrame_28_team/pull/73) |
+| [#63](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/63) PBI-103 | Redact Mode + Selection + Drag-to-Move/Reshape | Done | [#73](https://github.com/Fedos113/SWP_TickFrame_28_team/pull/73) |
+| [#66](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/66) PBI-104 | Undo System — Add/Modify/Delete | Done | [#73](https://github.com/Fedos113/SWP_TickFrame_28_team/pull/73) |
+| [#65](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/65) PBI-105 | Per-Drawing Settings Panel | Done | [#73](https://github.com/Fedos113/SWP_TickFrame_28_team/pull/73) |
+| [#67](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/67) PBI-106 | SQLite Persistence — Drawings, Settings, Candles | Done | [#73](https://github.com/Fedos113/SWP_TickFrame_28_team/pull/73) |
+| [#68](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/68) PBI-107 | 50k Candle Support + Two-Phase Load + Pagination | Done | [#73](https://github.com/Fedos113/SWP_TickFrame_28_team/pull/73) |
+| [#69](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/69) PBI-108 | WebSocket Heartbeat + LIVE Status Indicator | Done | [#73](https://github.com/Fedos113/SWP_TickFrame_28_team/pull/73) |
+| [#70](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/70) PBI-109 | Pattern Analysis UI — Sliding Window + Visualization | Done | [#73](https://github.com/Fedos113/SWP_TickFrame_28_team/pull/73) |
+| [#61](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/61) PBI-110 | Coin Sidebar — Ticker, Trend Colors, Price Format | Done | [#73](https://github.com/Fedos113/SWP_TickFrame_28_team/pull/73) |
+| [#71](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/71) PBI-111 | Theme Persistence + Theme-Aware Drawing Colors | Done | [#73](https://github.com/Fedos113/SWP_TickFrame_28_team/pull/73) |
+| [#74](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/74) PBI-112 | API Rate Limiting, DB Optimisation, Candle Performance | Done | [#77](https://github.com/Fedos113/SWP_TickFrame_28_team/pull/77) |
+| [#75](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/75) PBI-113 | Coin Switch Stability & Loading Overlay | Done | [#77](https://github.com/Fedos113/SWP_TickFrame_28_team/pull/77) |
+| [#76](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/76) PBI-114 | Frontend Candle Cache & Zoom-Out Lazy Loading | Done | [#77](https://github.com/Fedos113/SWP_TickFrame_28_team/pull/77) |
+| [#72](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/72) | Bug Fixes Batch (race conditions, dead code, etc.) | Done | [#73](https://github.com/Fedos113/SWP_TickFrame_28_team/pull/73) / [#87](https://github.com/Fedos113/SWP_TickFrame_28_team/pull/87) |
 | [#79](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/79) QR-001 | Performance Quality Requirement | Done | — |
 | [#80](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/80) QR-002 | Security Quality Requirement | Done | — |
 | [#81](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/81) QR-003 | Accuracy Quality Requirement | Done | — |
@@ -49,7 +49,7 @@
 
 ## Deployed
 
-- **URL:** http://localhost:8000 (Docker Compose)
+- **URL:** http://localhost:8080 (Docker Compose)
 - **How to run:** [`README.md`](../../README.md) — `docker compose up --build`
 
 ---
@@ -124,7 +124,7 @@ Based on the [Week 3 Customer Review](../week3/customer-review-transcript.md), t
 ## CI
 
 - **Workflow:** [`.github/workflows/ci.yml`](../../.github/workflows/ci.yml)
-- **Latest run:** _[link to latest passing CI run]_
+- **Latest run:** [CI run #28297395875](https://github.com/Fedos113/SWP_TickFrame_28_team/actions/runs/28297395875)
 
 | Check | Tool | Target | Status |
 |---|---|---|---|
@@ -237,18 +237,19 @@ The following checks remain enforced for all future sprints:
 
 | Person | Role | Issues | PRs | Reviews | Testing | QA | Docs |
 |---|---|---|---|---|---|---|---|
-| _[Name]_ | _[Role]_ | _[#]_ | _[#]_ | _[#]_ | _[# tests]_ | _[Y/N]_ | _[Y/N]_ |
-| _[Name]_ | _[Role]_ | _[#]_ | _[#]_ | _[#]_ | _[# tests]_ | _[Y/N]_ | _[Y/N]_ |
-
-> _To fill: team member usernames, assigned issues, PRs authored/reviewed, tests written, QA checks run, docs updated._
+| F. Kozhevnikov ([Fedos113](https://github.com/Fedos113)) | Product Owner / Full-Stack | #62–72, #74–76, #79–86 | [#73](https://github.com/Fedos113/SWP_TickFrame_28_team/pull/73), [#77](https://github.com/Fedos113/SWP_TickFrame_28_team/pull/77), [#87](https://github.com/Fedos113/SWP_TickFrame_28_team/pull/87), [#88](https://github.com/Fedos113/SWP_TickFrame_28_team/pull/88) | [#55](https://github.com/Fedos113/SWP_TickFrame_28_team/pull/55) | — | Y | Y |
+| A. Gafarov ([omarichev](https://github.com/omarichev)) | Developer / Documentation | [#89](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/89) | [#90](https://github.com/Fedos113/SWP_TickFrame_28_team/pull/90), [#92](https://github.com/Fedos113/SWP_TickFrame_28_team/pull/92), [#94](https://github.com/Fedos113/SWP_TickFrame_28_team/pull/94), [#48](https://github.com/Fedos113/SWP_TickFrame_28_team/pull/48), [#43](https://github.com/Fedos113/SWP_TickFrame_28_team/pull/43), [#53](https://github.com/Fedos113/SWP_TickFrame_28_team/pull/53) | — | — | N | Y |
+| A. Mindubaev ([pug228](https://github.com/pug228)) | Developer / Quality & CI | #79–86 | — | [#56](https://github.com/Fedos113/SWP_TickFrame_28_team/pull/56) | QRT suites, testing strategy | Y | Y |
+| D. Zhechev ([DaniilJechev](https://github.com/DaniilJechev)) | Scrum Master / ML Engineer | #54 | [#55](https://github.com/Fedos113/SWP_TickFrame_28_team/pull/55), [#46](https://github.com/Fedos113/SWP_TickFrame_28_team/pull/46) | [#73](https://github.com/Fedos113/SWP_TickFrame_28_team/pull/73) | ML model validation | N | N |
+| M. Bezborodov ([MikhailBezborodov024](https://github.com/MikhailBezborodov024)) | Developer / Frontend | — | — | [#90](https://github.com/Fedos113/SWP_TickFrame_28_team/pull/90) | — | N | N |
 
 ---
 
 ## Presentation
 
-- **Slides:** _[presentation.pdf](presentation.pdf) — or "Moodle only"_
-- **Public demo video:** _[link] — or "Moodle only"_
-- **Rehearsed presentation:** _[private link — Moodle only]_
+- **Slides:** Moodle only
+- **Public demo video:** [https://TODO_PUBLIC_DEMO_VIDEO_URL](https://TODO_PUBLIC_DEMO_VIDEO_URL) — or Moodle only
+- **Rehearsed presentation:** Moodle only (private link)
 
 ---
 
@@ -261,5 +262,6 @@ The following checks remain enforced for all future sprints:
 - **Roadmap:** [`docs/roadmap.md`](../../docs/roadmap.md)
 - **CI Workflow:** [`.github/workflows/ci.yml`](../../.github/workflows/ci.yml)
 - **CHANGELOG:** [`CHANGELOG.md`](../../CHANGELOG.md)
-- **Release v1.1.0:** https://github.com/Fedos113/SWP_TickFrame_28_team/releases/tag/v1.1.0
-- **Deployed product:** http://localhost:8000 (Docker Compose)
+- **Release v1.2.0:** https://github.com/Fedos113/SWP_TickFrame_28_team/releases/tag/v1.2.0
+- **Deployed product:** http://localhost:8080 (Docker Compose)
+- **Submission commit:** `721b0d7` — [README permalink](https://github.com/Fedos113/SWP_TickFrame_28_team/blob/721b0d749afab083f5638a2fadebc39ce674c4a9/reports/week4/README.md) / [repo tree](https://github.com/Fedos113/SWP_TickFrame_28_team/tree/721b0d749afab083f5638a2fadebc39ce674c4a9)
