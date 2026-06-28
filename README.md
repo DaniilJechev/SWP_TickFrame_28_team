@@ -2,7 +2,7 @@
 
 FastAPI-based cryptocurrency chart workstation with real-time Bybit market data, live price streaming via WebSockets, candlestick charts (Lightweight Charts v4), a canvas-based drawing toolbar (13 tools), SQLite persistence, and ML pattern analysis.
 
-**Latest Release:** [v1.2.0](https://github.com/Fedos113/SWP_TickFrame_28_team/releases/tag/v1.2.0) (Sprint 3 Increment)
+**Latest Release:** [v1.1.0](https://github.com/Fedos113/SWP_TickFrame_28_team/releases/tag/v1.1.0) (Sprint 3 Increment)
 
 ---
 
