@@ -1,0 +1,219 @@
+\documentclass[11pt]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{qrcode}
+\usepackage{tikz}
+
+\usetheme{Madrid}
+\usecolortheme{default}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    urlcolor=cyan,
+}
+
+\title{TickFrame}
+\subtitle{Quality-Gated Sprint Increment --- Sprint 3}
+\author{Team 28 --- SWP Spring 2026}
+\institute{Innopolis University}
+\date{}
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+% ---------------------------------------------------------------
+% SLIDE 2: Project Context
+% ---------------------------------------------------------------
+\begin{frame}{Project Context}
+    \textbf{The problem:} Crypto traders lack a free, open-source tool for real-time chart pattern detection.
+
+    \vspace{0.3cm}
+    \textbf{TickFrame} is a web-based crypto charting platform with:
+    \begin{itemize}
+        \item Real-time candlestick charts (Bybit data)
+        \item ML-based pattern detection (Head \& Shoulders)
+        \item 13 drawing tools on canvas overlay
+        \item SQLite persistence, theme toggle, live sidebar
+    \end{itemize}
+
+    \vspace{0.3cm}
+    \textbf{Stakeholders:} Crypto retail traders, the Product Owner (Fedor), and the teaching staff.
+\end{frame}
+
+% ---------------------------------------------------------------
+% SLIDE 3: Demo
+% ---------------------------------------------------------------
+\begin{frame}{Demo}
+    \centering
+    \vfill
+    {\Large See the product in action}
+
+    \vspace{0.5cm}
+    \url{http://10.93.26.164:8080/}
+
+    \vspace{0.3cm}
+    Or scan:
+
+    \vspace{0.2cm}
+    % Placeholder --- generate a real QR at build time
+    \qrcode[height=2cm]{http://10.93.26.164:8080/}
+
+    \vfill
+    \textbf{What to watch:}
+    \begin{enumerate}
+        \item Drawing toolbar --- 13 tools
+        \item Pattern analysis with confidence slider
+        \item Theme toggle (persisted across reload)
+        \item Live price sidebar for 10 pairs
+    \end{enumerate}
+\end{frame}
+
+% ---------------------------------------------------------------
+% SLIDE 4: Team
+% ---------------------------------------------------------------
+\begin{frame}{Team}
+    \small
+    \begin{tabular}{lll}
+        \toprule
+        \textbf{Name} & \textbf{Role} & \textbf{Domain} \\
+        \midrule
+        F. Kozhevnikov & Product Owner & Full-stack, drawing tools, persistence \\
+        A. Gafarov & Developer & Documentation, reports, screenshots \\
+        A. Mindubaev & Developer & Quality, CI, QRTs, testing strategy \\
+        D. Zhechev & Scrum Master & ML model, FastAPI microservice \\
+        M. Bezborodov & Developer & Frontend, MVP v1 core \\
+        \bottomrule
+    \end{tabular}
+
+    \vspace{0.4cm}
+    All 5 team members contributed. \\
+    Every PR was reviewed by someone who did not write the code.
+\end{frame}
+
+% ---------------------------------------------------------------
+% SLIDE 5: Requirements
+% ---------------------------------------------------------------
+\begin{frame}{Requirements}
+    \textbf{Sprint 3 scope:} 19 story points across 25 closed issues.
+
+    \vspace{0.3cm}
+    \textbf{Top features:}
+    \begin{itemize}
+        \item Drawing toolbar engine --- 13 tools
+        \item SQLite persistence for drawings, settings, candles
+        \item 50k candle support with two-phase load
+        \item Pattern Analysis UI with sliding window
+        \item WebSocket heartbeat + LIVE indicator
+    \end{itemize}
+
+    \vspace{0.3cm}
+    \textbf{Quality requirements (ISO/IEC 25010):}
+    \begin{tabular}{lll}
+        \toprule
+        ID & Sub-characteristic & Target \\
+        \midrule
+        QR-001 & Performance Efficiency & p95 response $\leq$ 500ms \\
+        QR-002 & Security --- Confidentiality & Zero secrets in repo \\
+        QR-003 & Functional Suitability --- Accuracy & F2 $\geq$ 0.80 \\
+        \bottomrule
+    \end{tabular}
+\end{frame}
+
+% ---------------------------------------------------------------
+% SLIDE 6: Roadmap
+% ---------------------------------------------------------------
+\begin{frame}{Roadmap}
+    \begin{tabular}{ll}
+        \toprule
+        \textbf{Sprint} & \textbf{Delivered} \\
+        \midrule
+        Sprint 1 (MVP) & FastAPI backend, Lightweight Charts, CLI \\
+        Sprint 2 & WebSocket streaming, theme toggle, coin sidebar \\
+        \textbf{Sprint 3 (now)} & \textbf{Drawing tools, CI pipeline, QRTs, ML} \\
+        Sprint 4 (next) & WebSocket migration, DB caching, RSI/Volume \\
+        \bottomrule
+    \end{tabular}
+
+    \vspace{0.4cm}
+    \textbf{Sprint 4 priorities:}
+    \begin{enumerate}
+        \item REST $\to$ WebSocket data pipeline rewrite
+        \item SQLite database caching for candles
+        \item RSI / Volume / High-Low metrics
+        \item Multi-interval support (15m, 1h, 4h, 1d)
+    \end{enumerate}
+\end{frame}
+
+% ---------------------------------------------------------------
+% SLIDE 7: Client Collaboration
+% ---------------------------------------------------------------
+\begin{frame}{Client Collaboration}
+    \textbf{Product Owner:} Fedor (Fedos113) --- also a team member.
+
+    \vspace{0.3cm}
+    \textbf{What the customer approved:}
+    \begin{itemize}
+        \item Drawing toolbar quality and customization
+        \item Theme and drawing persistence
+        \item Confidence threshold slider for pattern analysis
+    \end{itemize}
+
+    \vspace{0.3cm}
+    \textbf{Critical feedback received:}
+    \begin{itemize}
+        \item Migrate from REST to WebSocket subscription
+        \item Implement database caching for candles
+        \item Add RSI, Volume, High/Low metrics
+        \item Reduce analysis range from 150k to 50k candles
+    \end{itemize}
+
+    \vspace{0.3cm}
+    \textbf{Challenge:} ML precision at 19--25\% is below target --- needs more training data.
+\end{frame}
+
+% ---------------------------------------------------------------
+% SLIDE 8: Links
+% ---------------------------------------------------------------
+\begin{frame}{Links}
+    \centering
+
+    \textbf{GitHub Repository} \\
+    \url{https://github.com/Fedos113/SWP_TickFrame_28_team} \\
+    \vspace{0.2cm}
+    \qrcode[height=1.5cm]{https://github.com/Fedos113/SWP_TickFrame_28_team}
+
+    \vspace{0.4cm}
+
+    \textbf{Deployed Product} \\
+    \url{http://10.93.26.164:8080/} \\
+    \vspace{0.2cm}
+    \qrcode[height=1.5cm]{http://10.93.26.164:8080/}
+
+    \vspace{0.4cm}
+    \textbf{Release v1.2.0:} \\
+    \url{https://github.com/Fedos113/SWP_TickFrame_28_team/releases/tag/v1.2.0}
+\end{frame}
+
+% ---------------------------------------------------------------
+% SLIDE 9: Thank You
+% ---------------------------------------------------------------
+\begin{frame}
+    \centering
+    \vfill
+    {\Huge Thank You}
+    \vspace{0.5cm}
+
+    {\large Questions?}
+
+    \vfill
+    \small TickFrame --- open-source crypto chart pattern detection
+\end{frame}
+
+\end{document}
