@@ -137,15 +137,14 @@ Based on the [Week 3 Customer Review](../week3/customer-review-transcript.md), t
 
 ## Screenshots
 
-> Place screenshots in [`reports/week4/images/`](images/) — directory currently empty.
-> 
-> - Sprint 3 milestone view → `images/sprint-milestone.png`
-> - Latest passing CI run on `main` → `images/ci-pass.png`
-> - Coverage report → `images/coverage-report.png`
-> - QA check result → `images/qa-check.png`
-> - SemVer release page → `images/semver-release.png`
-> - Example reviewed PR → `images/reviewed-pr.png`
-> - Product Backlog / Sprint Backlog → optional
+![Sprint 3 Milestone](images/sprint-milestone.png)
+![CI Pass](images/ci-pass.png)
+![Coverage Report](images/coverage-report.png)
+![QA Check](images/qa-check.png)
+![SemVer Release](images/semver-release.png)
+![Reviewed PR](images/reviewed-pr.png)
+![Sprint 3 Backlog](images/sprint3-backlog.png)
+![Future Backlog](images/future-backlog.png)
 
 ---
 
