@@ -13,7 +13,7 @@
     rectangle:  { name: 'Rectangle',       icon: 'rect',      points: 2, group: 'shape' },
     circle:     { name: 'Circle',          icon: 'circle',    points: 2, group: 'shape' },
     arrow:      { name: 'Arrow',           icon: 'arrow',     points: 2, group: 'shape' },
-    text:       { name: 'Text',            icon: 'text',      points: 1, group: 'shape' },
+
     brush:      { name: 'Brush',           icon: 'brush',     points: 0, group: 'shape', drag: true },
   };
 
@@ -943,7 +943,7 @@
     if (this.toolPhase === 'idle') {
       this.tempPoints = [data];
       this.toolPhase = this.activeTool === 'text' ? 'label' : 'placing';
-      if (tool.points === 1) {
+      if (this.activeTool !== 'text' && tool.points === 1) {
         this._commitDrawing(this.activeTool, this.tempPoints);
         this._finishDrawing();
       } else {
@@ -1608,12 +1608,14 @@
     }
     html += '</div></div>';
 
-    html += '<div class="pd-section"><div class="pd-label">Font</div><div class="pd-font-sizes">';
-    for (var fi = 0; fi < fontSizes.length; fi++) {
-      var act = fontSizes[fi] === (opts.fontSize || 14) ? ' active' : '';
-      html += '<button data-pd-fs="' + fontSizes[fi] + '"' + act + '>' + fontSizes[fi] + '</button>';
+    if (drawing.type === 'text') {
+      html += '<div class="pd-section"><div class="pd-label">Font</div><div class="pd-font-sizes">';
+      for (var fi = 0; fi < fontSizes.length; fi++) {
+        var act = fontSizes[fi] === (opts.fontSize || 14) ? ' active' : '';
+        html += '<button data-pd-fs="' + fontSizes[fi] + '"' + act + '>' + fontSizes[fi] + '</button>';
+      }
+      html += '</div></div>';
     }
-    html += '</div></div>';
 
     panel.innerHTML = html;
 

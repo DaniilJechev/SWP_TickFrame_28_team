@@ -8,6 +8,12 @@ services:
       - "8080:8000"
     env_file:
       - .env
+    volumes:
+      # Live-reload mounts — changes to source files are reflected immediately,
+      # no rebuild needed for frontend/backend code (only rebuild for new pip deps).
+      - ./tickframe/frontend:/app/tickframe/frontend
+      - ./tickframe/backend:/app/tickframe/backend
+    command: uvicorn tickframe.backend.main:app --host 0.0.0.0 --port 8000 --reload
 
   # ==========================================
   # 2. MACHINE LEARNING MICROSERVICE

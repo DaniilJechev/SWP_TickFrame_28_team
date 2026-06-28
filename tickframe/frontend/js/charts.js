@@ -14,6 +14,7 @@ let _currentLoadSymbol = '';
 const _MAX_CANDLES = 55000;
 var _candleCache = {};
 
+
 function _formatChartPrice(price) {
   if (price == null || isNaN(price)) return '--';
   var abs = Math.abs(price);
@@ -49,6 +50,7 @@ function createChart() {
     chartInitMode = 'lightweight';
     createLightweightChart(container);
   }
+
 }
 
 function createAdvancedChart(container) {
@@ -117,7 +119,7 @@ function createLightweightChart(container) {
     layout: { background: { type: 'solid', color: '#000000' }, textColor: '#d1d4dc' },
     grid: { vertLines: { color: '#1f2937' }, horzLines: { color: '#1f2937' } },
     rightPriceScale: { borderColor: '#2a2e39' },
-    timeScale: { borderColor: '#2a2e39', timeVisible: true, secondsVisible: false },
+    timeScale: { visible: true, timeVisible: true, secondsVisible: false, borderColor: '#2a2e39' },
     crosshair: { mode: LightweightCharts.CrosshairMode.Normal },
     localization: { priceFormatter: _formatChartPrice },
   });
@@ -159,6 +161,98 @@ function createLightweightChart(container) {
 
   _zoomSub = chart.timeScale().subscribeVisibleTimeRangeChange(onVisibleRangeChanged);
 }
+
+// ----- Self-contained resize system (event delegation) -----
+// Listens on document — NO dependency on createChart() succeeding.
+// Works immediately when this script loads, regardless of errors elsewhere.
+(function() {
+  var _resizeDrag = null;
+
+  // ----- Persist window sizes to localStorage -----
+  function _saveSizes() {
+    try {
+      var sidebar = document.querySelector('.sidebar');
+      if (sidebar) {
+        localStorage.setItem('tickframe_sidebar_width', sidebar.offsetWidth);
+      }
+    } catch (_) {}
+  }
+
+  function _restoreSizes() {
+    try {
+      var sidebarW = localStorage.getItem('tickframe_sidebar_width');
+      if (sidebarW) {
+        var s = document.querySelector('.sidebar');
+        if (s) s.style.width = Math.max(150, Math.min(400, +sidebarW)) + 'px';
+      }
+    } catch (_) {}
+  }
+
+  // Restore saved sizes once DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', _restoreSizes);
+  } else {
+    _restoreSizes();
+  }
+
+  document.addEventListener('mousedown', function(e) {
+    var t = e.target;
+
+    // Sidebar resize: .sidebar-resize-handle
+    if (t.classList.contains('sidebar-resize-handle')) {
+      e.preventDefault();
+      var sidebar = document.querySelector('.sidebar');
+      if (!sidebar) return;
+      _resizeDrag = { sidebar: sidebar, startX: e.clientX, startW: sidebar.offsetWidth };
+      return;
+    }
+  });
+
+  document.addEventListener('mousemove', function(e) {
+    if (!_resizeDrag) return;
+    if (_resizeDrag.sidebar) {
+      var newW = Math.max(150, Math.min(400, _resizeDrag.startW + (e.clientX - _resizeDrag.startX)));
+      _resizeDrag.sidebar.style.width = newW + 'px';
+    }
+  });
+
+  document.addEventListener('mouseup', function() {
+    if (_resizeDrag) {
+      _saveSizes();
+      window.dispatchEvent(new Event('resize'));
+      _resizeDrag = null;
+    }
+  });
+
+  // Same for touch
+  document.addEventListener('touchstart', function(e) {
+    var t = e.target;
+    if (t.classList.contains('sidebar-resize-handle')) {
+      e.preventDefault();
+      var sidebar = document.querySelector('.sidebar');
+      if (!sidebar) return;
+      _resizeDrag = { sidebar: sidebar, startX: e.touches[0].clientX, startW: sidebar.offsetWidth };
+      return;
+    }
+  }, { passive: false });
+
+  document.addEventListener('touchmove', function(e) {
+    if (!_resizeDrag) return;
+    e.preventDefault();
+    if (_resizeDrag.sidebar) {
+      var newW = Math.max(150, Math.min(400, _resizeDrag.startW + (e.touches[0].clientX - _resizeDrag.startX)));
+      _resizeDrag.sidebar.style.width = newW + 'px';
+    }
+  }, { passive: false });
+
+  document.addEventListener('touchend', function() {
+    if (_resizeDrag) {
+      _saveSizes();
+      window.dispatchEvent(new Event('resize'));
+      _resizeDrag = null;
+    }
+  });
+})();
 
 function onVisibleRangeChanged(range) {
   if (!range || !lastCandles.length) return;
@@ -203,6 +297,7 @@ async function loadMoreBefore(symbol, interval, before) {
     _candleCache[symbol + '|' + interval] = deduped;
     var series = window.candleSeries;
     if (series) series.setData(deduped);
+
     if (window.LightweightToolbar) {
       window.LightweightToolbar.setData(deduped);
     }
@@ -284,6 +379,7 @@ async function loadCandles(symbol, interval) {
     lastCandles = cached;
     var series = window.candleSeries;
     if (series) series.setData(lastCandles);
+
     if (lastCandles.length > 1) {
       chart.timeScale().setVisibleRange({
         from: lastCandles[Math.max(0, lastCandles.length - 10000)].time,
@@ -319,6 +415,7 @@ async function loadCandles(symbol, interval) {
     _candleCache[cacheKey] = normalized;
     var series = window.candleSeries;
     if (series) series.setData(lastCandles);
+
     if (lastCandles.length > 1) {
       chart.timeScale().setVisibleRange({
         from: lastCandles[Math.max(0, lastCandles.length - 10000)].time,
@@ -375,6 +472,7 @@ function startCandleWs(symbol, interval) {
             _candleCache[currentSymbol + '|' + currentInterval] = newCandles;
             var series = window.candleSeries;
             if (series) series.setData(newCandles);
+        
           }
           const s = document.getElementById('status');
           if (s) s.innerText = 'LIVE';
@@ -392,6 +490,7 @@ function startCandleWs(symbol, interval) {
               }
               _candleCache[currentSymbol + '|' + currentInterval] = lastCandles;
             }
+        
           }
           const s = document.getElementById('status');
           if (s) s.innerText = 'LIVE';
@@ -497,7 +596,8 @@ async function analyzePatterns() {
   if (window.DrawingOverlay) window.DrawingOverlay.clearPatternDrawings();
 
   try {
-    const totalLimit = lastCandles.length || 50000;
+    const limitInput = document.querySelector('.candle-limit-input');
+    const totalLimit = limitInput ? parseInt(limitInput.value) || 10000 : 10000;
     const mlResp = await fetch(`/api/analyze/${currentSymbol}?interval=${currentInterval}&limit=${totalLimit}&confidence_threshold=${parseFloat(window._analysisThreshold || '0.80')}`, {
       method: 'POST',
     });
@@ -519,36 +619,65 @@ async function analyzePatterns() {
   }
 }
 
+function _visibleBottomPrice() {
+  try {
+    if (!chart) return 0;
+    var ps = chart.priceScale('right');
+    if (!ps) return 0;
+    var r = ps.getVisiblePriceRange();
+    return r ? r.minValue : 0;
+  } catch (_) { return 0; }
+}
+
+function _drawPatternVline(time, opts) {
+  var d = { id: -Date.now() - Math.random(), type: 'vline', _isPattern: true,
+    points: [{ time: time, price: _visibleBottomPrice() }], opts: opts };
+  window.DrawingOverlay.addPatternDrawing(d);
+}
+
 function renderDetectedPatterns(patterns) {
   if (!window.DrawingOverlay || !chart) return;
-  patterns.forEach(p => {
+  var vlineOpts = { color: '#ff0000', width: 1, lineStyle: 'dotted', opacity: 1 };
+  var data = lastCandles || [];
+
+  // Build segments for each pattern (50-candle windows)
+  var segments = [];
+  patterns.forEach(function (p) {
     if (p.startTime !== undefined && p.endTime !== undefined) {
-      var startOpts = { color: '#ff0000', width: 2, lineStyle: 'dashed', opacity: 1 };
-      var endOpts = { color: '#ff0000', width: 2, lineStyle: 'dashed', opacity: 1 };
-      var startV = { id: -Date.now() - Math.random(), type: 'vline', _isPattern: true,
-        points: [{ time: p.startTime, price: 0 }], opts: startOpts };
-      var endV = { id: -Date.now() - Math.random() - 1, type: 'vline', _isPattern: true,
-        points: [{ time: p.endTime, price: 0 }], opts: endOpts };
-      window.DrawingOverlay.addPatternDrawing(startV);
-      window.DrawingOverlay.addPatternDrawing(endV);
-      var midTime = Math.floor((p.startTime + p.endTime) / 2);
-      var label = p.pattern_type + ' ' + (p.confidence * 100).toFixed(0) + '%';
-      var textD = { id: -Date.now() - Math.random() - 2, type: 'text', _isPattern: true,
-        points: [{ time: midTime, price: 0, label: label }],
-        opts: { color: '#ff0000', fontSize: 12 } };
-      window.DrawingOverlay.addPatternDrawing(textD);
-    } else {
-      var ts = p.timestamp;
-      var opts = { color: '#ff0000', width: 2, lineStyle: 'dashed', opacity: 1 };
-      var vline = { id: -Date.now() - Math.random(), type: 'vline', _isPattern: true,
-        points: [{ time: ts, price: 0 }], opts: opts };
-      window.DrawingOverlay.addPatternDrawing(vline);
-      var label = p.pattern_type + ' ' + (p.confidence * 100).toFixed(0) + '%';
-      var textD = { id: -Date.now() - Math.random() - 2, type: 'text', _isPattern: true,
-        points: [{ time: ts, price: 0, label: label }],
-        opts: { color: '#ff0000', fontSize: 12 } };
-      window.DrawingOverlay.addPatternDrawing(textD);
+      segments.push({ start: p.startTime, end: p.endTime, patterns: [p] });
+      return;
     }
+    var ts = p.timestamp;
+    var idx = data.findIndex(function (c) { return c.time === ts; });
+    if (idx === -1) {
+      segments.push({ start: ts, end: ts, patterns: [p] });
+      return;
+    }
+    var startIdx = Math.max(0, idx - 49);
+    segments.push({ start: data[startIdx].time, end: ts, patterns: [p] });
+  });
+
+  // Sort by start and merge overlapping segments
+  segments.sort(function (a, b) { return a.start - b.start; });
+  var merged = [];
+  segments.forEach(function (seg) {
+    if (merged.length === 0) {
+      merged.push(seg);
+      return;
+    }
+    var last = merged[merged.length - 1];
+    if (seg.start <= last.end) {
+      last.end = Math.max(last.end, seg.end);
+      last.patterns = last.patterns.concat(seg.patterns);
+    } else {
+      merged.push(seg);
+    }
+  });
+
+  // Draw merged segment boundaries on main chart
+  merged.forEach(function (seg) {
+    _drawPatternVline(seg.start, vlineOpts);
+    _drawPatternVline(seg.end, vlineOpts);
   });
 }
 
