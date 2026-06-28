@@ -247,9 +247,7 @@ The following checks remain enforced for all future sprints:
 
 ## Presentation
 
-- **Slides:** Moodle only
-- **Public demo video:** [https://TODO_PUBLIC_DEMO_VIDEO_URL](https://TODO_PUBLIC_DEMO_VIDEO_URL) — or Moodle only
-- **Rehearsed presentation:** Moodle only (private link)
+- **Public demo video:** [Demo](https://drive.google.com/file/d/1rOMHjHUejfUPj9k4ELTZhTgCUSINawqf/view?usp=drive_link)
 
 ---
 
