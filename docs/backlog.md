@@ -56,21 +56,21 @@ A PBI is **Done** when:
 
 | # | PBI | Title | SP | Status |
 |---|-----|-------|----|--------|
-| [#62](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/62) | PBI-101 | Drawing Toolbar Engine — 13-tool canvas overlay | 13 | Done |
-| [#64](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/64) | PBI-102 | Advanced Drawing Tools — Fibonacci, Price Range %, Text tool | 8 | Done |
-| [#63](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/63) | PBI-103 | Redact Mode + Selection + Drag-to-Move/Reshape | 8 | Done |
-| [#66](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/66) | PBI-104 | Undo System — Add/Modify/Delete support | 5 | Done |
-| [#65](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/65) | PBI-105 | Per-Drawing Settings Panel — Color, Width, Line Style, Font Size | 8 | Done |
-| [#67](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/67) | PBI-106 | SQLite Persistence — Drawings, Settings, and Candles | 8 | Done |
-| [#68](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/68) | PBI-107 | 50k Candle Support + Two-Phase Load + Pagination | 5 | Done |
-| [#69](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/69) | PBI-108 | WebSocket Heartbeat + LIVE Status Indicator | 3 | Done |
-| [#70](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/70) | PBI-109 | Pattern Analysis UI — Sliding Window + Visualization | 8 | Done |
-| [#61](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/61) | PBI-110 | Coin Sidebar — Full Ticker, Trend Colors, 6-Digit Price Format | 3 | Done |
-| [#71](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/71) | PBI-111 | Theme Persistence + Light Theme Fix + Theme-Aware Drawing Colors | 3 | Done |
+| [#62](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/62) | PBI-101 | Drawing Toolbar Engine — 13-tool canvas overlay | 3 | Done |
+| [#64](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/64) | PBI-102 | Advanced Drawing Tools — Fibonacci, Price Range %, Text tool | 2 | Done |
+| [#63](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/63) | PBI-103 | Redact Mode + Selection + Drag-to-Move/Reshape | 1 | Done |
+| [#66](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/66) | PBI-104 | Undo System — Add/Modify/Delete support | 1 | Done |
+| [#65](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/65) | PBI-105 | Per-Drawing Settings Panel — Color, Width, Line Style, Font Size | 1 | Done |
+| [#67](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/67) | PBI-106 | SQLite Persistence — Drawings, Settings, and Candles | 2 | Done |
+| [#68](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/68) | PBI-107 | 50k Candle Support + Two-Phase Load + Pagination | 1 | Done |
+| [#69](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/69) | PBI-108 | WebSocket Heartbeat + LIVE Status Indicator | 1 | Done |
+| [#70](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/70) | PBI-109 | Pattern Analysis UI — Sliding Window + Visualization | 1 | Done |
+| [#61](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/61) | PBI-110 | Coin Sidebar — Full Ticker, Trend Colors, 6-Digit Price Format | 1 | Done |
+| [#71](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/71) | PBI-111 | Theme Persistence + Light Theme Fix + Theme-Aware Drawing Colors | 1 | Done |
 | [#72](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/72) | — | Bug Fixes Batch (drag undo, delete undo, race condition, canvas leak, dead code, etc.) | — | Done |
-| [#74](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/74) | PBI-112 | API Rate Limiting, DB Query Optimisation & Candle Performance | 8 | Done |
-| [#75](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/75) | PBI-113 | Coin Switch Stability & Loading Overlay | 5 | Done |
-| [#76](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/76) | PBI-114 | Frontend Candle Cache & Zoom-Out Lazy Loading | 5 | Done |
+| [#74](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/74) | PBI-112 | API Rate Limiting, DB Query Optimisation & Candle Performance | 2 | Done |
+| [#75](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/75) | PBI-113 | Coin Switch Stability & Loading Overlay | 1 | Done |
+| [#76](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/76) | PBI-114 | Frontend Candle Cache & Zoom-Out Lazy Loading | 1 | Done |
 
 ---
 

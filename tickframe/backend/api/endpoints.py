@@ -74,6 +74,10 @@ async def get_candles(
     return payload
 
 
+class AnalyzeRequest(BaseModel):
+    candles: list[dict] | None = None
+
+
 @router.post("/analyze/{symbol}", response_model=AnalyzeResponse)
 async def analyze_patterns(
     symbol: str,
@@ -127,10 +131,6 @@ class DrawingsPayload(BaseModel):
 
 class SettingsPayload(BaseModel):
     settings: dict[str, str] = {}
-
-
-class AnalyzeRequest(BaseModel):
-    candles: list[dict] | None = None
 
 
 @router.get("/drawings")
