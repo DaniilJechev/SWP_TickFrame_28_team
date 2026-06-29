@@ -1,0 +1,326 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{titlesec}
+\usepackage{longtable}
+\usepackage[left=1cm, right=1cm, top=2.5cm, bottom=2.5cm]{geometry}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,
+    urlcolor=cyan,
+    pdftitle={Assignment 3 Moodle Submission Report - Team 28},
+}
+
+\titleformat{\section}{\large\bfseries}{\thesection}{1em}{}[{\titlerule[0.5pt]}]
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{1em}{}
+
+\begin{document}
+
+% =========================================================================
+% HEADER
+% =========================================================================
+\begin{center}
+    {\large \textbf{INNOPOLIS UNIVERSITY}} \\
+    \vspace{0.1cm}
+    {\large \textbf{Software Project (SWP) — Spring 2026}} \\
+    \vspace{0.5cm}
+    \textbf{\Large Assignment 3: MVP v1 Delivery Report} \\
+    \vspace{0.3cm}
+    \textbf{Project Name:} SWP TickFrame \quad | \quad \textbf{Team Number:} Team 28 \\
+    \textbf{Submission Date:} \today
+\end{center}
+
+\vspace{0.5cm}
+
+% =========================================================================
+% SECTION 1: TEAM STRUCTURE & TECHNICAL RESPONSIBILITIES
+% =========================================================================
+\section{Team Structure and Technical Responsibilities}
+The table below maps out the official Scrum framework roles and technical ownership fields established inside Team 28 for the execution of this project.
+
+\vspace{0.2cm}
+\begin{table}[h!]
+    \centering
+    \small
+    \begin{tabular}{lllll}
+        \toprule
+        \textbf{Full Name} & \textbf{University Email} & \textbf{GitHub} & \textbf{Scrum Role} & \textbf{Technical Domain} \\
+        \midrule
+        Daniil Zhechev & d.zhechev@innopolis.university & \href{https://github.com/DaniilJechev}{DaniilJechev} & Scrum Master & ML engineer / Quant Engineer \\
+        F. Kozhevnikov & f.kozhevnikov@innopolis.university & \href{https://github.com/Fedos113}{Fedos113} & Product Owner & Backend / Task management \\
+        A. Gafarov & a.gafarov@innopolis.university & \href{https://github.com/omarichev}{omarichev} & Developer & Backend / Data pipeline \\
+        A. Mindubaev & a.mindubaev@innopolis.university & \href{https://github.com/pug228}{pug228} & Developer & Frontend / Backend \\
+        M. Bezborodov & m.bezborodov@innopolis.university & \href{https://github.com/MikhailBezborodov024}{Mikhail...} & Developer & Frontend / UI implementation \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+% =========================================================================
+% SECTION 2: SUMMARY OF CONTRIBUTIONS
+% =========================================================================
+\section{Summary of Contributions}
+
+% TODO: Fill in each member's concrete contributions for Week 3 / MVP v1.
+% Keep entries short and verifiable (link to issues or commits where possible).
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Daniil Zhechev (Product Owner):} TODO — product backlog prioritisation, MVP v1 scope definition, customer review facilitation.
+    \item \textbf{F. Kozhevnikov (Scrum Master):} TODO — sprint planning, process documentation, release management.
+    \item \textbf{A. Gafarov (Developer):} Updated \texttt{docs/user-stories.md} (closes \#21, \#24); merged branch \texttt{user-stories-docs-upd} into main.
+    \item \textbf{A. Mindubaev (Developer):} TODO — backend/data pipeline tasks in Sprint 2.
+    \item \textbf{M. Bezborodov (Developer):} TODO — frontend/UI implementation tasks in Sprint 2.
+\end{itemize}
+
+% =========================================================================
+% SECTION 3: COMMIT-HASH PERMALINKS
+% =========================================================================
+\section{Commit-Hash Permalinks}
+
+\subsection{reports/week3/README.md}
+\url{https://github.com/Fedos113/SWP_TickFrame_28_team/blob/db270ad4934d73d3cf4e1daffbd9d183ae8fc96b/reports/week3/README.md}
+
+\subsection{Submission commit — repository tree}
+% Replace SUBMISSION_COMMIT_HASH with the full SHA of the submission commit on main.
+% The latest known main tip at packaging time: 86e19a02e9f8c0373b8a874a2714963bdbc6e48f
+% Verify it is on the protected default branch before submission.
+\url{https://github.com/Fedos113/SWP_TickFrame_28_team/tree/86e19a02e9f8c0373b8a874a2714963bdbc6e48f}
+
+% =========================================================================
+% SECTION 4: LIVE BOARD AND BACKLOG LINKS
+% =========================================================================
+\section{Live Board and Backlog Links}
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Product Backlog board/view:} \\
+          % TODO: Replace with the actual GitHub Projects URL for the Product Backlog view.
+          \url{https://github.com/users/Fedos113/projects/1/views/1}
+
+    \item \textbf{Current Sprint Backlog board/view:} \\
+          % TODO: Replace with the Sprint 2 board/view URL.
+          \url{https://github.com/users/Fedos113/projects/1/views/1}
+
+    \item \textbf{Current Sprint milestone:} \\
+          \url{https://github.com/Fedos113/SWP_TickFrame_28_team/milestone/2}
+
+    \item \textbf{MVP v1 scope (version field / grouped view):} \\
+          % TODO: Link to the filtered Project view or label/milestone that groups MVP v1 PBIs.
+          \url{https://github.com/users/Fedos113/projects/1/views/1}
+
+    \item \textbf{SemVer release mapped to MVP v1:} \\
+          % TODO: Replace with the GitHub Release URL once the tag is published (e.g. v1.0.0).
+          \url{https://github.com/Fedos113/SWP_TickFrame_28_team/releases/tag/SemVer-MVPv1}
+
+    \item \textbf{Delivered MVP v1 deployment / runnable artifact:} \\
+          % TODO: Link to the deployment URL, Docker image, or the release artifact download.
+          \url{http://10.93.26.164:8000/}
+
+    \item \textbf{Public sanitized video demonstration ($<$2 min):} \\
+          % TODO: Paste the public video URL (YouTube unlisted, Loom, etc.).
+          \url{https://TODO_PUBLIC_VIDEO_URL}
+\end{itemize}
+
+% =========================================================================
+% SECTION 5: LIVE DOCUMENTATION LINKS
+% =========================================================================
+\section{Live Documentation Links}
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{docs/user-stories.md:} \url{https://github.com/Fedos113/SWP_TickFrame_28_team/blob/main/docs/user-stories.md}
+    \item \textbf{docs/roadmap.md:} \url{https://github.com/Fedos113/SWP_TickFrame_28_team/blob/main/docs/roadmap.md}
+    \item \textbf{docs/definition-of-done.md:} \url{https://github.com/Fedos113/SWP_TickFrame_28_team/blob/main/docs/definition-of-done.md}
+    \item \textbf{CHANGELOG.md:} \url{https://github.com/Fedos113/SWP_TickFrame_28_team/blob/main/CHANGELOG.md}
+\end{itemize}
+
+% =========================================================================
+% SECTION 6: REVIEWED ISSUE-LINKED PR/MR EVIDENCE
+% =========================================================================
+\section{Reviewed Issue-Linked PRs / MRs (Assignment 3 Evidence)}
+
+Each listed PR is linked to at least one issue and has been reviewed by a different team member.
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{PR \#28:} MVP v1 core implementation — FastAPI backend, WebSocket streaming, TradingView Lightweight Charts, coin sidebar, theme toggle. \\
+          \textbf{Closes issues:} \#6 (US-02), \#16 (US-13). \\
+          \textbf{Author:} Mikhail Bezborodov. \\
+          \textbf{Reviewer:} Alan Mindubaev (pug228) — APPROVED. \\
+          \url{https://github.com/Fedos113/SWP_TickFrame_28_team/pull/28}
+
+    \item \textbf{PR \#30:} Customer review transcript and summary for Week 3 review meeting. \\
+          \textbf{Closes issue:} \#29. \\
+          \textbf{Author:} Alan Mindubaev (pug228). \\
+          \textbf{Reviewer:} Mikhail Bezborodov — APPROVED. \\
+          \url{https://github.com/Fedos113/SWP_TickFrame_28_team/pull/30}
+
+    \item \textbf{PR \#37:} Docker Compose deployment setup, README update with Docker-first instructions. \\
+          \textbf{Closes issue:} \#8. \\
+          \textbf{Author:} Fedor Kozhevnikov (Fedos113). \\
+          \textbf{Reviewer:} Amir Gafarov (Omarichev) — APPROVED. \\
+          \url{https://github.com/Fedos113/SWP_TickFrame_28_team/pull/37}
+
+    \item \textbf{PR \#38:} Updated \texttt{docs/roadmap.md} with Sprint 2 milestone and backlog items. \\
+          \textbf{Closes issue:} \#36. \\
+          \textbf{Author:} Amir Gafarov (Omarichev). \\
+          \textbf{Reviewer:} Daniil Zhechev (DaniilJechev) — commented: ``precise, concise, clear''. \\
+          \url{https://github.com/Fedos113/SWP_TickFrame_28_team/pull/38}
+\end{itemize}
+
+% =========================================================================
+% SECTION 7: MVP v1 ACCESS INSTRUCTIONS
+% =========================================================================
+\section{MVP v1 Access Instructions}
+
+The MVP v1 architecture has migrated from the legacy Python \texttt{http.server} dashboard to a \textbf{FastAPI + Docker} stack. Two access methods are available.
+
+\subsection{Method A — Docker (recommended)}
+
+\begin{enumerate}[leftmargin=*]
+    \item Clone the repository at the submission commit:
+\begin{verbatim}
+git clone https://github.com/Fedos113/SWP_TickFrame_28_team.git
+cd SWP_TickFrame_28_team
+git checkout 86e19a02e9f8c0373b8a874a2714963bdbc6e48f
+\end{verbatim}
+
+    \item Copy the environment template:
+\begin{verbatim}
+cp .env.example .env
+\end{verbatim}
+
+    \item Build and run with Docker Compose:
+\begin{verbatim}
+docker compose up --build
+\end{verbatim}
+
+    \item Open \texttt{http://localhost:8000} in a browser to access the interactive chart dashboard.
+\end{enumerate}
+
+\subsection{Method B — Local development (no Docker)}
+
+\begin{enumerate}[leftmargin=*]
+    \item Clone and checkout as above.
+    \item Create a virtual environment and install dependencies:
+\begin{verbatim}
+python -m venv .venv
+.venv\Scripts\Activate.ps1   # Windows
+# source .venv/bin/activate  # Linux/macOS
+pip install -r requirements.txt
+\end{verbatim}
+
+    \item Start the FastAPI server:
+\begin{verbatim}
+uvicorn tickframe.backend.main:app --host 0.0.0.0 --port 8000
+\end{verbatim}
+
+    \item Open \texttt{http://localhost:8000} in a browser.
+\end{enumerate}
+
+\subsection{Verification}
+
+Once the server is running, confirm the following endpoints respond:
+
+\begin{itemize}
+    \item \texttt{GET /api/health} — returns \texttt{\{"status": "ok"\}}
+    \item \texttt{GET /api/coins} — returns the list of available trading pairs with live prices
+    \item \texttt{GET /api/coins/BTCUSDT/candles?interval=5m\&limit=200} — returns OHLCV candle data
+    \item \texttt{WS /ws/candles/BTCUSDT?interval=5m} — real-time candle stream (connect via WebSocket client)
+\end{itemize}
+
+% =========================================================================
+% SECTION 8: CUSTOMER RECORDING
+% =========================================================================
+\section{Customer Review Recording}
+
+% Choose one of the three scenarios below and delete the others.
+
+\textbf{Recording link (instructor access only):} \\
+\url{https://drive.google.com/file/d/121GWX0VmC4rNTLTfhMKUcJPEN2YKI3Ks/view?usp=sharing} \\
+\textit{Permissions are restricted to Innopolis University instructors and graders.}
+
+% --- SCENARIO B: Recording refused / not made ---
+% No recording was made or the customer refused recording. See Section 9 for
+% detailed notes from the review session.
+
+% --- SCENARIO C: Recording permitted, public ---
+% \textbf{Public recording:} \url{https://TODO_PUBLIC_VIDEO_URL}
+
+% TODO: Remove placeholder text above and keep only the applicable scenario.
+
+% =========================================================================
+% SECTION 9: CUSTOMER REVIEW TRANSCRIPT / NOTES
+% =========================================================================
+\section{Customer Review Transcript and Notes}
+
+The full sanitized English transcript is available at:
+\texttt{reports/week3/customer-review-transcript.md}
+
+\subsection{Review date and participants}
+\textbf{Date:} June 19, 2026 \\
+\textbf{Facilitator:} Fedor Kozhevnikov \\
+\textbf{Scribe:} Alan Mindubaev \\
+\textbf{Participants:} Mikhail Bezborodov, Amir Gafarov
+
+\subsection{Artifacts reviewed}
+\begin{itemize}
+    \item Current MVP v1 scope (Product Backlog, Sprint Backlog)
+    \item Delivered MVP v1 increment (demo / deployment)
+    \item Figma dashboard design covering all previously defined user stories
+\end{itemize}
+
+\subsection{Customer feedback summary}
+The customer reviewed the Figma dashboard design and the current MVP v1 implementation. Key feedback points:
+
+\begin{itemize}
+    \item \textbf{Indicators required:} Fear \& Greed Index, volume chart, and RSI indicator must be added to the dashboard.
+    \item \textbf{Drawing tools:} A drawing toolbar (figures, Fibonacci, brush) is needed on the chart.
+    \item \textbf{Theme support:} Both light and dark themes should be supported.
+    \item \textbf{Customization:} Candle color customization was requested.
+    \item \textbf{Authentication:} Confirmed not required for MVP.
+    \item \textbf{Pattern visualization:} Additional Figma screens are needed to demonstrate how patterns, metrics, and multiple simultaneous patterns will be displayed.
+    \item \textbf{Pattern list:} A dedicated pattern panel (similar to the coin list) was suggested — selecting a pattern should highlight its location on the chart.
+    \item \textbf{Continuous scanning:} ML should scan the entire chart using rolling windows, not just the latest 50 candles.
+    \item \textbf{Charting library:} TradingView's capabilities must be researched; alternatives should be evaluated if TradingView cannot satisfy all requirements.
+    \item \textbf{Task tracking:} GitHub Projects was recommended for Kanban-style task management.
+\end{itemize}
+
+\subsection{Approvals and requested changes}
+
+\textbf{Approved for MVP:}
+\begin{itemize}
+    \item Fear \& Greed Index
+    \item Volume chart
+    \item RSI indicator
+    \item Drawing tools
+    \item Theme switching (light/dark)
+    \item Exclusion of authentication/registration
+\end{itemize}
+
+\textbf{Requested changes / follow-up:}
+\begin{itemize}
+    \item Research TradingView capabilities and limitations before adopting it as the primary charting solution.
+    \item Evaluate alternative charting technologies if TradingView cannot satisfy all requirements.
+    \item Extend Figma with pattern visualization and metric placement examples.
+    \item Define final pattern representation and behavior for multiple simultaneous patterns.
+    \item Continue reviewing Figma updates asynchronously without scheduling another meeting.
+\end{itemize}
+
+\subsection{Resulting Product Backlog updates}
+The following PBIs were added or re-prioritised based on customer feedback:
+
+\begin{itemize}
+    \item \textbf{US-10 — Volume chart below the main chart} — promoted to Sprint 3 (was backlog).
+    \item \textbf{US-11 — RSI chart below the main chart} — promoted to Sprint 3 (was backlog).
+    \item \textbf{US-13 — Toggle between day theme and night theme} — promoted to Sprint 3 (was backlog).
+    \item \textbf{Crypto Fear \& Greed Index} — new PBI added to the product backlog.
+    \item \textbf{Drawing toolbar (US-08)} — remained in backlog, priority confirmed as Should Have.
+    \item \textbf{Authentication/registration} — formally removed from MVP scope.
+\end{itemize}
+
+Full transcript with timestamps: \texttt{reports/week3/customer-review-transcript.md} \\
+Summary of decisions: \texttt{reports/week3/customer-review-summary.md}
+
+\end{document}
