@@ -173,11 +173,11 @@ SWP_TickFrame_28_team/
 - **Story Points:** 19 (all 15 PBIs delivered)
 - **Week 4 Reports:** [`reports/week4/README.md`](../../reports/week4/README.md)
 
-### Sprint 4 — Week 5 (Assignment 5 · MVP v2)
+### Sprint 4 — Week 5 (Assignment 5 · MVP v2 developed here)
 - **Milestone:** [Sprint 4](https://github.com/Fedos113/SWP_TickFrame_28_team/milestone/5)
-- **Goal:** MVP v2 — architecture hardening, customer feedback response, process documentation, deployment docs
+- **Goal:** Deliver MVP v2 — architecture hardening, customer feedback response, process documentation, deployment docs
 - **Release:** [v2.0.0](https://github.com/Fedos113/SWP_TickFrame_28_team/releases/tag/v2.0.0)
-- **Scope:** Not yet refined. Must address customer feedback from Sprint 3.
+- **Scope:** All Sprint 4 PBIs define MVP v2 scope. Must address customer feedback from Sprint 3.
 
 ---
 
