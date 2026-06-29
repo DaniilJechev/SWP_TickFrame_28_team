@@ -7,9 +7,9 @@ Deliver **MVP v2** with a strong emphasis on **architecture reasoning**, **maint
 
 ### **Part-by-Part Breakdown**
 
-**Part 1: Refine Product Backlog & Plan Sprint 3**
+**Part 1: Refine Product Backlog & Plan sprint 4**
 *   Review feedback, risks, and unfinished work.
-*   Create/update Product Backlog Items (PBIs) and assign them to a **Sprint 3 milestone** (with dates, goal, story points, assignees).
+*   Create/update Product Backlog Items (PBIs) and assign them to a **sprint 4 milestone** (with dates, goal, story points, assignees).
 *   Update `docs/roadmap.md` to reflect the current direction and MVP v2 scope.
 
 **Part 2: Respond to Customer Feedback**
