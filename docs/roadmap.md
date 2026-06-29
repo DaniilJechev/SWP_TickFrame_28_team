@@ -71,7 +71,7 @@
 
 | Field | Value |
 |---|---|
-| **Milestone** | Sprint 4 |
+| **Milestone** | [Sprint 4](https://github.com/Fedos113/SWP_TickFrame_28_team/milestone/5) |
 | **Goal** | Drawing tools, volume/RSI sub-charts, user settings. |
 | **Focus** | Feature depth, usability polish |
 
