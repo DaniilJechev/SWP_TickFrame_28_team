@@ -58,7 +58,12 @@ SWP_TickFrame_28_team/
 │   │   ├── breakdown.md         # Empty — for task breakdown
 │   │   ├── memory5.md           ← This file
 │   │   ├── issue_template.md    # Week 5 issue template (PBIs, docs, course tasks)
-│   │   └── contributions.md     # Contribution tracking table (fill per member)
+│   │   ├── contributions.md     # Contribution tracking table (fill per member)
+│   │   ├── 2-plan.md            # Delivery plan: Parts 3–5 (dev process, architecture, ADRs)
+│   │   ├── 3-plan.md            # Delivery plan: Part 6 (testing, QA, DoD)
+│   │   ├── 5-plan.md            # Delivery plan: Part 8 (UAT)
+│   │   ├── 6-plan.md            # Delivery plan: Parts 9–13 (Sprint Review, retro, hosted docs, reflection, demo)
+│   │   └── 7-plan.md            # Delivery plan: Moodle PDF submission
 │   ├── old/                     # Earlier assignment specs
 │   ├── Process_Requirements.md  # Scrum/workflow semantics (218 lines)
 │   └── Repository_Requirements.md # Platform/repo mechanics (335 lines)
@@ -408,6 +413,13 @@ Current DoD requires:
 - [ ] **Fill [`reports/week5/llm-report.md`](../../reports/week5/llm-report.md)** (empty template exists)
 - [ ] **Create [`reports/week5/images/`](../../reports/week5/images/)** — screenshots (milestone, board, CI, release, PR, hosted docs) (empty directory exists)
 
+### Week 5 Planning Artifacts (Course Tasks)
+- [x] **Create [`assignments/5/2-plan.md`](2-plan.md)** — structured guide + checklist for Parts 3–5 (dev-process doc, architecture views, ADRs)
+- [x] **Create [`assignments/5/3-plan.md`](3-plan.md)** — structured guide + checklist for Part 6 (testing, QA, DoD)
+- [x] **Create [`assignments/5/5-plan.md`](5-plan.md)** — structured guide + checklist for Part 8 (UAT scenarios, execution)
+- [x] **Create [`assignments/5/6-plan.md`](6-plan.md)** — structured guide + checklist for Parts 9–13 (Sprint Review, retro, hosted docs, reflection, demo)
+- [x] **Create [`assignments/5/7-plan.md`](7-plan.md)** — structured guide + checklist for Moodle PDF submission
+
 ### Moodle PDF (Private)
 - [ ] **Create PDF** with team table, commit permalinks, recording links, private access instructions
 
@@ -608,7 +620,28 @@ Branch `part-1-2` contains the following contributions by **F. Kozhevnikov ([Fed
 
 ---
 
-## 20. Current Branch Contributions (`121-dev-process-docs`)
+## 20. Current Branch Contributions (`week5-planning`)
+
+Branch `week5-planning` contains the following planning artifacts created to guide the team in executing remaining Week 5 deliverables:
+
+| File | Target Parts | What it provides |
+|---|---|---|
+| [`assignments/5/2-plan.md`](2-plan.md) | Parts 3–5 | Full guide + checklist for dev-process doc, architecture diagrams, and 3 ADRs |
+| [`assignments/5/3-plan.md`](3-plan.md) | Part 6 | Full guide + checklist for extending testing, QA docs, QRTs, and DoD |
+| [`assignments/5/5-plan.md`](5-plan.md) | Part 8 | Full guide + checklist for UAT scenarios (UAT-006, UAT-007), execution, and reporting |
+| [`assignments/5/6-plan.md`](6-plan.md) | Parts 9–13 | Full guide + checklist for Sprint Review, retrospective, hosted docs, reflection, demo video |
+| [`assignments/5/7-plan.md`](7-plan.md) | Moodle PDF | Full guide + checklist for the private Moodle submission wrapper (copy from A4 `.tex` template) |
+
+### Impact on A5 Gap Analysis
+- Parts 3–5: **plan exists** at `2-plan.md` — team should execute it
+- Part 6: **plan exists** at `3-plan.md` — team should execute it
+- Part 8: **plan exists** at `5-plan.md` — team should execute it
+- Parts 9–13: **plan exists** at `6-plan.md` — team should execute it
+- Moodle PDF: **plan exists** at `7-plan.md` — team should execute it
+
+---
+
+## 21. Current Branch Contributions (`121-dev-process-docs`)
 
 Branch `121-dev-process-docs` contains the following contributions by **A. Mindubaev ([pug228](https://github.com/pug228))** advancing Week 5 deliverables:
 
