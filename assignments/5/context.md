@@ -271,15 +271,17 @@ All documented in:
 
 | UAT | Title | Result | Notes |
 |---|---|---|---|
-| UAT-001 | Scan and view chart patterns | ⏳ Partial | UI shows markers, ML as separate service |
-| UAT-002 | Toggle chart timeframes | ❌ Not tested | Only 5m available |
+| UAT-001 | Scan and view chart patterns | ⏳ Partial | ML perf optimized (XGBoost, &lt;0.5s/1k). Pattern segments merged. Labels pending. |
+| UAT-002 | Toggle chart timeframes | ⏳ Partial | 5 timeframes available (5m/15m/1h/4h/1d). Near-instant cached load. No loading overlay on switch. |
 | UAT-003 | Export scan results | ⏳ Not demonstrated | — |
 | UAT-004 | Real-time sidebar | ✅ Pass | 10 pairs with live prices |
 | UAT-005 | Theme toggle | ✅ Pass | Works across reloads |
+| UAT-006 | Configure analysis range | 🔄 New | Configurable 100–500000 candle limit ([PBI-122](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/123)) |
+| UAT-007 | Sidebar resize & UI | 🔄 New | Draggable resize 150–400px, persisted. UI clutter removed ([PBI-125](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/126)) |
 
 **Documentation:** [`docs/user-acceptance-tests.md`](../../docs/user-acceptance-tests.md)
 
-**Assignment 5 requires:** At least 2 new UAT scenarios for MVP v2 functionality.
+**Assignment 5 requires:** At least 2 new UAT scenarios for MVP v2 functionality — ✅ 2 added (UAT-006, UAT-007).
 
 ---
 
@@ -288,7 +290,7 @@ All documented in:
 Key feedback points from 2026-06-26 Sprint Review (see [`reports/week4/customer-review-summary.md`](../../reports/week4/customer-review-summary.md)):
 
 | Feedback | Priority | PBI | Status |
-|---|---|---|---|---|
+|---|---|---|---|
 | Migrate REST polling → WebSocket subscription | Critical | [#110 PBI-115](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/110) | To Do |
 | Implement DB caching for candles | Critical | [~~#111 PBI-116~~](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/111) → [#122 PBI-121](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/122) | ✅ Done (multi-interval caching) |
 | Add RSI sub-chart | High | [#112 PBI-117](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/112) | To Do |
