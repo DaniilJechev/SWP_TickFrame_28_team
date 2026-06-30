@@ -33,7 +33,7 @@
 
 ---
 
-## Sprint 3 — v1.2.0 Drawing Tools + Quality Gates
+## Sprint 3 — v1.1.0 Drawing Tools + Quality Gates
 
 | Field | Value |
 |---|---|
@@ -67,22 +67,38 @@
 
 ---
 
-## Sprint 4 — Planned
+## Sprint 4 — MVP v2 (Assignment 5)
 
 | Field | Value |
 |---|---|
 | **Milestone** | [Sprint 4](https://github.com/Fedos113/SWP_TickFrame_28_team/milestone/5) |
-| **Goal** | Drawing tools, volume/RSI sub-charts, user settings. |
-| **Focus** | Feature depth, usability polish |
+| **Dates** | Week 5 (2026-06-30 – 2026-07-06) |
+| **Goal** | Deliver MVP v2 by addressing all critical customer feedback from Sprint 3: WebSocket migration, DB caching, RSI/Volume sub-charts, multi-interval support, and analysis range fix. |
+| **Focus** | Customer-driven improvements, architecture hardening, real-time data pipeline |
+
+**Planned items (customer feedback PBIs):**
+
+- [#110 PBI-115](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/110) — Migrate REST polling → WebSocket subscription (Critical)
+- [#111 PBI-116](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/111) — Implement SQLite-based candle caching (Critical)
+- [#112 PBI-117](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/112) — Add RSI indicator sub-chart (High)
+- [#113 PBI-118](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/113) — Add Volume sub-chart (High)
+- [#114 PBI-119](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/114) — Reduce analysis range to 50k candles (Medium)
+- [#115 PBI-120](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/115) — Multi-interval support 15m/1h/4h/1d (Medium)
+
+---
+
+## Sprint 5 — Planned (Next)
+
+| Field | Value |
+|---|---|
+| **Goal** | TBD — architecture docs, ADRs, process documentation |
+| **Focus** | Maintained documentation, quality gates, testing expansion |
 
 **Planned items:**
-
-- US-08 — Drawing toolbar (figures, Fibonacci, brush)
-- US-10 — Volume chart below main chart
-- US-11 — RSI chart below main chart
 - US-12 — Crypto Fear and Greed Index
 - US-14 — Customize chart colors in settings
-- Additional QA and coverage improvements
+- Frontend JS test coverage
+- QRT re-design for updated QR-003 threshold (F2 ≥ 55%)
 
 ---
 
