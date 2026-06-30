@@ -7,13 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- Nothing yet.
+- **Multi-interval database caching & warmup**: Backend warmup loads candles for all 5 intervals (5m, 15m, 1h, 4h, 1d) from SQLite into memory in parallel. Three-tier cache (mem → DB → exchange) with sub-millisecond cache hits on coin/interval switch. ([#122](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/122))
+- **Configurable candle analysis limit**: Input field next to ANALYZE PATTERNS button lets users set 100–500000 candles for pattern detection. Passed as `limit` param to `/api/analyze/{symbol}`. ([#123](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/123))
+- **ML pattern visualization with merged segments**: Pattern results rendered as merged, non-overlapping window segments (50-candle windows) with dotted red vertical boundary lines. Overlapping segments merged into contiguous blocks. ([#124](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/124))
+- **ML inference performance optimization**: XGBoost-based pipeline replaces slow TensorFlow approach. Inference time reduced from >10s to <0.5s per 1k candles with NMS clustering and smart geometry features. ([#125](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/125))
+- **Sidebar resize with persistence**: Draggable resize handle between sidebar and main area. Width constrained to 150–400px and persisted in localStorage (`tickframe_sidebar_width`). Touch event support included. ([#126](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/126))
+- **Cache-busting for static assets**: `?v=1` query param appended to all CSS/JS links to force browser cache invalidation on deployment. ([#126](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/126))
+- **Timeframe switching UI**: Working interval selector buttons (5m, 15m, 1h, 4h, 1d) in top bar trigger chart reload and WebSocket restart for selected interval.
 
 ### Changed
-- Nothing yet.
+- **Timeframe warmup expanded**: From single 5m interval to all 5 intervals (5m, 15m, 1h, 4h, 1d) during cache warmup phase.
+- **Analysis input default**: Default candle limit changed from hardcoded 50000 to configurable 10000 (range 100–500000).
 
 ### Fixed
-- Nothing yet.
+- **Pattern segment collision**: Overlapping 50-candle window segments are now merged into contiguous blocks instead of rendering overlapping/double boundary lines.
+- **V-line positioning**: `_visibleBottomPrice()` helper fixes v-line rendering at bottom of visible price range instead of hardcoded price=0.
+- **Text tool 1-point commit logic**: Fixed to only auto-commit single-point tools that aren't the text tool (which requires label input).
+
+### Removed
+- **Search input**: Removed from sidebar (no backend search support).
+- **Toolbar status bar** (`#tb-status`): Redundant status indicator removed.
+- **Redact button** from left toolbar: Superfluous entry removed.
 
 ---
 

@@ -183,8 +183,8 @@ SWP_TickFrame_28_team/
 - **Milestone:** [Sprint 4](https://github.com/Fedos113/SWP_TickFrame_28_team/milestone/5)
 - **Dates:** 2026-06-30 – 2026-07-06
 - **Goal:** Deliver MVP v2 — WebSocket migration, DB caching, RSI/Volume sub-charts, multi-interval support, analysis range fix
-- **Total Story Points:** 18
-- **PBIs:** 6 customer-driven PBIs ([#110](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/110)–[#115](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/115))
+- **Total Story Points:** 13 (5 completed + 8 remaining; 3 superseded PBIs folded into new scope)
+- **PBIs:** 8 total — 5 completed ([#122](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/122)–[#126](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/126)), 3 remaining ([#110](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/110), [#112](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/112), [#113](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/113))
 - **Release:** [v2.0.0](https://github.com/Fedos113/SWP_TickFrame_28_team/releases/tag/v2.0.0)
 - **Scope:** All Sprint 4 PBIs define MVP v2 scope. Addressing all critical customer feedback from Sprint 3.
 
@@ -209,7 +209,7 @@ Note: Tags `v1.1.0` and `v1.2.0` are the same version — duplicate tag created 
 | [Sprint 1](https://github.com/Fedos113/SWP_TickFrame_28_team/milestone/1) | 1 | Open | 0 | 1 |
 | [Sprint 2 - MVP-v1](https://github.com/Fedos113/SWP_TickFrame_28_team/milestone/2) | 2 | Open | 0 | 2 |
 | [Sprint 3 — Assignment 4](https://github.com/Fedos113/SWP_TickFrame_28_team/milestone/3) | 3 | Open | 0 | 25 |
-| **[Sprint 4](https://github.com/Fedos113/SWP_TickFrame_28_team/milestone/5)** | **5** | **Active** | **6** | **0** |
+| **[Sprint 4](https://github.com/Fedos113/SWP_TickFrame_28_team/milestone/5)** | **5** | **Active** | **6** (3 open + 3 superseded closed) | **5** |
 | **MVP v2** | **—** | **—** | **—** | **Release v2.0.0** |
 
 ---
@@ -290,11 +290,11 @@ Key feedback points from 2026-06-26 Sprint Review (see [`reports/week4/customer-
 | Feedback | Priority | PBI | Status |
 |---|---|---|---|---|
 | Migrate REST polling → WebSocket subscription | Critical | [#110 PBI-115](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/110) | To Do |
-| Implement DB caching for candles | Critical | [#111 PBI-116](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/111) | To Do |
+| Implement DB caching for candles | Critical | [~~#111 PBI-116~~](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/111) → [#122 PBI-121](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/122) | ✅ Done (multi-interval caching) |
 | Add RSI sub-chart | High | [#112 PBI-117](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/112) | To Do |
 | Add Volume sub-chart | High | [#113 PBI-118](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/113) | To Do |
-| Reduce analysis range 150k → 50k candles | Medium | [#114 PBI-119](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/114) | To Do |
-| Multi-interval support (15m, 1h, 4h, 1d) | Medium | [#115 PBI-120](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/115) | To Do |
+| Reduce analysis range 150k → 50k candles | Medium | [~~#114 PBI-119~~](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/114) → [#123 PBI-122](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/123) | ✅ Done (configurable limit) |
+| Multi-interval support (15m, 1h, 4h, 1d) | Medium | [~~#115 PBI-120~~](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/115) → [#122 PBI-121](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/122) | ✅ Done (5 intervals cached & switchable) |
 | Candle colour customization | Low | US-14 in backlog | Deferred |
 
 **Assignment 5 requires:** Customer feedback response table in week 5 report. Feedback must be addressed unless justified.
@@ -321,7 +321,7 @@ Current DoD requires:
 
 ## 14. What Assignment 5 Requires (Gap Analysis)
 
-> **Contributions on `part-1-2` (F. Kozhevnikov):** Repository reorganized (A4 files → `assignments/4/`, old specs → `assignments/old/`), A5 scaffolding created (spec, artifact requirements, templates, issue template, context, contributions table), `lychee.yml` and `roadmap.md` updated, `Process_Requirements.md` and `Repository_Requirements.md` aligned. See §19 for full details.
+> **Contributions on `MVPv2` (F. Kozhevnikov):** Repository reorganized (A4 files → `assignments/4/`, old specs → `assignments/old/`), A5 scaffolding created (spec, artifact requirements, templates, issue template, context, contributions table), `lychee.yml` and `roadmap.md` updated, `Process_Requirements.md` and `Repository_Requirements.md` aligned, plus frontend optimisations (sidebar resize, cache-busting, analysis range input, Docker live-reload). See §19 for full details.
 
 ### Part 1: Product Backlog & Sprint 4 Planning
 - [x] **Refine Product Backlog** — 6 PBIs created from Sprint 3 customer feedback ([#110](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/110)–[#115](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/115))
@@ -363,8 +363,8 @@ Current DoD requires:
 - [ ] **Update DoD** if architecture/deployment/workflow changes
 
 ### Part 7: Implement, Release, Deploy MVP v2
-- [ ] **Implement Sprint 4 scope** — issue-linked PRs, reviewed
-- [ ] **Update [`CHANGELOG.md`](../../CHANGELOG.md)**
+- [x] **Implement Sprint 4 scope** — 5/8 PBIs completed ([#122](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/122)–[#126](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/126)), 3 remaining ([#110](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/110), [#112](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/112), [#113](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/113))
+- [x] **Update [`CHANGELOG.md`](../../CHANGELOG.md)** — Unreleased section populated with all implemented features
 - [ ] **Update [`README.md`](../../README.md)** — setup/run/deploy if changed
 - [ ] **Deploy MVP v2** — accessible to customer/TA
 - [ ] **Create SemVer release** — tag `v2.0.0`, maps to MVP v2, links to Sprint 4 milestone, run instructions, demo video, week 5 report
@@ -435,15 +435,29 @@ Current DoD requires:
 | Sprint 4 | https://github.com/Fedos113/SWP_TickFrame_28_team/milestone/5 |
 | v2.0.0 (MVP v2) | Not yet created |
 
-### Sprint 4 PBIs (Customer Feedback)
+### Sprint 4 PBIs
+#### Completed
+| PBI | Issue | Title | SP | Priority |
+|---|---|---|---|---|
+| PBI-121 | [#122](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/122) | Multi-interval database caching & instant chart loading | 3 | Critical |
+| PBI-122 | [#123](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/123) | Configurable candle analysis limit | 1 | Medium |
+| PBI-123 | [#124](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/124) | ML pattern visualization with merged segments | 2 | High |
+| PBI-124 | [#125](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/125) | ML inference performance optimization (XGBoost) | 5 | Critical |
+| PBI-125 | [#126](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/126) | UI cleanup & sidebar resize | 2 | Medium |
+
+#### Remaining
 | PBI | Issue | Title | SP | Priority |
 |---|---|---|---|---|
 | PBI-115 | [#110](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/110) | WebSocket subscription migration | 5 | Critical |
-| PBI-116 | [#111](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/111) | SQLite candle caching | 3 | Critical |
 | PBI-117 | [#112](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/112) | RSI sub-chart | 3 | High |
 | PBI-118 | [#113](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/113) | Volume sub-chart | 3 | High |
-| PBI-119 | [#114](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/114) | Reduce analysis range to 50k | 1 | Medium |
-| PBI-120 | [#115](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/115) | Multi-interval support | 3 | Medium |
+
+#### Superseded (folded into PBI-121/PBI-122)
+| PBI | Issue | Title | Superseded By |
+|---|---|---|---|
+| ~~PBI-116~~ | ~~[#111](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/111)~~ | ~~SQLite candle caching~~ | PBI-121 |
+| ~~PBI-119~~ | ~~[#114](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/114)~~ | ~~Reduce analysis range to 50k~~ | PBI-122 |
+| ~~PBI-120~~ | ~~[#115](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/115)~~ | ~~Multi-interval support~~ | PBI-121 |
 
 ### Maintained Docs
 | Document | Path |
@@ -524,8 +538,8 @@ Current DoD requires:
 1. **Architecture documentation files exist as empty templates** — `docs/architecture/README.md`, static/dynamic/deployment `.puml` files need content (PlantUML recommended).
 2. **ADR files exist as empty templates** — 3 ADR `.md` files need content, each linking to quality requirements.
 3. **Development-process template exists** — `docs/development-process.md` is empty; needs git workflow, Mermaid gitGraph, config management.
-4. **Sprint 4 milestone** — [created](https://github.com/Fedos113/SWP_TickFrame_28_team/milestone/5) with 6 PBIs assigned.
-5. **Sprint 4 PBIs** — 6 created ([#110](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/110)–[#115](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/115)), all in To Do.
+4. **Sprint 4 milestone** — [created](https://github.com/Fedos113/SWP_TickFrame_28_team/milestone/5) with 5 completed PBIs + 3 remaining.
+5. **Sprint 4 PBIs** — 5 completed ([#122](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/122)–[#126](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/126)), 3 remaining ([#110](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/110), [#112](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/112), [#113](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/113)).
 6. **Week 5 report files exist as empty templates** — `reports/week5/README.md` and 6 sub-reports need content.
 7. **No hosted documentation site** — required starting in Assignment 5.
 8. **No MVP v2 release** — needs a new SemVer release mapping to Sprint 4 + MVP v2.
@@ -536,8 +550,8 @@ Current DoD requires:
 1. **WebSocket migration** (customer's top request) is a large rework touching backend + frontend.
 2. **QR-003 needs re-design** — F2 threshold changed from 80% to 55% (realistic target given current ML precision). All QRTs must be re-aligned.
 3. **Frontend JS has zero test coverage** — no unit/integration tests for chart, drawing, sidebar, WebSocket.
-4. **Single timeframe (5m only)** — multi-interval support deferred multiple sprints.
-5. **No database caching** — every page load hits Bybit REST API.
+4. **RSI and Volume sub-charts** still pending — remaining high-priority items from Sprint 4.
+5. **Timeframe switch lacks loading overlay** — switching intervals doesn't show loading spinner when fetching new data.
 
 ### Process Risks
 1. **Previous milestones left "Open"** — Sprint 1, 2, 3 milestones still in `open` state (should they be closed?).
@@ -563,16 +577,19 @@ Current DoD requires:
 
 ---
 
-*Last updated: 2026-06-30*
+*Last updated: 2026-06-30 (18:00 UTC)*
 *Generated by: OpenCode (deepseek-v4-flash-free)*
+*Branch analysis updated: 2026-06-30*
 
 ---
 
-## 19. Current Branch Contributions (`part-1-2`)
+## 19. Current Branch Contributions (`MVPv2`)
 
-Branch `part-1-2` contains the following contributions by **F. Kozhevnikov ([Fedos113](https://github.com/Fedos113))** advancing Week 5 deliverables:
+The current branch is **`MVPv2`** (merged `part-1-2` via PR #121 + additional feature commit). All contributions by **F. Kozhevnikov ([Fedos113](https://github.com/Fedos113))**.
 
-### Repository Reorganization
+### Part 1-2 Contributions (merged from `part-1-2` branch)
+
+#### Repository Reorganization
 | Change | Details |
 |---|---|
 | Moved `additional files/*` → `assignments/4/` | Consolidated A4 artifacts into the proper directory |
@@ -580,28 +597,86 @@ Branch `part-1-2` contains the following contributions by **F. Kozhevnikov ([Fed
 | Updated `assignments/Process_Requirements.md` | Reflected reorganized repo layout |
 | Updated `assignments/Repository_Requirements.md` | Reflected reorganized repo layout |
 
-### Assignment 5 Scaffolding
+#### Assignment 5 Scaffolding
 | File | Lines | Purpose |
 |---|---|---|
 | `assignments/5/Assignment_05.md` | 508 | Main assignment specification |
 | `assignments/5/Artifact_Requirements.md` | 754 | Shared artifact semantics |
 | `assignments/5/breakdown.md` | 86 | Part-by-part checklist |
-| `assignments/5/context.md` | 559 | This file — comprehensive context |
+| `assignments/5/context.md` | 607 | This file — comprehensive context |
 | `assignments/5/issue_template.md` | 92 | Week 5 issue template |
 | `assignments/5/contributions.md` | 11 | Contribution tracking table |
 
-### CI & Roadmap Updates
+#### CI & Roadmap Updates
 | File | Change | Reason |
 |---|---|---|
 | `.github/workflows/lychee.yml` | Added `--exclude 'http://'`, removed redundant per-host excludes | Catch all non-HTTPS links uniformly |
 | `docs/roadmap.md` | Updated Sprint 4/MVP v2 section | Reflects current assignment scope |
 
+### Feature Commit (`e96de58` — "feat: optimizations and ML persistance")
+
+Additional commit on `MVPv2` beyond the `part-1-2` merge (not present on `main`):
+
+| File | Lines Changed | Description |
+|---|---|---|
+| `tickframe/frontend/js/charts.js` | +183/-57 | Sidebar resize system (event delegation, localStorage persistence), configurable candle-limit input for analysis, smarter pattern rendering (merged segments, 50-candle windows, `_visibleBottomPrice()`, `_drawPatternVline()`), whitespace fixes |
+| `tickframe/frontend/index.html` | +37/-26 | Removed search input from sidebar, added sidebar resize handle, candle-limit input in analysis panel, cache-busting query params (`?v=1`) on CSS/JS, removed toolbar status bar |
+| `tickframe/frontend/css/styles.css` | +19/-8 | Sidebar resize handle styles, `.sidebar` flex constraints (min/max-width), `.content`/`.chart-container` flex layout, candle-limit-input styling, responsive media query fix |
+| `tickframe/frontend/js/drawing-overlay.js` | +16/-14 | Font settings conditional on text type, fixed text tool 1-point commit logic |
+| `docker-compose.yml` | +6 | Live-reload volume mounts for frontend/backend, `--reload` flag for dev |
+
+**Summary:** UX improvements (sidebar resize, cache-busting, analysis range customisation) and Docker dev ergonomics. These changes implement PBI-122 (configurable analysis limit), PBI-123 (pattern visualization), PBI-125 (UI cleanup & sidebar resize), and contribute to PBI-121 (multi-interval caching via timeframe switching UI).
+
+### PBI Implementation Status on `MVPv2`
+
+| PBI | Issue | Title | SP | Priority | Status |
+|-----|-------|-------|----|----------|--------|
+| PBI-121 | [#122](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/122) | Multi-interval database caching & instant chart loading | 3 | Critical | ✅ Done — warmup covers 5 intervals, 3-tier cache, near-instant switch |
+| PBI-122 | [#123](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/123) | Configurable candle analysis limit | 1 | Medium | ✅ Done — input field (100–500000) next to ANALYZE button |
+| PBI-123 | [#124](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/124) | ML pattern visualization with merged segments | 2 | High | ✅ Done — merged segments, dotted vlines, no labels yet |
+| PBI-124 | [#125](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/125) | ML inference performance optimization (XGBoost) | 5 | Critical | ✅ Done — <0.5s per 1k candles (was >10s) |
+| PBI-125 | [#126](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/126) | UI cleanup & sidebar resize | 2 | Medium | ✅ Done — search/status removed, draggable sidebar, cache-busting |
+| PBI-115 | [#110](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/110) | WebSocket subscription migration | 5 | Critical | ❌ Not started |
+| PBI-117 | [#112](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/112) | RSI indicator sub-chart | 3 | High | ❌ Not started |
+| PBI-118 | [#113](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/113) | Volume sub-chart below main chart | 3 | High | ❌ Not started |
+
+### MVPv2 Readiness Assessment
+
+| Criterion | Status | Notes |
+|---|---|---|
+| Sprint 4 PBIs implemented | ✅ 5/8 (13 SP) completed, 3 remaining (11 SP) | DB caching, configurable analysis, ML viz, ML perf, UI cleanup done |
+| Architecture docs filled | ❌ All empty templates | `docs/architecture/` files are 0 bytes |
+| ADRs filled | ❌ All empty templates | 3 ADR templates exist, all empty |
+| dev-process.md filled | ❌ Empty template | 0 bytes |
+| CHANGELOG updated | ✅ Updated with all implemented features | Unreleased section populated |
+| Week 5 reports filled | ❌ All empty templates | 7 report files, all 0 bytes |
+| UAT scenarios added | ❌ Not done | Requires ≥2 new MVP v2 scenarios |
+| SemVer release v2.0.0 | ❌ Not created | No tag exists |
+| Hosted documentation | ❌ Not published | Required in A5 |
+| Demo video | ❌ Not recorded | Required for Part 13 |
+| LLM report | ❌ Not created | Required for Part 14 |
+| CI pipeline | ✅ Passing | All checks pass on main |
+
 ### Impact on A5 Gap Analysis
-- Part 1 (Backlog & Sprint 4): **fully addressed** — all checkboxes already marked [x]
-- Part 2 (Customer Feedback): PBIs created on GitHub, response table TBD in week 5 report
+- Part 1 (Backlog & Sprint 4): **fully addressed** — all checkboxes marked [x]
+- Part 2 (Customer Feedback): PBIs created on GitHub, 3/6 feedback items implemented (DB caching → PBI-121, analysis range → PBI-122, multi-interval → PBI-121), response table TBD in week 5 report
 - Parts 3–5 (Dev Process, Architecture, ADRs): template files exist, need content filled incrementally
-- Parts 6–14 (Testing, Implementation, UAT, Reports): scaffolding exists, work remains
+- Part 7 (Implementation): **5/8 PBIs completed (13 SP)**, 3 PBIs remaining (11 SP)
+- Parts 6, 8–14 (Testing, UAT, Reports, Release, Demo): **0% complete** — scaffolding exists, all work remains
+
+### Branch History (unique commits not in `main`)
+```
+b48adf4 Merge pull request #121 from Fedos113/part-1-2
+e96de58 feat: optimizations and ML persistance
+fe04c5e DOC: assignment parts 1 and 2 completed ; created repo template
+71302b3 DOC: week 5 preparation files added
+89f6eb1 DOC: week 5 preparation files added
+7c30c4f DOC: week 5 preparation files added
+c744990 DOC: week 5 preparation files added
+```
 
 ### Notes for Team
-- This branch reorganizes the repo but does **not** implement any Sprint 4 PBI features (WebSocket, DB cache, sub-charts, etc.) — those require separate feature branches.
-- Architecture docs, ADRs, and reports are **empty templates** — they must be filled by team members in separate, incremental commits.
+- The `MVPv2` branch contains **A5 scaffolding + 5 completed Sprint 4 PBIs** (PBI-121 through PBI-125). Remaining: WebSocket migration, RSI sub-chart, Volume sub-chart require separate feature branches.
+- PBI-122 (configurable analysis limit) replaces the original PBI-119 scope — the input defaults to 10000 but allows up to 500000, making it more flexible than a hardcoded 50k.
+- All architecture docs, ADRs, reports, and release artifacts remain **empty templates** — must be filled by team members in separate, incremental commits.
+- No team member other than F. Kozhevnikov has contributed code to `MVPv2` yet.
