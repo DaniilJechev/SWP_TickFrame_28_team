@@ -4,7 +4,7 @@
 
 | Person | Role | Issues | PRs | Reviews | Testing | QA | Docs |
 |---|---|---|---|---|---|---|---|
-| F. Kozhevnikov ([Fedos113](https://github.com/Fedos113)) | Product Owner / Full-Stack | [#116](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/116), [#117](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/117), [#118](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/118) | [#119](https://github.com/Fedos113/SWP_TickFrame_28_team/pull/119) | Reviewed by [pug228](https://github.com/pug228), [DaniilJechev](https://github.com/DaniilJechev) | — | — | A5 scaffolding, repo reorg, frontend optimisations (charts.js, CSS), lychee/roadmap/process docs, docker-compose |
+| F. Kozhevnikov ([Fedos113](https://github.com/Fedos113)) | Product Owner / Full-Stack | [#116](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/116), [#117](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/117), [#118](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/118) | [#119](https://github.com/Fedos113/SWP_TickFrame_28_team/pull/119) | - | — | — | A5 scaffolding, repo reorg, frontend optimisations (charts.js, CSS), lychee/roadmap/process docs, docker-compose |
 | A. Gafarov ([omarichev](https://github.com/omarichev)) | Developer / Documentation | | | | | | |
 | A. Mindubaev ([pug228](https://github.com/pug228)) | Developer / Quality & CI | | | [#119](https://github.com/Fedos113/SWP_TickFrame_28_team/pull/119) (approved) | | | |
 | D. Zhechev ([DaniilJechev](https://github.com/DaniilJechev)) | Scrum Master / ML Engineer | | | [#119](https://github.com/Fedos113/SWP_TickFrame_28_team/pull/119) (approved) | | | |
