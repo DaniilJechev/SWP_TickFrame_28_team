@@ -76,11 +76,12 @@ Every issue on the board follows one of these workflow states:
 
 | State | Criteria to Enter | Meaning |
 |---|---|---|
-| **To Do** | Issue created with description and acceptance criteria; not yet assigned to a Sprint | The PBI is in the Product Backlog but not ready to start |
+| **To Do** | PBI exists in the Product Backlog, not currently ready to start | The PBI remains in the Product Backlog and is not currently ready to start |
 | **Ready** | PBI assigned to the current Sprint milestone, has Story Points, implementer, and reviewer | Can be picked up immediately |
 | **In Progress** | Implementer starts working on the issue; linked branch exists or work has begun | Active development |
 | **Review** | PR is opened linking to the issue; implementer requests review from the assigned reviewer | Implementation ready for peer review |
-| **Done** | PR merged into `main`, all CI checks pass, acceptance criteria satisfied, DoD met, reviewer approved | Complete |
+| **Done** (implementation PBI) | PR merged into `main`, all CI checks pass, acceptance criteria satisfied, DoD met, reviewer approved | Complete for the Sprint |
+| **Done** (user-story) | All linked supporting PBIs completed and merged, story acceptance criteria satisfied, DoD met | Complete for the Sprint |
 
 ### 2.3 Issue Templates
 
@@ -196,6 +197,8 @@ Lychee skips these link patterns (documented in `.github/workflows/lychee.yml`):
 - `https://drive.google.com` — Google Drive links (require authentication)
 - `https://gitlab.pg.innopolis.university` — university GitLab (requires authentication)
 - `file://` — local file references
+- `releases/tag/v0\.2\.0` — old tag no longer resolvable
+- `releases/tag/SemVer-MVPv1` — old MVP v1 tag name
 - `./assignments/` — assignment spec files (not product documentation)
 
 All exclusions are narrowly scoped and manually verified before submission.
