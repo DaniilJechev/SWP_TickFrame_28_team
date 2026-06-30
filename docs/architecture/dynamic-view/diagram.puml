@@ -1,0 +1,65 @@
+@startuml
+skinparam defaultFontName Courier
+skinparam backgroundColor #FEFEFE
+
+title <b>SWP TickFrame — Dynamic View: Chart Loading Sequence</b>
+
+actor "User" as User
+participant "Browser\n(Frontend JS)" as Browser
+participant "FastAPI Backend\n(REST API)" as Backend
+participant "Memory Cache" as Cache
+participant "SQLite DB" as DB
+participant "Bybit Exchange" as Bybit
+participant "ML Service" as ML
+
+== User opens chart page ==
+User -> Browser : "Open tickframe app"
+Browser -> Backend : "GET / (index.html + static files)"
+Backend --> Browser : "HTML, CSS, JS"
+
+== User selects coin ==
+User -> Browser : "Select BTCUSDT, 5m interval"
+Browser -> Backend : "GET /api/coins/BTCUSDT/candles?interval=5m&limit=200"
+Backend -> Cache : "get_candles('BTCUSDT', '5m', 200)"
+
+alt Cache hit (fresh data)
+  Cache --> Backend : "CandlePayload (source: memory)"
+else Cache miss or stale
+  Cache -> DB : "load_last_n_candles('BTCUSDT', '5m', 200)"
+  alt DB has enough candles
+    DB --> Cache : "candles from persistent storage"
+    Cache --> Backend : "CandlePayload (source: db)"
+  else DB miss or insufficient
+    Cache -> Backend : "need to fetch from exchange"
+    Backend -> Bybit : "GET kline?symbol=BTCUSDT&interval=5&limit=200"
+    alt Bybit fails
+      Backend -> Bybit : "retry with fallback"
+      Backend -> Bybit : "fallback to Binance"
+    end
+    Bybit --> Backend : "OHLCV data (200 candles)"
+    Backend -> Cache : "merge_and_promote(candles)"
+    Cache -> DB : "persist_candles('BTCUSDT', '5m', candles)"
+    Cache --> Backend : "CandlePayload (source: bybit)"
+  end
+end
+
+Backend --> Browser : "JSON {candles: [...], source: '...'}"
+
+== Chart renders ==
+Browser -> Browser : "Lightweight Charts v4\nrender candlestick series"
+
+== Real-time updates (WebSocket) ==
+User -> Browser : "Observe live updates"
+Browser -> Backend : "WebSocket /ws/candles/BTCUSDT?interval=5m"
+Backend --> Browser : "snapshot (current candle)"
+Note right: Server pushes heartbeat every 5s\nand sends incremental updates\nwhen the last candle changes
+
+== ML Pattern Analysis ==
+User -> Browser : "Click 'Analyze'"
+Browser -> Backend : "POST /api/analyze/BTCUSDT"
+Backend -> ML : "POST /predict {symbol, timeframe, candles}"
+ML --> Backend : "{patterns_found: [...]}"
+Backend --> Browser : "JSON {patterns: [{time, confidence, type}]}"
+Browser -> Browser : "Render pattern markers\n(red dashed vertical lines + labels)"
+
+@enduml

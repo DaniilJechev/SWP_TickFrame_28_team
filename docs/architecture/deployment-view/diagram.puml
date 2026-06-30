@@ -1,0 +1,45 @@
+@startuml
+skinparam defaultFontName Courier
+skinparam backgroundColor #FEFEFE
+skinparam componentStyle rectangle
+
+title <b>SWP TickFrame — Deployment View</b>
+
+' Nodes
+node "Docker Host\n<size:10>Single VM / Dev Machine</size>" as DockerHost {
+  node "Docker Network\n<size:10>bridge (default)</size>" as DockerNet {
+    
+    component "tickframe container\n<size:10>uvicorn :8000</size>" as Tickframe {
+      artifact "FastAPI Backend\n<size:10>tickframe/backend/</size>" as Backend
+      artifact "Frontend Static Files\n<size:10>tickframe/frontend/</size>" as Frontend
+    }
+    
+    component "ml-service container\n<size:10>uvicorn :8001</size>" as MLService {
+      artifact "FastAPI ML App\n<size:10>ml_service/app/</size>" as MLApp
+      artifact "XGBoost Model\n<size:10>ml_service/data/</size>" as Model
+    }
+    
+    database "SQLite Volume\n<size:10>data/tickframe.db</size>" as SQLite
+  }
+}
+
+node "Client Machine\n<size:10>Web Browser</size>" as Browser {
+  artifact "Lightweight Charts v4\n<size:10>JS frontend</size>" as FrontendJS
+}
+
+node "Internet" as Internet {
+  cloud "Bybit API\n<size:10>api.bybit.com</size>" as Bybit
+  cloud "Binance API (fallback)\n<size:10>api.binance.com</size>" as Binance
+}
+
+' Relations
+Browser --> Tickframe : "HTTP :8080 → :8000" #line:blue
+Browser --> Tickframe : "WS :8080 → :8000/ws/*" #line:blue
+
+Tickframe --> MLService : "HTTP POST ml-service:8001/predict" #line:green
+Tickframe --> SQLite : "file I/O\n<size:10>data/tickframe.db</size>" #line:orange
+
+Tickframe --> Bybit : "HTTPS api.bybit.com" #line:red
+Tickframe --> Binance : "HTTPS api.binance.com (fallback)" #line:red
+
+@enduml
