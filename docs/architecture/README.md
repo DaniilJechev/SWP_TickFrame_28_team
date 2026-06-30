@@ -22,11 +22,11 @@ TickFrame is a cryptocurrency chart workstation with a **client-server architect
 
 ### Architecture Views
 
-| View | File | Description |
-|---|---|---|
-| Static | [`static-view/diagram.puml`](static-view/diagram.puml) | Component diagram — system structure, components, and relations |
-| Dynamic | [`dynamic-view/diagram.puml`](dynamic-view/diagram.puml) | Sequence diagram — chart loading flow and user interactions |
-| Deployment | [`deployment-view/diagram.puml`](deployment-view/diagram.puml) | Deployment diagram — nodes, containers, and network boundaries |
+| View | Source | Rendered | Description |
+|---|---|---|---|---|
+| Static | [`diagram.puml`](static-view/diagram.puml) | [`diagram.svg`](static-view/diagram.svg) | Component diagram — system structure, components, and relations |
+| Dynamic | [`diagram.puml`](dynamic-view/diagram.puml) | [`diagram.svg`](dynamic-view/diagram.svg) | Sequence diagram — chart loading flow and user interactions |
+| Deployment | [`diagram.puml`](deployment-view/diagram.puml) | [`diagram.svg`](deployment-view/diagram.svg) | Deployment diagram — nodes, containers, and network boundaries |
 
 ---
 

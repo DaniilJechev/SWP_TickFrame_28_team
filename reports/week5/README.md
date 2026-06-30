@@ -10,7 +10,7 @@
 |---|---|---|
 | 18. Development Process | [`docs/development-process.md`](../../docs/development-process.md) |
 | 19. Architecture (index) | [`docs/architecture/README.md`](../../docs/architecture/README.md) |
-| 20. Static, Dynamic, Deployment Views | [`static-view/diagram.puml`](../../docs/architecture/static-view/diagram.puml), [`dynamic-view/diagram.puml`](../../docs/architecture/dynamic-view/diagram.puml), [`deployment-view/diagram.puml`](../../docs/architecture/deployment-view/diagram.puml) |
+| 20. Static, Dynamic, Deployment Views | Source: [`static-view/diagram.puml`](../../docs/architecture/static-view/diagram.puml), [`dynamic-view/diagram.puml`](../../docs/architecture/dynamic-view/diagram.puml), [`deployment-view/diagram.puml`](../../docs/architecture/deployment-view/diagram.puml). Rendered: [`static-view/diagram.svg`](../../docs/architecture/static-view/diagram.svg), [`dynamic-view/diagram.svg`](../../docs/architecture/dynamic-view/diagram.svg), [`deployment-view/diagram.svg`](../../docs/architecture/deployment-view/diagram.svg) |
 | 21. ADR directory | [`docs/architecture/adr/`](../../docs/architecture/adr/) |
 
 *(More items to be filled by other team members.)*
