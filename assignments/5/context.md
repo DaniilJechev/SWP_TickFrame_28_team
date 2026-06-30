@@ -13,7 +13,6 @@
 | **Repository** | https://github.com/Fedos113/SWP_TickFrame_28_team |
 | **License** | MIT |
 | **Description** | FastAPI-based cryptocurrency chart workstation with real-time Bybit market data, live WebSocket streaming, Lightweight Charts v4 candlestick charts, canvas-based drawing toolbar (13 tools), SQLite persistence, and ML pattern analysis. |
-| **Current Branch** | `as5` (working branch for Assignment 5) |
 | **Default Branch** | `main` (protected) |
 | **MVP v1 Release** | [v1.0.0](https://github.com/Fedos113/SWP_TickFrame_28_team/releases/tag/SemVer) (Sprint 2) |
 | **Sprint 3 Release** | [v1.1.0](https://github.com/Fedos113/SWP_TickFrame_28_team/releases/tag/v1.1.0) |
@@ -45,8 +44,14 @@ SWP_TickFrame_28_team/
 │       ├── ci.yml               # CI: ruff → mypy → pytest+cov → bandit
 │       └── lychee.yml           # Link checker on push/PR to main
 ├── assignments/
-│   ├── 4/                       # Assignment 4 artifacts
-│   │   └── assignment_04.md
+│   ├── 4/                       # Assignment 4 artifacts (consolidated from root)
+│   │   ├── Assignment_04.md
+│   │   ├── 4checklist.md
+│   │   ├── 4mvpplan.md
+│   │   ├── 4part1-plan.md
+│   │   ├── 4part2.md
+│   │   ├── assignment4.tex
+│   │   └── presentation.tex
 │   ├── 5/                       # Assignment 5 artifacts (current)
 │   │   ├── Assignment_05.md     # Main assignment spec (508 lines)
 │   │   ├── Artifact_Requirements.md  # Shared artifact rules (754 lines)
@@ -67,11 +72,12 @@ SWP_TickFrame_28_team/
 │   ├── testing.md               # Testing strategy, coverage, CI gates
 │   ├── user-acceptance-tests.md # UAT-001 through UAT-005
 │   └── user-stories.md          # User story index (US-01 to US-15)
-│   [ Missing for A5: architecture/, development-process.md ]
+│   [ A5 templates created: architecture/, development-process.md — all empty, fill incrementally ]
 ├── reports/
 │   ├── week2/                   # Sprint 1 reports
 │   ├── week3/                   # Sprint 2 reports
-│   └── week4/                   # Sprint 3 reports (current completed sprint)
+│   ├── week4/                   # Sprint 3 reports (completed)
+│   └── week5/                   # Sprint 4 report templates (empty — fill incrementally)
 ├── tickframe/                   # Main Python package
 │   ├── __main__.py              # CLI entry point
 │   ├── cli.py                   # CLI commands (scan, report, analyze, serve)
@@ -175,9 +181,12 @@ SWP_TickFrame_28_team/
 
 ### Sprint 4 — Week 5 (Assignment 5 · MVP v2 developed here)
 - **Milestone:** [Sprint 4](https://github.com/Fedos113/SWP_TickFrame_28_team/milestone/5)
-- **Goal:** Deliver MVP v2 — architecture hardening, customer feedback response, process documentation, deployment docs
+- **Dates:** 2026-06-30 – 2026-07-06
+- **Goal:** Deliver MVP v2 — WebSocket migration, DB caching, RSI/Volume sub-charts, multi-interval support, analysis range fix
+- **Total Story Points:** 18
+- **PBIs:** 6 customer-driven PBIs ([#110](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/110)–[#115](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/115))
 - **Release:** [v2.0.0](https://github.com/Fedos113/SWP_TickFrame_28_team/releases/tag/v2.0.0)
-- **Scope:** All Sprint 4 PBIs define MVP v2 scope. Must address customer feedback from Sprint 3.
+- **Scope:** All Sprint 4 PBIs define MVP v2 scope. Addressing all critical customer feedback from Sprint 3.
 
 ---
 
@@ -200,7 +209,7 @@ Note: Tags `v1.1.0` and `v1.2.0` are the same version — duplicate tag created 
 | [Sprint 1](https://github.com/Fedos113/SWP_TickFrame_28_team/milestone/1) | 1 | Open | 0 | 1 |
 | [Sprint 2 - MVP-v1](https://github.com/Fedos113/SWP_TickFrame_28_team/milestone/2) | 2 | Open | 0 | 2 |
 | [Sprint 3 — Assignment 4](https://github.com/Fedos113/SWP_TickFrame_28_team/milestone/3) | 3 | Open | 0 | 25 |
-| **[Sprint 4](https://github.com/Fedos113/SWP_TickFrame_28_team/milestone/5)** | **5** | **Active** | — | — |
+| **[Sprint 4](https://github.com/Fedos113/SWP_TickFrame_28_team/milestone/5)** | **5** | **Active** | **6** | **0** |
 | **MVP v2** | **—** | **—** | **—** | **Release v2.0.0** |
 
 ---
@@ -278,15 +287,15 @@ All documented in:
 
 Key feedback points from 2026-06-26 Sprint Review (see [`reports/week4/customer-review-summary.md`](../../reports/week4/customer-review-summary.md)):
 
-| Feedback | Priority | Status |
-|---|---|---|
-| Migrate REST polling → WebSocket subscription | Critical | Not started |
-| Implement DB caching for candles | Critical | Not started |
-| Add RSI sub-chart | High | Not started |
-| Add Volume sub-chart | High | Not started |
-| Reduce analysis range 150k → 50k candles | Medium | Not started |
-| Multi-interval support (15m, 1h, 4h, 1d) | Medium | Not started |
-| Candle colour customization | Low | US-14 in backlog |
+| Feedback | Priority | PBI | Status |
+|---|---|---|---|---|
+| Migrate REST polling → WebSocket subscription | Critical | [#110 PBI-115](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/110) | To Do |
+| Implement DB caching for candles | Critical | [#111 PBI-116](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/111) | To Do |
+| Add RSI sub-chart | High | [#112 PBI-117](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/112) | To Do |
+| Add Volume sub-chart | High | [#113 PBI-118](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/113) | To Do |
+| Reduce analysis range 150k → 50k candles | Medium | [#114 PBI-119](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/114) | To Do |
+| Multi-interval support (15m, 1h, 4h, 1d) | Medium | [#115 PBI-120](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/115) | To Do |
+| Candle colour customization | Low | US-14 in backlog | Deferred |
 
 **Assignment 5 requires:** Customer feedback response table in week 5 report. Feedback must be addressed unless justified.
 
@@ -312,33 +321,38 @@ Current DoD requires:
 
 ## 14. What Assignment 5 Requires (Gap Analysis)
 
+> **Contributions on `part-1-2` (F. Kozhevnikov):** Repository reorganized (A4 files → `assignments/4/`, old specs → `assignments/old/`), A5 scaffolding created (spec, artifact requirements, templates, issue template, context, contributions table), `lychee.yml` and `roadmap.md` updated, `Process_Requirements.md` and `Repository_Requirements.md` aligned. See §19 for full details.
+
 ### Part 1: Product Backlog & Sprint 4 Planning
-- [ ] **Refine Product Backlog** — review customer feedback, risks, unfinished work
-- [ ] **Create Sprint 4 PBIs** — with acceptance criteria, story points, implementer, reviewer
+- [x] **Refine Product Backlog** — 6 PBIs created from Sprint 3 customer feedback ([#110](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/110)–[#115](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/115))
+- [x] **Create Sprint 4 PBIs** — 6 PBIs created ([#110](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/110)–[#115](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/115)) with AC, SP, implementer, reviewer
 - [x] **Create Sprint 4 milestone** — [Sprint 4](https://github.com/Fedos113/SWP_TickFrame_28_team/milestone/5) created with Sprint Goal, dates, selected PBIs
-- [ ] **Update [`docs/roadmap.md`](../../docs/roadmap.md)** — current direction, Sprint 4, MVP v2, next increment
+- [x] **Update [`docs/roadmap.md`](../../docs/roadmap.md)** — Sprint 4/MVP v2 section with 6 PBIs, Sprint 5 planned, backlog updated
 
 ### Part 2: Customer Feedback Response
-- [ ] **Create/update PBIs for feedback items** — map to Sprint 4 scope
+- [x] **Create/update PBIs for feedback items** — 6 PBIs mapped to Sprint 4 scope ([#110](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/110)–[#115](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/115))
 - [ ] **Customer feedback response table** in week 5 report
 
 ### Part 3: Development Process & Configuration Management
-- [ ] **Create [`docs/development-process.md`](../../docs/development-process.md)** — git workflow, Mermaid gitGraph, config management, CI, branches, PRs, secrets
+- [ ] **Fill [`docs/development-process.md`](../../docs/development-process.md)** — git workflow, Mermaid gitGraph, config management, CI, branches, PRs, secrets (empty template exists)
 - [ ] **Link from README, hosted docs, week 5 report**
 
+> **Note on template files:** All architecture, ADR, and report files listed below exist as **empty placeholders** (0 bytes). This is intentional — they serve as a starter checklist. Each file must be filled incrementally by team members in **separate commits**. A single commit must not cover all items; distribute work across multiple contributors and commits.
+
 ### Part 4: Architecture Documentation
-- [ ] **Create [`docs/architecture/README.md`](../../docs/architecture/README.md)** — with static, dynamic, deployment view sections
-- [ ] **Create [`docs/architecture/static-view/`](../../docs/architecture/static-view/)** — component diagram (PlantUML recommended), source + rendered
-- [ ] **Create [`docs/architecture/dynamic-view/`](../../docs/architecture/dynamic-view/)** — sequence diagram(s), source + rendered
-- [ ] **Create [`docs/architecture/deployment-view/`](../../docs/architecture/deployment-view/)** — deployment diagram, source + rendered
+- [ ] **Fill [`docs/architecture/README.md`](../../docs/architecture/README.md)** — with static, dynamic, deployment view sections (empty template exists)
+- [ ] **Fill [`docs/architecture/static-view/diagram.puml`](../../docs/architecture/static-view/diagram.puml)** — component diagram (PlantUML), source
+- [ ] **Fill [`docs/architecture/dynamic-view/diagram.puml`](../../docs/architecture/dynamic-view/diagram.puml)** — sequence diagram(s), source
+- [ ] **Fill [`docs/architecture/deployment-view/diagram.puml`](../../docs/architecture/deployment-view/diagram.puml)** — deployment diagram, source
 - [ ] **Comment on coupling, cohesion, maintainability, quality requirements** in static view
 - [ ] **Explain scenario importance, architecture decisions, quality requirements** in dynamic view
 - [ ] **Explain deployment model choice, constraints, operations** in deployment view
 
 ### Part 5: ADRs (Architecture Decision Records)
-- [ ] **Create [`docs/architecture/adr/`](../../docs/architecture/adr/)** directory
-- [ ] **Create ≥3 ADRs** — each linking to A4/A5 quality requirements
-- [ ] **Format:** `ADR-NNN-short-description.md`
+- [ ] **Fill [`docs/architecture/adr/ADR-001-websocket-migration.md`](../../docs/architecture/adr/ADR-001-websocket-migration.md)** (empty template exists)
+- [ ] **Fill [`docs/architecture/adr/ADR-002-sqlite-persistence.md`](../../docs/architecture/adr/ADR-002-sqlite-persistence.md)** (empty template exists)
+- [ ] **Fill [`docs/architecture/adr/ADR-003-microservice-architecture.md`](../../docs/architecture/adr/ADR-003-microservice-architecture.md)** (empty template exists)
+- [ ] **Each ADR must link to A4/A5 quality requirements**
 - [ ] **Update [`docs/quality-requirements.md`](../../docs/quality-requirements.md)** — link each QR to relevant ADR
 - [ ] **Link ADRs from [`docs/architecture/README.md`](../../docs/architecture/README.md)**
 
@@ -385,8 +399,14 @@ Current DoD requires:
 - [ ] **Create [`reports/week5/llm-report.md`](../../reports/week5/llm-report.md)**
 
 ### Week 5 Report Structure
-- [ ] **Create [`reports/week5/README.md`](../../reports/week5/README.md)** — 42-item structure (see Assignment_05.md lines 438–489)
-- [ ] **Create [`reports/week5/images/`](../../reports/week5/images/)** — screenshots (milestone, board, CI, release, PR, hosted docs)
+> **Note:** All report files below exist as empty placeholders (0 bytes). They must be filled incrementally by team members in separate commits. One commit must not cover all 42 items or all 7 report files; distribute work.
+- [ ] **Fill [`reports/week5/README.md`](../../reports/week5/README.md)** — 42-item structure (see Assignment_05.md lines 438–489) (empty template exists)
+- [ ] **Fill [`reports/week5/sprint-review-summary.md`](../../reports/week5/sprint-review-summary.md)** (empty template exists)
+- [ ] **Fill [`reports/week5/sprint-review-transcript.md`](../../reports/week5/sprint-review-transcript.md)** (empty template exists)
+- [ ] **Fill [`reports/week5/retrospective.md`](../../reports/week5/retrospective.md)** (empty template exists)
+- [ ] **Fill [`reports/week5/reflection.md`](../../reports/week5/reflection.md)** (empty template exists)
+- [ ] **Fill [`reports/week5/llm-report.md`](../../reports/week5/llm-report.md)** (empty template exists)
+- [ ] **Create [`reports/week5/images/`](../../reports/week5/images/)** — screenshots (milestone, board, CI, release, PR, hosted docs) (empty directory exists)
 
 ### Moodle PDF (Private)
 - [ ] **Create PDF** with team table, commit permalinks, recording links, private access instructions
@@ -414,6 +434,16 @@ Current DoD requires:
 | Sprint 3 (A4) | https://github.com/Fedos113/SWP_TickFrame_28_team/milestone/3 |
 | Sprint 4 | https://github.com/Fedos113/SWP_TickFrame_28_team/milestone/5 |
 | v2.0.0 (MVP v2) | Not yet created |
+
+### Sprint 4 PBIs (Customer Feedback)
+| PBI | Issue | Title | SP | Priority |
+|---|---|---|---|---|
+| PBI-115 | [#110](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/110) | WebSocket subscription migration | 5 | Critical |
+| PBI-116 | [#111](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/111) | SQLite candle caching | 3 | Critical |
+| PBI-117 | [#112](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/112) | RSI sub-chart | 3 | High |
+| PBI-118 | [#113](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/113) | Volume sub-chart | 3 | High |
+| PBI-119 | [#114](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/114) | Reduce analysis range to 50k | 1 | Medium |
+| PBI-120 | [#115](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/115) | Multi-interval support | 3 | Medium |
 
 ### Maintained Docs
 | Document | Path |
@@ -484,21 +514,23 @@ Current DoD requires:
 - **SemVer:** Tags prefixed with `v` (e.g., `v1.1.0`)
 - **Secrets:** `.env` in .gitignore, `.env.example` committed
 - **Git LFS:** Not used
-- **Lychee exclusions:** localhost, Google Drive, gitlab.pg.innopolis.university, file://
+- **Lychee exclusions:** `http://` (all non-HTTPS), Google Drive, gitlab.pg.innopolis.university, file://, assignments/ directory
 
 ---
 
 ## 17. Known Gaps & Risks for Assignment 5
 
 ### Critical Gaps (Must Address for A5)
-1. **No architecture documentation** — `docs/architecture/` does not exist. Needs README.md, static/dynamic/deployment views, diagrams-as-code (PlantUML recommended).
-2. **No ADRs** — `docs/architecture/adr/` does not exist. Need ≥3 ADRs linking to quality requirements.
-3. **No development-process documentation** — `docs/development-process.md` does not exist. Needs git workflow description, Mermaid gitGraph, config management.
-4. **Sprint 4 milestone** — [created](https://github.com/Fedos113/SWP_TickFrame_28_team/milestone/5), PBIs need assignment.
-5. **No Sprint 4 PBIs** — backlog not yet refined for Assignment 5.
-6. **No week 5 report directory** — `reports/week5/` does not exist.
+1. **Architecture documentation files exist as empty templates** — `docs/architecture/README.md`, static/dynamic/deployment `.puml` files need content (PlantUML recommended).
+2. **ADR files exist as empty templates** — 3 ADR `.md` files need content, each linking to quality requirements.
+3. **Development-process template exists** — `docs/development-process.md` is empty; needs git workflow, Mermaid gitGraph, config management.
+4. **Sprint 4 milestone** — [created](https://github.com/Fedos113/SWP_TickFrame_28_team/milestone/5) with 6 PBIs assigned.
+5. **Sprint 4 PBIs** — 6 created ([#110](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/110)–[#115](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/115)), all in To Do.
+6. **Week 5 report files exist as empty templates** — `reports/week5/README.md` and 6 sub-reports need content.
 7. **No hosted documentation site** — required starting in Assignment 5.
 8. **No MVP v2 release** — needs a new SemVer release mapping to Sprint 4 + MVP v2.
+9. **No LLM chat logs** — required for Part 14.
+10. **No public demo video** — required for Part 13.
 
 ### Technical Risks
 1. **WebSocket migration** (customer's top request) is a large rework touching backend + frontend.
@@ -509,7 +541,7 @@ Current DoD requires:
 
 ### Process Risks
 1. **Previous milestones left "Open"** — Sprint 1, 2, 3 milestones still in `open` state (should they be closed?).
-2. **Branch named `as5` exists but has no changes vs main** — `git diff main..as5` is empty. Work hasn't started.
+2. **Work branches must be created from main** — each team member uses their own feature branch.
 
 ---
 
@@ -533,4 +565,43 @@ Current DoD requires:
 
 *Last updated: 2026-06-30*
 *Generated by: OpenCode (deepseek-v4-flash-free)*
-*Working branch: `as5`*
+
+---
+
+## 19. Current Branch Contributions (`part-1-2`)
+
+Branch `part-1-2` contains the following contributions by **F. Kozhevnikov ([Fedos113](https://github.com/Fedos113))** advancing Week 5 deliverables:
+
+### Repository Reorganization
+| Change | Details |
+|---|---|
+| Moved `additional files/*` → `assignments/4/` | Consolidated A4 artifacts into the proper directory |
+| Moved `assignments/assignment2.tex`, `assignment3.tex`, `mvp_v0-plan.md` → `assignments/old/` | Archived old assignment specs to keep root clean |
+| Updated `assignments/Process_Requirements.md` | Reflected reorganized repo layout |
+| Updated `assignments/Repository_Requirements.md` | Reflected reorganized repo layout |
+
+### Assignment 5 Scaffolding
+| File | Lines | Purpose |
+|---|---|---|
+| `assignments/5/Assignment_05.md` | 508 | Main assignment specification |
+| `assignments/5/Artifact_Requirements.md` | 754 | Shared artifact semantics |
+| `assignments/5/breakdown.md` | 86 | Part-by-part checklist |
+| `assignments/5/context.md` | 559 | This file — comprehensive context |
+| `assignments/5/issue_template.md` | 92 | Week 5 issue template |
+| `assignments/5/contributions.md` | 11 | Contribution tracking table |
+
+### CI & Roadmap Updates
+| File | Change | Reason |
+|---|---|---|
+| `.github/workflows/lychee.yml` | Added `--exclude 'http://'`, removed redundant per-host excludes | Catch all non-HTTPS links uniformly |
+| `docs/roadmap.md` | Updated Sprint 4/MVP v2 section | Reflects current assignment scope |
+
+### Impact on A5 Gap Analysis
+- Part 1 (Backlog & Sprint 4): **fully addressed** — all checkboxes already marked [x]
+- Part 2 (Customer Feedback): PBIs created on GitHub, response table TBD in week 5 report
+- Parts 3–5 (Dev Process, Architecture, ADRs): template files exist, need content filled incrementally
+- Parts 6–14 (Testing, Implementation, UAT, Reports): scaffolding exists, work remains
+
+### Notes for Team
+- This branch reorganizes the repo but does **not** implement any Sprint 4 PBI features (WebSocket, DB cache, sub-charts, etc.) — those require separate feature branches.
+- Architecture docs, ADRs, and reports are **empty templates** — they must be filled by team members in separate, incremental commits.

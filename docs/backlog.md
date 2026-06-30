@@ -48,7 +48,7 @@ A PBI is **Done** when:
 
 ---
 
-## Sprint 3 — v1.2.0 (Current)
+## Sprint 3 — v1.1.0 (Previous)
 
 **Milestone:** [Sprint 3 — Assignment 4 — v1.2.0](https://github.com/Fedos113/SWP_TickFrame_28_team/milestone/3)
 
@@ -74,14 +74,29 @@ A PBI is **Done** when:
 
 ---
 
+## Sprint 4 — MVP v2 (Current)
+
+**Milestone:** [Sprint 4](https://github.com/Fedos113/SWP_TickFrame_28_team/milestone/5)
+
+**Goal:** Deliver MVP v2 by addressing critical customer feedback from Sprint 3 — WebSocket migration, DB caching, RSI/Volume sub-charts, multi-interval support, analysis range fix.
+
+| # | PBI | Title | SP | Status |
+|---|-----|-------|----|--------|
+| [#110](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/110) | PBI-115 | Migrate REST polling to WebSocket subscription | 5 | To Do |
+| [#111](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/111) | PBI-116 | SQLite-based candle caching with background refresh | 3 | To Do |
+| [#112](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/112) | PBI-117 | RSI indicator sub-chart | 3 | To Do |
+| [#113](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/113) | PBI-118 | Volume sub-chart below main chart | 3 | To Do |
+| [#114](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/114) | PBI-119 | Reduce analysis range to 50k candles | 1 | To Do |
+| [#115](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/115) | PBI-120 | Multi-interval support (15m, 1h, 4h, 1d) | 3 | To Do |
+
+---
+
 ## Backlog (Future Sprints)
 
 | PBI | Title | Notes |
 |-----|-------|-------|
-| US-07 | Timeframe selector (5m, 15m, 1h, 4h, 1d) | Interval buttons exist, switching needs refinement |
+| US-07 | Timeframe selector (5m, 15m, 1h, 4h, 1d) | Superseded by PBI-120 |
 | US-09 | Coin search/filter | Search bar for coin list |
-| US-10 | Volume sub-chart | Volume bars below candles |
-| US-11 | RSI indicator sub-chart | RSI line below candles |
 | US-12 | Fear & Greed Index | Market sentiment widget |
 | US-14 | Real-time dashboard | Auto-refreshing dashboard |
 | US-15 | UI polish pass | Layout, spacing, responsive fixes |
