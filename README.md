@@ -242,4 +242,3 @@ Key variables:
 | Week 2 Reports | [reports/week2/](https://github.com/Fedos113/SWP_TickFrame_28_team/blob/main/reports/week2/README.md) |
 | Week 3 Reports | [reports/week3/](https://github.com/Fedos113/SWP_TickFrame_28_team/blob/main/reports/week3/README.md) |
 | License | [MIT](https://github.com/Fedos113/SWP_TickFrame_28_team/blob/main/LICENSE) |
-```
