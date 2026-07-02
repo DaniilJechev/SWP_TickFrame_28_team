@@ -1,0 +1,13 @@
+{
+  "name": "tickframe-frontend",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "vitest run",
+    "lint": "eslint js/"
+  },
+  "devDependencies": {
+    "eslint": "^9.0.0",
+    "vitest": "^3.0.0"
+  }
+}

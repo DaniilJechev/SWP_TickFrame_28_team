@@ -29,3 +29,36 @@ async def test_fetch_candles_fallback_to_binance():
             payload = await client.fetch_candles("BTCUSDT", "5m")
             assert payload.source == "binance"
             assert len(payload.candles) == 1
+
+
+async def _fetch_candles_interval(interval: str):
+    mock_response = {
+        "result": {"list": [["1622505600000", "50000.0", "51000.0", "49000.0", "50500.0", "100.0"]]},
+        "retCode": 0,
+    }
+    with patch.object(BybitClient, "_request_json", return_value=mock_response):
+        client = BybitClient()
+        payload = await client.fetch_candles("BTCUSDT", interval)
+        assert payload.symbol == "BTCUSDT"
+        assert len(payload.candles) == 1
+        await client.aclose()
+
+
+@pytest.mark.asyncio
+async def test_fetch_candles_15m():
+    await _fetch_candles_interval("15m")
+
+
+@pytest.mark.asyncio
+async def test_fetch_candles_1h():
+    await _fetch_candles_interval("1h")
+
+
+@pytest.mark.asyncio
+async def test_fetch_candles_4h():
+    await _fetch_candles_interval("4h")
+
+
+@pytest.mark.asyncio
+async def test_fetch_candles_1d():
+    await _fetch_candles_interval("1d")

@@ -6,7 +6,8 @@ A PBI may be marked `Done` only when **all** of the following criteria are satis
 
 - [ ] **Acceptance criteria are verified** — every AC in the PBI description passes manual or automated verification
 - [ ] **Reviewed and approved** by someone who did not write the code (reviewer must be a different person from the implementer)
-- [ ] **PR links to the Sprint 3 milestone** or current active milestone
+- [ ] **PR links to the current active Sprint milestone**
+- [ ] **WebSocket reconnection verified** — frontend recovers from connection drop within 5 seconds (if change touches WebSocket)
 
 ## CI & Automation
 
@@ -20,6 +21,9 @@ A PBI may be marked `Done` only when **all** of the following criteria are satis
 | Integration tests | `pytest tests/integration/` | All pass |
 | Quality requirement tests | `pytest tests/requirements/` | All pass |
 | Additional QA check | `bandit -r tickframe/ -ll` | Zero high-severity findings |
+| Link checking | `lychee ./**/*.md` | Zero broken links |
+| Frontend JS tests | `vitest run` (in `tickframe/frontend/`) | All pass |
+| Frontend lint | `eslint js/` (in `tickframe/frontend/`) | Zero errors |
 | Coverage | `pytest --cov=tickframe` | ≥30% line coverage for critical modules |
 
 - [ ] **Testing evidence** is visible in the PR, CI logs, or linked documentation
@@ -30,6 +34,14 @@ A PBI may be marked `Done` only when **all** of the following criteria are satis
 - [ ] **No secrets, credentials, or PII committed** (verified by bandit and manual review)
 - [ ] **README or docs updated** if the change affects setup, configuration, or usage
 - [ ] **Code follows project conventions** (no commented-out code, no dead imports, meaningful names)
+- [ ] **For user stories: linked supporting PBIs provide the required implementation, review, and verification evidence**
+
+## Architecture Documentation & ADRs
+
+For changes affecting the system architecture, components, deployment, or quality requirements:
+
+- [ ] **Architecture documentation satisfied** — `docs/architecture/README.md` and relevant view diagrams reflect the change (or N/A explicitly documented)
+- [ ] **ADRs satisfied or updated** — relevant Architecture Decision Records in `docs/architecture/adr/` reflect the change (or N/A explicitly documented)
 
 ## Quality Requirements
 
