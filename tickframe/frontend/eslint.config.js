@@ -5,6 +5,9 @@ export default [
     languageOptions: {
       globals: {
         ...globals.browser,
+        LightweightCharts: "readonly",
+        TradingView: "readonly",
+        TickFrameDatafeed: "readonly",
       },
     },
     rules: {
