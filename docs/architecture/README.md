@@ -23,7 +23,7 @@ TickFrame is a cryptocurrency chart workstation with a **client-server architect
 ### Architecture Views
 
 | View | Source | Rendered | Description |
-|---|---|---|---|---|
+|---|---|---|---|
 | Static | [`diagram.puml`](static-view/diagram.puml) | [`diagram.svg`](static-view/diagram.svg) | Component diagram — system structure, components, and relations |
 | Dynamic | [`diagram.puml`](dynamic-view/diagram.puml) | [`diagram.svg`](dynamic-view/diagram.svg) | Sequence diagram — chart loading flow and user interactions |
 | Deployment | [`diagram.puml`](deployment-view/diagram.puml) | [`diagram.svg`](deployment-view/diagram.svg) | Deployment diagram — nodes, containers, and network boundaries |
@@ -33,6 +33,8 @@ TickFrame is a cryptocurrency chart workstation with a **client-server architect
 ## 2. Static View — Component Diagram
 
 **Source:** [`static-view/diagram.puml`](static-view/diagram.puml)
+
+![Static View — Component Diagram](static-view/diagram.svg)
 
 ### What the diagram shows
 
@@ -81,6 +83,8 @@ The static view decomposes TickFrame into four internal components and three ext
 
 **Source:** [`dynamic-view/diagram.puml`](dynamic-view/diagram.puml)
 
+![Dynamic View — Sequence Diagram](dynamic-view/diagram.svg)
+
 ### Scenario: Chart Loading & Pattern Analysis
 
 The sequence diagram illustrates the **core user workflow**: a user opens the app, selects a coin, views the candlestick chart (with real-time updates), and requests ML pattern analysis.
@@ -112,6 +116,8 @@ This is the primary value proposition of TickFrame — a trader needs to see rea
 ## 4. Deployment View — Deployment Diagram
 
 **Source:** [`deployment-view/diagram.puml`](deployment-view/diagram.puml)
+
+![Deployment View — Deployment Diagram](deployment-view/diagram.svg)
 
 ### What the diagram shows
 
