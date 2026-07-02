@@ -1,7 +1,7 @@
 """QRT-004: Verify WebSocket connection completes within time limits."""
 
 import pytest
-from unittest.mock import AsyncMock, patch
+from unittest.mock import AsyncMock
 
 from tickframe.backend.api.websocket import market_hub
 

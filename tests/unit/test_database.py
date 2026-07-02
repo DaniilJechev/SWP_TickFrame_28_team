@@ -1,13 +1,16 @@
 """Unit tests for DatabaseService."""
 
+import tempfile
+
 import pytest
 from tickframe.backend.services.database import DatabaseService
 
 
 @pytest.fixture
 def db():
-    svc = DatabaseService(":memory:")
-    return svc
+    with tempfile.NamedTemporaryFile(suffix=".db") as f:
+        svc = DatabaseService(f.name)
+        yield svc
 
 
 @pytest.mark.asyncio

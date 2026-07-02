@@ -1,7 +1,7 @@
 """Unit tests for SocketHub WebSocket manager."""
 
 import pytest
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import AsyncMock
 from tickframe.backend.api.websocket import SocketHub
 
 

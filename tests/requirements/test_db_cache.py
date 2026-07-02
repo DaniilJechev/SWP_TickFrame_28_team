@@ -1,7 +1,7 @@
 """QRT-005: Verify DB cache returns cached data without re-fetching."""
 
 import pytest
-from unittest.mock import AsyncMock, patch
+from unittest.mock import AsyncMock
 
 from tickframe.backend.services.cache import MemoryMarketCache
 from tickframe.backend.services.bybit_client import BybitClient
