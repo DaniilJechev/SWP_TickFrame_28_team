@@ -118,7 +118,7 @@
 ## UAT Execution Log
 
 | Date | UAT ID | Result | Tester | Notes |
-|---|---|---|---|---|---|
+|---|---|---|---|---|
 | 2026-06-26 | UAT-001 | ⏳ Partial | Customer | Markers/labels shown; ML model as separate microservice. Customer confirmed the visualization approach is acceptable. |
 | 2026-06-26 | UAT-002 | ❌ Not tested | Customer | Only 5m timeframe available. Deferred to Sprint 4. |
 | 2026-06-26 | UAT-003 | ⏳ Not demonstrated | Customer | Report export not covered in session. |
@@ -128,5 +128,3 @@
 | TBD | UAT-006 | ⏳ To be tested | Customer | WebSocket live candles (PBI-115). Sprint 4 session. |
 | TBD | UAT-007 | ⏳ To be tested | Customer | RSI/Volume sub-charts (PBI-117, PBI-118). Sprint 4 session. |
 
-> After the UAT session, update Status and Notes columns with actual results.
-> The customer must execute the scenarios — not the team.
