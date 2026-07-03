@@ -230,6 +230,7 @@ Key variables:
 | Resource | Link |
 |---|---|
 | Definition of Done | [docs/definition-of-done.md](https://github.com/Fedos113/SWP_TickFrame_28_team/blob/main/docs/definition-of-done.md) |
+| Development Process | [docs/development-process.md](https://github.com/Fedos113/SWP_TickFrame_28_team/blob/main/docs/development-process.md) |
 | Roadmap | [docs/roadmap.md](https://github.com/Fedos113/SWP_TickFrame_28_team/blob/main/docs/roadmap.md) |
 | User Stories | [docs/user-stories.md](https://github.com/Fedos113/SWP_TickFrame_28_team/blob/main/docs/user-stories.md) |
 | Changelog | [CHANGELOG.md](https://github.com/Fedos113/SWP_TickFrame_28_team/blob/main/CHANGELOG.md) |
@@ -241,4 +242,3 @@ Key variables:
 | Week 2 Reports | [reports/week2/](https://github.com/Fedos113/SWP_TickFrame_28_team/blob/main/reports/week2/README.md) |
 | Week 3 Reports | [reports/week3/](https://github.com/Fedos113/SWP_TickFrame_28_team/blob/main/reports/week3/README.md) |
 | License | [MIT](https://github.com/Fedos113/SWP_TickFrame_28_team/blob/main/LICENSE) |
-```

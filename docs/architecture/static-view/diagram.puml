@@ -1,0 +1,52 @@
+@startuml
+skinparam componentStyle rectangle
+skinparam defaultFontName Courier
+skinparam backgroundColor #FEFEFE
+
+title <b>SWP TickFrame — Static Component View</b>
+
+' External systems
+actor "Web Browser" as Browser
+cloud "Bybit API" as Bybit
+cloud "Binance API" as Binance
+
+' Internal components
+package "<b>tickframe Backend</b>" as Backend {
+  [FastAPI Application] as FastAPIApp
+  [REST API Endpoints] as REST
+  [WebSocket Hub] as WS
+  [MemoryMarketCache] as Cache
+  [Database Service] as DB
+  [BybitClient] as BybitClient
+  [MlClient] as MlClient
+}
+
+package "<b>ML Service</b>" as ML {
+  [FastAPI ML App] as MLApp
+  [XGBoost Model] as Model
+}
+
+database "SQLite DB\n<size:10>data/tickframe.db</size>" as SQLite
+
+' Frontend is served as static files from Backend
+artifact "Frontend\n<size:10>HTML / CSS / JS</size>" as Frontend
+
+' Relations
+Browser --> Frontend : "HTTP GET /"
+Browser --> REST : "HTTP REST (JSON)"
+Browser --> WS : "WebSocket (market/candles)"
+
+REST --> Cache : "read/write candles"
+REST --> DB : "read/write settings, drawings"
+REST --> MlClient : "POST /analyze/{symbol}"
+WS --> Cache : "read market snapshot (5s)"
+Cache --> DB : "persist/load candles"
+DB --> SQLite : "SQL (run_in_executor)"
+Cache --> BybitClient : "fetch on cache miss"
+BybitClient --> Bybit : "HTTPS REST (primary)"
+BybitClient --> Binance : "HTTPS REST (fallback)"
+MlClient --> MLApp : "HTTP POST (Docker DNS)"
+
+MLApp --> Model : "load + predict"
+
+@enduml
