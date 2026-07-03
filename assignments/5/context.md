@@ -648,7 +648,37 @@ Branch `week5-planning` contains the following planning artifacts created to gui
 
 ---
 
-## 21. Current Branch Contributions (`121-dev-process-docs`)
+## 21. Current Branch Contributions (`uat-scenarios-prep`)
+
+Branch `uat-scenarios-prep` contains UAT documentation updates for Sprint 4 / MVP v2 by **A. Gafarov ([omarichev](https://github.com/omarichev))**, advancing Part 8 (User Acceptance Tests) of Assignment 5:
+
+### UAT Document Updates
+
+| Change | Details |
+|---|---|
+| Added **UAT-006** | WebSocket real-time candle updates scenario, linked to PBI-115 and US-01 |
+| Added **UAT-007** | RSI and Volume sub-charts scenario, linked to PBI-117, PBI-118, US-10, US-11 |
+| Updated **UAT-002** | Revised preconditions, test steps, and expected results for Sprint 4 multi-interval support (PBI-120) |
+| Updated **UAT-004** | Refined expected result to mention WebSocket-based real-time updates |
+| Fixed **UAT Execution Log** | Corrected table column count, added planned retest entries for UAT-002/006/007 |
+| Updated **document header** | Changed from "Template" to "Maintained product asset" with Sprint 4 note |
+
+### Impact on A5 Gap Analysis
+
+- Part 8 (UAT): **scenarios prepared** — UAT-006 and UAT-007 exist as required; UAT-002 updated for Sprint 4. Execution and result summary in week 5 report remain as follow-up.
+
+### Files Changed
+
+| File | Change |
+|---|---|
+| `docs/user-acceptance-tests.md` | +47 / -12 lines across 2 commits |
+
+### Notes for Team
+
+- UAT scenarios are ready for **customer execution** during the Sprint 4 recorded session.
+- After execution, update the `Execution result`, `Execution history`, and `UAT Execution Log` sections with actual results and customer comments.
+- Summarize UAT outcomes in `reports/week5/README.md` (item 30 in the 42-item structure).
+## 22. Current Branch Contributions (`121-dev-process-docs`)
 
 Branch `121-dev-process-docs` contains the following contributions by **A. Mindubaev ([pug228](https://github.com/pug228))** advancing Week 5 deliverables:
 
@@ -699,7 +729,7 @@ Branch `121-dev-process-docs` contains the following contributions by **A. Mindu
 - Part 6 (Testing/QA/DoD): **partially addressed** — DoD updated for A5 architecture requirements
 - Week 5 Report: **partially addressed** — items 18–21 filled
 
-## 22. Current Branch Contributions (`part-6-testing-qa`)
+## 23. Current Branch Contributions (`part-6-testing-qa`)
 
 Branch `part-6-testing-qa` contains the following contributions advancing **Part 6 (Testing, QA, DoD for MVP v2)**:
 
