@@ -8,6 +8,7 @@
 > - Customer must execute scenarios during a recorded session
 > - UAT scenarios are **maintained product assets** — keep them updated
 > - Sprint 4 adds UAT-006 (WebSocket live candles) and UAT-007 (RSI/Volume sub-charts)
+> - Sprint 4 UAT executed 2026-07-03 with customer (N. Kuzmin)
 
 ---
 
@@ -26,6 +27,7 @@
 | **Expected result** | Chart displays candlestick data with detected pattern markers. Clicking a marker shows analysis details. |
 | **Execution result** | ⏳ Partial |
 | **Execution history** | 2026-06-26 — ⏳ Partial — UI displays markers and labels for detected patterns. ML model runs as separate microservice; end-to-end integration not yet complete. Customer reviewed the candidate visualization and confirmed the approach is acceptable. |
+| | 2026-07-03 — ⏳ Partial — ML reports now display properly with descriptions and confidence scores (≈57% accuracy). Model detects Head & Shoulders and Inverse Head & Shoulders; Double Top/Double Bottom in progress (data labeling this week). Customer requested pattern-type filtering and confidence threshold controls — new feature to be implemented. |
 
 ---
 
@@ -43,8 +45,9 @@
 | **Preconditions** | Web dashboard is open (`http://localhost:8000`) with chart displayed (WebSocket connected) |
 | **Test steps** | 1. Locate timeframe selector (5m, 15m, 1h, 4h, 1d) 2. Click each timeframe 3. Observe chart redraw within 2s 4. Verify candle data differs per interval |
 | **Expected result** | Chart loads new candle data for each timeframe within 2 seconds. All timeframes display correct interval data. WebSocket continues pushing live updates after switch. |
-| **Execution result** | ⏳ To be tested (Sprint 4) |
+| **Execution result** | ⏳ Partial |
 | **Execution history** | 2026-06-26 — ❌ Not tested — Only 5m timeframe available in Sprint 3. Customer was informed this is scheduled for Sprint 4. |
+| | 2026-07-03 — ⏳ Partial — Timeframe switching (5m, 15m, 1h, 4h, 1d) works and candle data differs per interval. However, pattern analysys works only on 5m timeframes. |
 
 ---
 
@@ -81,6 +84,7 @@
 | **Expected result** | Sidebar displays 10 pairs with live prices that update in real time via WebSocket. |
 | **Execution result** | ✅ Pass |
 | **Execution history** | 2026-06-26 — ✅ Pass — Sidebar displays 10 trading pairs with live prices updating via backend push. Customer confirmed real-time updates work correctly. |
+| | 2026-07-03 — ✅ Pass — Prices now update every second via WebSocket (Bybit + Binance). 24-hour price change icon added. Customer suggested adding more coin metrics (24h change, 5m change, etc.) — optional follow-up. |
 
 ---
 
@@ -99,6 +103,7 @@
 | **Expected result** | All UI elements switch between day and night themes consistently. Text remains readable in both themes. |
 | **Execution result** | ✅ Pass |
 | **Execution history** | 2026-06-26 — ✅ Pass — Theme toggle works correctly. Light/dark themes persist across page reload (SQLite). Drawing colors adapt to active theme. Customer confirmed satisfaction. |
+| | 2026-07-03 — ✅ Pass — No changes in Sprint 4. Still passing. Not explicitly re-tested; no complaints from customer. |
 
 ---
 
@@ -116,8 +121,8 @@
 | **Preconditions** | Web dashboard is open (`http://localhost:8000`). Bybit API is reachable. |
 | **Test steps** | 1. Open the dashboard and select BTCUSDT with 5m interval 2. Observe that the latest candle updates without manual refresh after 30 seconds 3. Switch to a different coin (e.g. ETHUSDT) 4. New coin's candles load and continue live-updating |
 | **Expected result** | Candle chart updates in real time without page refreshes. Switching coins loads the new data and continues live updates seamlessly. |
-| **Execution result** | ⏳ To be tested (Sprint 4) |
-| **Execution history** | TBD — Sprint 4 UAT session |
+| **Execution result** | ✅ Pass |
+| **Execution history** | 2026-07-03 — ✅ Pass — Real-time candle updates confirmed working via WebSocket (Bybit + Binance channels). Historical data loads from database cache first, then latest updates applied via WebSocket. Caching ensures fast revisit loads. Customer confirmed the approach is acceptable. Reconnection logic not explicitly tested. |
 
 ---
 
@@ -135,8 +140,8 @@
 | **Preconditions** | Web dashboard is open with a chart displayed |
 | **Test steps** | 1. Observe the main candlestick chart area 2. Locate the RSI sub-chart pane below the main chart 3. Verify RSI line moves between 0–100 as candles change 4. Locate the Volume sub-chart pane 5. Verify volume bars change height with trading activity 6. Switch timeframe (e.g. 5m → 1h) 7. Verify both sub-charts recalculate for new interval data |
 | **Expected result** | RSI and Volume sub-charts display below the main chart. Both recalculate correctly when timeframe changes. |
-| **Execution result** | ⏳ To be tested (Sprint 4) |
-| **Execution history** | TBD — Sprint 4 UAT session |
+| **Execution result** | ⏳ Partial |
+| **Execution history** | 2026-07-03 — ⏳ Partial — Volume sub-chart is working (bars change with trading activity). RSI sub-chart is NOT working — rendering issue with the charting library (manual implementation approach failed). Customer insisted RSI is critical and was specified in initial requirements. Fedor will implement RSI using a specialized library. Fear & Greed Index also added. |
 
 ---
 
@@ -149,7 +154,10 @@
 | 2026-06-26 | UAT-003 | ⏳ Not demonstrated | Customer | Report export not covered in session. |
 | 2026-06-26 | UAT-004 | ✅ Pass | Customer | 10 pairs with live updates — confirmed working. |
 | 2026-06-26 | UAT-005 | ✅ Pass | Customer | Theme toggle works, persists across reload. Customer satisfied. |
-| TBD | UAT-002 | ⏳ To be tested | Customer | Multi-interval now available (PBI-120). Sprint 4 session. |
-| TBD | UAT-006 | ⏳ To be tested | Customer | WebSocket live candles (PBI-115). Sprint 4 session. |
-| TBD | UAT-007 | ⏳ To be tested | Customer | RSI/Volume sub-charts (PBI-117, PBI-118). Sprint 4 session. |
+| 2026-07-03 | UAT-001 | ⏳ Partial | Customer | ML reports displayed with descriptions and confidence scores (≈57%). Pattern filtering requested as new feature. |
+| 2026-07-03 | UAT-002 | ⏳ Partial | Customer | Timeframe switching (5m/15m/1h/4h/1d) works but UI glitches when switching. Needs polish. |
+| 2026-07-03 | UAT-004 | ✅ Pass | Customer | WebSocket live prices confirmed. 24h change icon added. Customer suggested additional coin metrics. |
+| 2026-07-03 | UAT-005 | ✅ Pass | Customer | Theme toggle unchanged in Sprint 4. Still passing. |
+| 2026-07-03 | UAT-006 | ✅ Pass | Customer | WebSocket live candles from Bybit/Binance, DB cache for historical data. Reconnect not explicitly tested. |
+| 2026-07-03 | UAT-007 | ⏳ Partial | Customer | Volume sub-chart works. RSI sub-chart not working (rendering issue). Customer insists RSI is critical — must be implemented. |
 

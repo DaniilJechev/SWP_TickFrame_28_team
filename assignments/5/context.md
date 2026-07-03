@@ -784,3 +784,43 @@ Branch `part-6-testing-qa` contains the following contributions advancing **Part
 ### Notes for Team
 - This branch fills Parts 3–5 but implements **no** Sprint 4 PBI features (WebSocket migration, DB caching, sub-charts, multi-interval) — those go in separate feature branches branched from `main`.
 - The week 5 report is partially filled (items 18–21). Other team members must fill remaining items (1–17, 22–42).
+
+## 24. Current Branch Contributions (`main` — UAT execution updates)
+
+Branch `main` contains UAT documentation updates advancing **Part 8 (User Acceptance Tests)** of Assignment 5, based on the Sprint 4 UAT session conducted 2026-07-03 with customer N. Kuzmin.
+
+### UAT Document Updates
+
+| Change | Details |
+|---|---|
+| `docs/user-acceptance-tests.md` | Updated all 7 UAT scenarios with Sprint 4 execution results, customer comments, and new feature requests discovered during the session |
+
+### UAT Results Summary
+
+| UAT | Result | Key Findings |
+|---|---|---|
+| UAT-001 | ⏳ Partial | ML reports display descriptions + confidence scores (~57%). Pattern filtering requested as new feature. |
+| UAT-002 | ⏳ Partial | Timeframe switching (5m/15m/1h/4h/1d) works. UI glitches when switching — needs polish. |
+| UAT-004 | ✅ Pass | WebSocket live prices confirmed. 24h change icon added. Customer suggested more coin metrics. |
+| UAT-005 | ✅ Pass | Still passing; no Sprint 4 changes. |
+| UAT-006 | ✅ Pass | WebSocket live candles from Bybit/Binance. DB cache for historical data. |
+| UAT-007 | ⏳ Partial | Volume sub-chart works. **RSI not working** — customer insists it's critical. |
+
+### New Feature Requests Captured from Session
+
+| Request | Source | Priority |
+|---|---|---|
+| Pattern-type filtering + confidence threshold controls | Customer (N. Kuzmin) | High |
+| Additional coin metrics in sidebar (24h change, 5m change) | Customer (N. Kuzmin) | Low (if time permits) |
+| RSI implementation via specialized library | Technical decision (rendering issue) | Critical |
+
+### Impact on A5 Gap Analysis
+
+- Part 8 (UAT): **fully addressed** — all 7 UAT scenarios executed with customer, results recorded, new feature requests captured
+- Part 8 execution log: **updated** with Sprint 4 rows and customer comments
+
+### Related Issues
+
+| Issue | Title |
+|---|---|
+| [#150](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/150) | DOC: Update UAT scenarios with Sprint 4 execution results (Part 8) |
