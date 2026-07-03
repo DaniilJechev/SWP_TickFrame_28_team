@@ -10,12 +10,12 @@ This document defines the automated Quality Requirement Tests (QRTs) for TickFra
 |---|---|
 | **ID** | QRT-001 |
 | **Linked QR** | [QR-001](quality-requirements.md#qr-001-api-response-time) — Time Behaviour |
-| **Test description** | Verify that the health endpoint responds within 2 seconds |
+| **Test description** | Verify that health and candles endpoints respond within 500ms (95th percentile) |
 | **Automation method** | `pytest` + `httpx` (FastAPI TestClient via ASGITransport) |
 | **Test file** | `tests/requirements/test_performance.py` |
 | **CI job** | `CI / test` in `.github/workflows/ci.yml` |
 | **Evidence type** | CI job pass/fail + response time assertion |
-| **Pass/fail criteria** | `GET /api/health` responds with status 200 in < 2.0 seconds (elapsed time) |
+| **Pass/fail criteria** | 95th percentile response time ≤ 500ms across 10 requests to `/api/health` and `/api/coins/BTCUSDT/candles?interval=5m&limit=100` |
 
 ---
 
@@ -49,6 +49,38 @@ This document defines the automated Quality Requirement Tests (QRTs) for TickFra
 
 ---
 
+## QRT-004: WebSocket Connection Reliability
+
+| Field | Value |
+|---|---|
+| **ID** | QRT-004 |
+| **Linked QR** | [QR-001](quality-requirements.md#qr-001-api-response-time) — Time Behaviour |
+| **Test description** | Verify that WebSocket handshake completes and connection stays alive |
+| **Automation method** | `pytest` + `AsyncMock` WebSocket — `SocketHub` instance, no real network calls |
+| **Test file** | `tests/requirements/test_websocket_connect.py` |
+| **CI job** | `CI / test` in `.github/workflows/ci.yml` |
+| **Evidence type** | CI job pass/fail |
+| **Test data, setup, or environment** | In-process test using mocked `AsyncMock` WebSocket objects. `SocketHub` is instantiated directly; no real WebSocket server or client required. |
+| **Pass/fail criteria** | WebSocket connects (hub.accept called) and receives broadcast payload via send_json |
+
+---
+
+## QRT-005: Database Cache Read/Write
+
+| Field | Value |
+|---|---|
+| **ID** | QRT-005 |
+| **Linked QR** | [QR-001](quality-requirements.md#qr-001-api-response-time) — Time Behaviour |
+| **Test description** | Verify that cached data is returned without re-fetching from exchange |
+| **Automation method** | `pytest` + `AsyncMock`-based `BybitClient` — `MemoryMarketCache` with long refresh interval to prevent automatic refresh |
+| **Test file** | `tests/requirements/test_db_cache.py` |
+| **CI job** | `CI / test` in `.github/workflows/ci.yml` |
+| **Evidence type** | CI job pass/fail |
+| **Test data, setup, or environment** | In-process test using `MemoryMarketCache` with a mocked `BybitClient`. Refresh interval set to 999s to ensure in-memory cache serves repeated reads without calling the mock. |
+| **Pass/fail criteria** | After first fetch, subsequent reads for same coin return cached data without calling external API (verified by `client.fetch_price.await_count == 1` after two reads) |
+
+---
+
 ## CI Integration
 
 All QRTs are executed by the `CI / test` job in `.github/workflows/ci.yml`:
@@ -61,4 +93,4 @@ All QRTs are executed by the `CI / test` job in `.github/workflows/ci.yml`:
 - run: pytest --cov=tickframe --cov-report=term --cov-report=xml tests/
 ```
 
-The `tests/` directory includes `tests/requirements/` which contains the three QRT test files.
+The `tests/` directory includes `tests/requirements/` which contains the five QRT test files.

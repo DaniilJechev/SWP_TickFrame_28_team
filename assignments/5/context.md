@@ -249,7 +249,7 @@ Note: Tags `v1.1.0` and `v1.2.0` are the same version — duplicate tag created 
 |---|---|---|---|---|
 | QR-001 | Time Behaviour | p95 ≤ 500ms | QRT-001 | Active |
 | QR-002 | Confidentiality | Zero secrets in commits | QRT-002 | Active |
-| QR-003 | Functional Correctness | F2 ≥ 0.55, FPR ≤ 20% | QRT-003 | Needs re-design |
+| QR-003 | Functional Correctness | F2 ≥ 0.55, FPR ≤ 20% | QRT-003 | Active — threshold corrected from 0.80 to 0.55 |
 
 All documented in:
 - [`docs/quality-requirements.md`](../../docs/quality-requirements.md)
@@ -260,11 +260,11 @@ All documented in:
 ## 10. Testing Status
 
 | Test Type | Scope | Location | Status |
-|---|---|---|---|
-| Unit tests | bybit_client, cache, detection, schemas | `tests/unit/` | ✅ Passing |
+|---|---|---|---|---|
+| Unit tests | bybit_client, cache, detection, schemas, websocket, database | `tests/unit/` | ✅ Passing |
 | Integration tests | API endpoints | `tests/integration/test_api_endpoints.py` | ✅ Passing |
-| QRTs | Performance, Security, Accuracy | `tests/requirements/` | ✅ Passing |
-| Frontend JS tests | ❌ None exist | — | ❌ Missing |
+| QRTs | Performance, Security, Accuracy, WebSocket, DB Cache | `tests/requirements/` | ✅ 5 QRTs |
+| Frontend JS tests | Basic WebSocket message parsing, URL construction | `tickframe/frontend/js/tests/` | ✅ Added for MVP v2 |
 
 **Coverage:** ≥30% for critical modules (bybit_client, cache, database, ml_client, endpoints, websocket, schemas, detection).
 
@@ -313,14 +313,17 @@ Key feedback points from 2026-06-26 Sprint Review (see [`reports/week4/customer-
 Current DoD requires:
 - All AC verified
 - Reviewed & approved by different person
-- PR links to current milestone
-- All CI checks pass (ruff, mypy, pytest+cov, bandit)
+- PR links to current active Sprint milestone
+- All CI checks pass (ruff, mypy, pytest+cov, bandit, lychee, frontend JS tests + lint)
 - CHANGELOG updated for user-visible changes
 - No secrets/PII committed
 - README/docs updated if needed
 - QR-001/002/003 not regressed
+- Architecture docs & ADRs satisfied or N/A
+- WebSocket reconnection verified (if change touches WebSocket)
+- User stories: linked supporting PBIs provide review/verification evidence
 
-**Assignment 5 requires:** DoD must be updated if Sprint 4 changes architecture, critical modules, deployment model, workflow, or CI configuration.
+**Assignment 5 requires:** DoD must be updated if Sprint 4 changes architecture, critical modules, deployment model, workflow, or CI configuration. ✅ Updated on `part-6-testing-qa`.
 
 ---
 
@@ -339,33 +342,37 @@ Current DoD requires:
 - [ ] **Customer feedback response table** in week 5 report
 
 ### Part 3: Development Process & Configuration Management
-- [ ] **Fill [`docs/development-process.md`](../../docs/development-process.md)** — git workflow, Mermaid gitGraph, config management, CI, branches, PRs, secrets (empty template exists)
-- [ ] **Link from README, hosted docs, week 5 report**
+- [x] **Fill [`docs/development-process.md`](../../docs/development-process.md)** — git workflow, Mermaid gitGraph, config management, CI, branches, PRs, secrets (filled on `121-dev-process-docs`)
+- [x] **Link from README, hosted docs, week 5 report** — linked from README.md and week 5 report
 
-> **Note on template files:** All architecture, ADR, and report files listed below exist as **empty placeholders** (0 bytes). This is intentional — they serve as a starter checklist. Each file must be filled incrementally by team members in **separate commits**. A single commit must not cover all items; distribute work across multiple contributors and commits.
+> **Note on template files:** Architecture, ADR, and report files below were filled incrementally on `121-dev-process-docs` by A. Mindubaev.
 
 ### Part 4: Architecture Documentation
-- [ ] **Fill [`docs/architecture/README.md`](../../docs/architecture/README.md)** — with static, dynamic, deployment view sections (empty template exists)
-- [ ] **Fill [`docs/architecture/static-view/diagram.puml`](../../docs/architecture/static-view/diagram.puml)** — component diagram (PlantUML), source
-- [ ] **Fill [`docs/architecture/dynamic-view/diagram.puml`](../../docs/architecture/dynamic-view/diagram.puml)** — sequence diagram(s), source
-- [ ] **Fill [`docs/architecture/deployment-view/diagram.puml`](../../docs/architecture/deployment-view/diagram.puml)** — deployment diagram, source
-- [ ] **Comment on coupling, cohesion, maintainability, quality requirements** in static view
-- [ ] **Explain scenario importance, architecture decisions, quality requirements** in dynamic view
-- [ ] **Explain deployment model choice, constraints, operations** in deployment view
+- [x] **Fill [`docs/architecture/README.md`](../../docs/architecture/README.md)** — with static, dynamic, deployment view sections (filled on `121-dev-process-docs`)
+- [x] **Fill [`docs/architecture/static-view/diagram.puml`](../../docs/architecture/static-view/diagram.puml)** — component diagram (PlantUML), source + rendered SVG
+- [x] **Fill [`docs/architecture/dynamic-view/diagram.puml`](../../docs/architecture/dynamic-view/diagram.puml)** — sequence diagram(s), source + rendered SVG
+- [x] **Fill [`docs/architecture/deployment-view/diagram.puml`](../../docs/architecture/deployment-view/diagram.puml)** — deployment diagram, source + rendered SVG
+- [x] **Comment on coupling, cohesion, maintainability, quality requirements** in static view
+- [x] **Explain scenario importance, architecture decisions, quality requirements** in dynamic view
+- [x] **Explain deployment model choice, constraints, operations** in deployment view
 
 ### Part 5: ADRs (Architecture Decision Records)
-- [ ] **Fill [`docs/architecture/adr/ADR-001-websocket-migration.md`](../../docs/architecture/adr/ADR-001-websocket-migration.md)** (empty template exists)
-- [ ] **Fill [`docs/architecture/adr/ADR-002-sqlite-persistence.md`](../../docs/architecture/adr/ADR-002-sqlite-persistence.md)** (empty template exists)
-- [ ] **Fill [`docs/architecture/adr/ADR-003-microservice-architecture.md`](../../docs/architecture/adr/ADR-003-microservice-architecture.md)** (empty template exists)
-- [ ] **Each ADR must link to A4/A5 quality requirements**
-- [ ] **Update [`docs/quality-requirements.md`](../../docs/quality-requirements.md)** — link each QR to relevant ADR
-- [ ] **Link ADRs from [`docs/architecture/README.md`](../../docs/architecture/README.md)**
+- [x] **Fill [`docs/architecture/adr/ADR-001-websocket-migration.md`](../../docs/architecture/adr/ADR-001-websocket-migration.md)** (filled on `121-dev-process-docs`)
+- [x] **Fill [`docs/architecture/adr/ADR-002-sqlite-persistence.md`](../../docs/architecture/adr/ADR-002-sqlite-persistence.md)** (filled on `121-dev-process-docs`)
+- [x] **Fill [`docs/architecture/adr/ADR-003-microservice-architecture.md`](../../docs/architecture/adr/ADR-003-microservice-architecture.md)** (filled on `121-dev-process-docs`)
+- [x] **Each ADR must link to A4/A5 quality requirements**
+- [x] **Update [`docs/quality-requirements.md`](../../docs/quality-requirements.md)** — link each QR to relevant ADR
+- [x] **Link ADRs from [`docs/architecture/README.md`](../../docs/architecture/README.md)**
 
 ### Part 6: Testing, QA, DoD for MVP v2
-- [ ] **Keep all A4 checks active**
-- [ ] **Extend tests** for MVP v2 scope
-- [ ] **Update [`docs/testing.md`](../../docs/testing.md)**, [`docs/quality-requirements.md`](../../docs/quality-requirements.md), [`docs/quality-requirement-tests.md`](../../docs/quality-requirement-tests.md), [`docs/definition-of-done.md`](../../docs/definition-of-done.md)
-- [ ] **Update DoD** if architecture/deployment/workflow changes
+- [x] **Keep all A4 checks active** — ruff, mypy, pytest+cov, bandit, Lychee all unchanged
+- [x] **Extend tests** for MVP v2 scope — WebSocket unit tests (`test_websocket.py`), Database unit tests (`test_database.py`), QRT-004 (`test_websocket_connect.py`), QRT-005 (`test_db_cache.py`), multi-interval tests (15m/1h/4h/1d), analysis range tests (limit param)
+- [x] **Update [`docs/testing.md`](../../docs/testing.md)** — added WebSocket/DB test rows, Frontend JS Tests section, multi-interval + analysis range coverage, Database in critical modules, 5 QRTs, Lychee in CI, manual test evidence, CI links, A4-gates-active statement
+- [x] **Update [`docs/quality-requirements.md`](../../docs/quality-requirements.md)** — fixed QR-003 threshold (0.80→0.55), added ADR links to all 3 QRs
+- [x] **Update [`docs/quality-requirement-tests.md`](../../docs/quality-requirement-tests.md)** — fixed QRT-001 (2s→500ms p95), added QRT-004 (WebSocket) + QRT-005 (DB cache), expanded test-data descriptions
+- [x] **Update [`docs/definition-of-done.md`](../../docs/definition-of-done.md)** — Sprint 3→current milestone, Lychee row, Architecture/ADRs section, WebSocket reconnection criterion, frontend JS CI rows, user-story/PBI linking criterion
+- [x] **Update DoD** for CI configuration changes — frontend JS jobs added to CI table
+- [x] **Frontend JS testing setup** — Vitest + ESLint, sample WebSocket test, CI jobs (`frontend-lint` + `frontend-test`)
 
 ### Part 7: Implement, Release, Deploy MVP v2
 - [ ] **Implement Sprint 4 scope** — issue-linked PRs, reviewed
@@ -533,9 +540,9 @@ Current DoD requires:
 ## 17. Known Gaps & Risks for Assignment 5
 
 ### Critical Gaps (Must Address for A5)
-1. **Architecture documentation files exist as empty templates** — `docs/architecture/README.md`, static/dynamic/deployment `.puml` files need content (PlantUML recommended).
-2. **ADR files exist as empty templates** — 3 ADR `.md` files need content, each linking to quality requirements.
-3. **Development-process template exists** — `docs/development-process.md` is empty; needs git workflow, Mermaid gitGraph, config management.
+1. **Architecture documentation files** — **filled** on `121-dev-process-docs`: `docs/architecture/README.md` + 3 views with `.puml` and `.svg` ([#140](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/140)).
+2. **ADR files** — **filled** on `121-dev-process-docs`: 3 ADRs in `docs/architecture/adr/` linking to quality requirements ([#141](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/141)).
+3. **Development-process template** — **filled** on `121-dev-process-docs`: `docs/development-process.md` with Mermaid gitGraph, board config, CI ([#139](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/139)).
 4. **Sprint 4 milestone** — [created](https://github.com/Fedos113/SWP_TickFrame_28_team/milestone/5) with 6 PBIs assigned.
 5. **Sprint 4 PBIs** — 6 created ([#110](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/110)–[#115](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/115)), all in To Do.
 6. **Week 5 report files exist as empty templates** — `reports/week5/README.md` and 6 sub-reports need content.
@@ -546,8 +553,8 @@ Current DoD requires:
 
 ### Technical Risks
 1. **WebSocket migration** (customer's top request) is a large rework touching backend + frontend.
-2. **QR-003 needs re-design** — F2 threshold changed from 80% to 55% (realistic target given current ML precision). All QRTs must be re-aligned.
-3. **Frontend JS has zero test coverage** — no unit/integration tests for chart, drawing, sidebar, WebSocket.
+2. **QR-003** — threshold corrected to 0.55; QRTs aligned on `part-6-testing-qa`.
+3. **Frontend JS coverage** — basic Vitest coverage added; chart rendering and DOM interaction still untested.
 4. **Single timeframe (5m only)** — multi-interval support deferred multiple sprints.
 5. **No database caching** — every page load hits Bybit REST API.
 
@@ -575,7 +582,7 @@ Current DoD requires:
 
 ---
 
-*Last updated: 2026-06-30*
+*Last updated: 2026-07-02*
 *Generated by: OpenCode (deepseek-v4-flash-free)*
 
 ---
@@ -598,7 +605,7 @@ Branch `part-1-2` contains the following contributions by **F. Kozhevnikov ([Fed
 | `assignments/5/Assignment_05.md` | 508 | Main assignment specification |
 | `assignments/5/Artifact_Requirements.md` | 754 | Shared artifact semantics |
 | `assignments/5/breakdown.md` | 86 | Part-by-part checklist |
-| `assignments/5/context.md` | 559 | This file — comprehensive context |
+| `assignments/5/context.md` | 607 | This file — comprehensive context |
 | `assignments/5/issue_template.md` | 92 | Week 5 issue template |
 | `assignments/5/contributions.md` | 11 | Contribution tracking table |
 
@@ -671,3 +678,109 @@ Branch `uat-scenarios-prep` contains UAT documentation updates for Sprint 4 / MV
 - UAT scenarios are ready for **customer execution** during the Sprint 4 recorded session.
 - After execution, update the `Execution result`, `Execution history`, and `UAT Execution Log` sections with actual results and customer comments.
 - Summarize UAT outcomes in `reports/week5/README.md` (item 30 in the 42-item structure).
+## 22. Current Branch Contributions (`121-dev-process-docs`)
+
+Branch `121-dev-process-docs` contains the following contributions by **A. Mindubaev ([pug228](https://github.com/pug228))** advancing Week 5 deliverables:
+
+### Part 3: Development Process & Configuration Management
+| File | Change | Details |
+|---|---|---|
+| `docs/development-process.md` | Created (312 lines) | git workflow with Mermaid gitGraph, board config with 6 workflow states, git/review workflow, config/secrets, dev environment, CI pipeline, quality gates |
+
+### Part 4: Architecture Documentation
+| File | Change | Details |
+|---|---|---|
+| `docs/architecture/README.md` | Created (165 lines) | Architecture index with static/dynamic/deployment view sections, ADR index, QR mapping |
+| `docs/architecture/static-view/diagram.puml` | Created | PlantUML component diagram — 4 internal + 3 external components |
+| `docs/architecture/static-view/diagram.svg` | Created | Rendered SVG of component diagram |
+| `docs/architecture/dynamic-view/diagram.puml` | Created | PlantUML sequence diagram — chart loading + pattern analysis flow |
+| `docs/architecture/dynamic-view/diagram.svg` | Created | Rendered SVG of sequence diagram |
+| `docs/architecture/deployment-view/diagram.puml` | Created | PlantUML deployment diagram — Docker host, containers, client |
+| `docs/architecture/deployment-view/diagram.svg` | Created | Rendered SVG of deployment diagram |
+
+### Part 5: ADRs
+| File | Change | Details |
+|---|---|---|
+| `docs/architecture/adr/ADR-001-websocket-migration.md` | Created (28 lines) | WebSocket migration decision, links to QR-001, QR-002 |
+| `docs/architecture/adr/ADR-002-sqlite-persistence.md` | Created (36 lines) | SQLite 3-tier cache decision, links to QR-001, QR-003 |
+| `docs/architecture/adr/ADR-003-microservice-architecture.md` | Created (40 lines) | ML microservice isolation decision, links to QR-001, QR-002, QR-003 |
+
+### Maintained Docs Updates
+| File | Change |
+|---|---|
+| `docs/quality-requirements.md` | Added "Related ADRs" row to QR-001, QR-002, QR-003 |
+| `docs/definition-of-done.md` | Fixed stale Sprint 3 reference, added architecture/ADR criteria, added Lychee to CI table |
+| `README.md` | Added dev-process link to Documentation & Reports table |
+| `reports/week5/README.md` | Filled items 18–21 with links to dev-process, architecture, ADRs |
+
+### Audit Fixes
+| Fix | Description |
+|---|---|
+| Lychee exclusions | Added missing exclude patterns to dev-process.md |
+| To Do/Done wording | Aligned with Process_Requirements.md |
+| Week 5 report numbering | Fixed item numbering (grouped 3 views under single item 20) |
+| Trailing newline | Added to README.md |
+| Hosted docs gap | Acknowledged in week 5 report |
+
+### Impact on A5 Gap Analysis
+- Part 3 (Dev Process): **fully addressed** — `docs/development-process.md` filled and linked
+- Part 4 (Architecture): **fully addressed** — all 3 views created with source + rendered forms
+- Part 5 (ADRs): **fully addressed** — 3 ADRs created, linked from QRs and architecture README
+- Part 6 (Testing/QA/DoD): **partially addressed** — DoD updated for A5 architecture requirements
+- Week 5 Report: **partially addressed** — items 18–21 filled
+
+## 23. Current Branch Contributions (`part-6-testing-qa`)
+
+Branch `part-6-testing-qa` contains the following contributions advancing **Part 6 (Testing, QA, DoD for MVP v2)**:
+
+### Test Files
+| File | Type | What it adds |
+|---|---|---|
+| `tests/requirements/test_performance.py` | QRT-001 fix | Changed threshold 2s → 500ms p95, added candles endpoint, 10-request p95 measurement |
+| `tests/requirements/test_websocket_connect.py` | QRT-004 (new) | WebSocket connection reliability test |
+| `tests/requirements/test_db_cache.py` | QRT-005 (new) | Database cache round-trip test |
+| `tests/unit/test_websocket.py` | Unit tests (new) | SocketHub: connect, disconnect, broadcast, fan-out, error handling (8 tests) |
+| `tests/unit/test_database.py` | Unit tests (new) | DatabaseService: settings, drawings, candles, cache miss, count, range (14 tests) |
+| `tests/unit/test_detection.py` | Extended | Added `test_analyze_within_range`, `test_analyze_exceeds_range` |
+| `tests/unit/test_bybit_client.py` | Extended | Added `test_fetch_candles_15m`, `_1h`, `_4h`, `_1d` |
+
+### Source Changes
+| File | Change |
+|---|---|
+| `tickframe/detection/mock.py` | Added `limit` parameter to `analyze()` function |
+| `tickframe/frontend/package.json` | New — Vitest + ESLint dev dependencies |
+| `tickframe/frontend/eslint.config.js` | New — ESLint flat config |
+| `tickframe/frontend/js/tests/websocket.test.js` | New — parseJson + getWsBase tests |
+
+### CI Changes
+| File | Change |
+|---|---|
+| `.github/workflows/ci.yml` | Added `frontend-lint` (ESLint) and `frontend-test` (Vitest) jobs |
+
+### Documentation Updates
+| File | Key changes |
+|---|---|
+| `docs/testing.md` | WebSocket/DB test rows, Frontend JS Tests section, multi-interval + analysis range, Database in critical modules, 5 QRTs, Lychee in CI, manual test evidence, CI links, A4-gates-active statement |
+| `docs/quality-requirements.md` | QR-003 threshold fix (0.80→0.55), ADR links added to all 3 QRs |
+| `docs/quality-requirement-tests.md` | QRT-001 fixed (2s→500ms p95), QRT-004 + QRT-005 added, test-data expanded |
+| `docs/definition-of-done.md` | Sprint 3→current milestone, Lychee row, Architecture/ADRs section, WebSocket reconnection criterion, frontend JS CI rows, user-story/PBI linking |
+| `assignments/5/context.md` | Updated Part 6 gap analysis (all [x]), testing status, QR-003 status, DoD summary, technical risks |
+
+### Impact on A5 Gap Analysis
+- Part 6 (Testing, QA, DoD): **fully addressed** on this branch
+- Frontend JS testing: **basic coverage added** — CI integration + Vitest sample tests
+
+### Related Issues
+| Issue | Title |
+|---|---|
+| [#139](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/139) | DOC: Fill development-process.md with git workflow, board config, and CI (Part 3) |
+| [#140](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/140) | DOC: Create architecture documentation with 3 views and rendered diagrams (Part 4) |
+| [#141](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/141) | DOC: Create 3 ADRs for WebSocket, SQLite, and microservice decisions (Part 5) |
+| [#144](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/144) | DOC: Update testing, QA, and DoD documentation for MVP v2 (Part 6) |
+| [#145](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/145) | TST: Add WebSocket and Database unit tests and QRT-004/QRT-005 for Sprint 4 modules |
+| [#146](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/146) | TST: Extend existing tests for multi-interval, analysis range, and fix performance QRT threshold |
+| [#147](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/147) | CI: Add frontend JavaScript testing pipeline with Vitest and ESLint |
+
+### Notes for Team
+- This branch fills Parts 3–5 but implements **no** Sprint 4 PBI features (WebSocket migration, DB caching, sub-charts, multi-interval) — those go in separate feature branches branched from `main`.
+- The week 5 report is partially filled (items 18–21). Other team members must fill remaining items (1–17, 22–42).

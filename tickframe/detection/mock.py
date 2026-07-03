@@ -12,11 +12,11 @@ PATTERNS = [
 ]
 
 
-def analyze(candles):
+def analyze(candles, limit=50):
     if not candles:
         return {"pattern": "None", "confidence": 0.0, "analyzed_candles": 0}
 
-    segment = candles[-50:] if len(candles) >= 50 else candles
+    segment = candles[-limit:] if len(candles) >= limit else candles
 
     pattern = random.choice(PATTERNS)
     confidence = round(random.uniform(0.75, 0.99), 2)
