@@ -203,7 +203,7 @@ SWP_TickFrame_28_team/
 - **Dates:** 2026-06-30 – 2026-07-06
 - **Goal:** Deliver MVP v2 — DB caching, Volume sub-chart, multi-interval support, analysis range fix, UI redesign, drawing toolbar modernization. RSI deferred to Sprint 5.
 - **Total Story Points:** 24 (24 completed; 3 superseded PBIs folded into new scope)
-- **PBIs:** 9 total — 8 completed ([#122](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/122)–[#126](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/126), [#158](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/158), [#159](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/159), [#113](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/113)), 1 remaining ([#110](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/110)), 1 moved to Sprint 5 ([#112](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/112))
+- **PBIs:** 9 total — 9 completed ([#122](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/122)–[#126](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/126), [#158](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/158), [#159](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/159), [#113](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/113), [#110](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/110)), 1 moved to Sprint 5 ([#112](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/112))
 - **Release:** [v2.0.0](https://github.com/Fedos113/SWP_TickFrame_28_team/releases/tag/v2.0.0)
 - **Scope:** All Sprint 4 PBIs define MVP v2 scope. Addressing all critical customer feedback from Sprint 3. RSI moved to Sprint 5 due to complexity of proper implementation.
 
@@ -312,7 +312,7 @@ Key feedback points from 2026-06-26 Sprint Review (see [`reports/week4/customer-
 
 | Feedback | Priority | PBI | Status |
 |---|---|---|---|
-| Migrate REST polling → WebSocket subscription | Critical | [#110 PBI-115](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/110) | To Do |
+| Migrate REST polling → WebSocket subscription | Critical | [#110 PBI-115](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/110) | ✅ Done — live candles from Bybit/Binance via WebSocket |
 | Implement DB caching for candles | Critical | [~~#111 PBI-116~~](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/111) → [#122 PBI-121](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/122) | ✅ Done (multi-interval caching) |
 | Add RSI sub-chart | High | [#112 PBI-117](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/112) | Moved to Sprint 5 (rendering complexity) |
 | Add Volume sub-chart | High | [#113 PBI-118](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/113) | ✅ Done |
@@ -393,7 +393,7 @@ Current DoD requires:
 - [x] **Frontend JS testing setup** — Vitest + ESLint, sample WebSocket test, CI jobs (`frontend-lint` + `frontend-test`)
 
 ### Part 7: Implement, Release, Deploy MVP v2
-- [x] **Implement Sprint 4 scope** — 8/9 PBIs completed ([#122](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/122)–[#126](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/126), [#158](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/158), [#159](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/159), [#113](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/113)), 1 remaining ([#110](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/110)), 1 moved to Sprint 5 ([#112](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/112))
+- [x] **Implement Sprint 4 scope** — 9/9 PBIs completed ([#122](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/122)–[#126](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/126), [#158](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/158), [#159](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/159), [#113](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/113), [#110](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/110)), 1 moved to Sprint 5 ([#112](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/112))
 - [x] **Update [`CHANGELOG.md`](../../CHANGELOG.md)** — Unreleased section populated with all implemented features
 - [ ] **Update [`README.md`](../../README.md)** — setup/run/deploy if changed
 - [ ] **Deploy MVP v2** — accessible to customer/TA
@@ -483,10 +483,6 @@ Current DoD requires:
 | PBI-126 | [#158](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/158) | UI redesign — coin icons, Fear & Greed Index, sidebar overhaul | 3 | Medium |
 | PBI-127 | [#159](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/159) | Drawing toolbar re-architecture with lightweight-charts-drawing library | 5 | High |
 | PBI-118 | [#113](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/113) | Volume sub-chart implementation | 3 | High |
-
-#### Remaining
-| PBI | Issue | Title | SP | Priority |
-|---|---|---|---|---|
 | PBI-115 | [#110](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/110) | WebSocket subscription migration | 5 | Critical |
 
 #### Moved to Sprint 5
@@ -581,8 +577,8 @@ Current DoD requires:
 1. **Architecture documentation files** — **filled** on `121-dev-process-docs`: `docs/architecture/README.md` + 3 views with `.puml` and `.svg` ([#140](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/140)).
 2. **ADR files** — **filled** on `121-dev-process-docs`: 3 ADRs in `docs/architecture/adr/` linking to quality requirements ([#141](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/141)).
 3. **Development-process template** — **filled** on `121-dev-process-docs`: `docs/development-process.md` with Mermaid gitGraph, board config, CI ([#139](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/139)).
-4. **Sprint 4 milestone** — [created](https://github.com/Fedos113/SWP_TickFrame_28_team/milestone/5) with 10 PBIs assigned (8 completed, 2 remaining).
-5. **Sprint 4 PBIs** — 8 completed, 2 remaining ([#110](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/110), [#113](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/113)), 1 moved to Sprint 5 ([#112](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/112)).
+4. **Sprint 4 milestone** — [created](https://github.com/Fedos113/SWP_TickFrame_28_team/milestone/5) with 10 PBIs assigned (9 completed, 1 moved to Sprint 5).
+5. **Sprint 4 PBIs** — 9 completed (all Sprint 4 scope), PBI-117 [#112](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/112) moved to Sprint 5.
 6. **Week 5 report files exist as empty templates** — `reports/week5/README.md` and 6 sub-reports need content.
 7. **No hosted documentation site** — required starting in Assignment 5.
 8. **No MVP v2 release** — needs a new SemVer release mapping to Sprint 4 + MVP v2.
@@ -590,8 +586,7 @@ Current DoD requires:
 10. **No public demo video** — required for Part 13.
 
 ### Technical Risks
-1. **WebSocket migration** (customer's top request) is a large rework touching backend + frontend.
-2. **QR-003** — threshold corrected to 0.55; QRTs aligned on `part-6-testing-qa`.
+1. **QR-003** — threshold corrected to 0.55; QRTs aligned on `part-6-testing-qa`.
 3. **Frontend JS coverage** — basic Vitest coverage added; chart rendering and DOM interaction still untested.
 4. **RSI indicator** — moved to Sprint 5 due to rendering complexity with current charting library.
 5. **Timeframe switch UI glitches** — switching intervals shows visual glitches, needs polish.
@@ -682,14 +677,14 @@ Additional commit on `MVPv2` beyond the `part-1-2` merge (not present on `main`)
 | PBI-126 | [#158](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/158) | UI redesign — coin icons, Fear & Greed Index, sidebar overhaul | 3 | Medium | ✅ Done — CoinGecko icons, F&G widget, redesign |
 | PBI-127 | [#159](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/159) | Drawing toolbar re-architecture with lightweight-charts-drawing library | 5 | High | ✅ Done — modular drawing system, 7 new JS modules |
 | PBI-118 | [#113](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/113) | Volume sub-chart implementation | 3 | High | ✅ Done — volume pane with SMA overlay |
-| PBI-115 | [#110](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/110) | WebSocket subscription migration | 5 | Critical | ❌ Not started |
+| PBI-115 | [#110](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/110) | WebSocket subscription migration | 5 | Critical | ✅ Done — live candles from Bybit/Binance via WebSocket |
 | PBI-117 | [#112](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/112) | RSI indicator sub-chart | 3 | High | ➡️ Moved to Sprint 5 |
 
 ### MVPv2 Readiness Assessment
 
 | Criterion | Status | Notes |
 |---|---|---|
-| Sprint 4 PBIs implemented | ✅ 8/9 (24 SP) completed, 1 remaining (5 SP), 1 moved to Sprint 5 | Full feature set: DB caching, configurable analysis, ML viz, ML perf, UI redesign, drawing overhaul, volume chart |
+| Sprint 4 PBIs implemented | ✅ 9/9 (29 SP) completed, 1 moved to Sprint 5 | Full feature set: DB caching, configurable analysis, ML viz, ML perf, UI redesign, drawing overhaul, volume chart, WebSocket live candles |
 | Architecture docs filled | ✅ Filled | 3 PlantUML views + SVGs, dev-process.md with gitGraph |
 | ADRs filled | ✅ Filled | 3 ADRs (WebSocket, SQLite, microservice) linking to QRs |
 | dev-process.md filled | ✅ Filled | Mermaid gitGraph, board config, CI, quality gates |
@@ -704,9 +699,9 @@ Additional commit on `MVPv2` beyond the `part-1-2` merge (not present on `main`)
 
 ### Impact on A5 Gap Analysis
 - Part 1 (Backlog & Sprint 4): **fully addressed** — all checkboxes marked [x]
-- Part 2 (Customer Feedback): PBIs created on GitHub, 5/6 feedback items implemented (DB caching → PBI-121, analysis range → PBI-122, multi-interval → PBI-121, Volume → PBI-118, UI → PBI-126), RSI moved to Sprint 5
+- Part 2 (Customer Feedback): PBIs created on GitHub, 6/6 feedback items implemented (WebSocket → PBI-115, DB caching → PBI-121, analysis range → PBI-122, multi-interval → PBI-121, Volume → PBI-118, UI → PBI-126), RSI moved to Sprint 5
 - Parts 3–5 (Dev Process, Architecture, ADRs): **fully addressed** — all docs filled on `121-dev-process-docs`
-- Part 7 (Implementation): **8/9 PBIs completed (24 SP)**, 1 PBI remaining (5 SP), 1 moved to Sprint 5
+- Part 7 (Implementation): **9/9 PBIs completed (29 SP)**, 1 moved to Sprint 5
 - Parts 6, 8–14 (Testing, UAT, Reports, Release, Demo): **mostly addressed** — testing/QA docs filled, UAT executed, reports partially filled
 
 ### Branch History (unique commits not in `main`)
@@ -721,7 +716,7 @@ c744990 DOC: week 5 preparation files added
 ```
 
 ### Notes for Team
-- The `MVPv2` branch contains **8 completed Sprint 4 PBIs** (PBI-121 through PBI-127 + PBI-118). Remaining: WebSocket migration (PBI-115). RSI moved to Sprint 5 (PBI-117).
+- The `MVPv2` branch contains **all 9 completed Sprint 4 PBIs** (PBI-121 through PBI-127 + PBI-118 + PBI-115). RSI (PBI-117) moved to Sprint 5.
 - The drawing toolbar has been completely re-architected using `lightweight-charts-drawing` library. Run `npm install && npm run build` after checkout.
 - UI now includes coin icons (CoinGecko), Fear & Greed Index, redesigned sidebar, and modernized CSS.
 - Three new Python services: `coin_icons.py` (CoinGecko API), `fng_client.py` (alternative.me API), and enhanced `database.py`.

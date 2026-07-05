@@ -90,15 +90,9 @@ A PBI is **Done** when:
 | [#125](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/125) | PBI-124 | ML inference performance optimization (XGBoost) | 5 | Done |
 | [#126](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/126) | PBI-125 | UI cleanup & sidebar resize with persistence | 2 | Done |
 | [#158](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/158) | PBI-126 | UI redesign — coin icons, Fear & Greed Index, sidebar overhaul | 3 | Done |
-| [#158](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/158) | PBI-127 | Drawing toolbar re-architecture with lightweight-charts-drawing library | 5 | Done |
+| [#159](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/159) | PBI-127 | Drawing toolbar re-architecture with lightweight-charts-drawing library | 5 | Done |
 | [#113](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/113) | PBI-118 | Volume sub-chart implementation | 3 | Done |
-
-### Remaining PBIs
-
-| # | PBI | Title | SP | Priority |
-|---|-----|-------|----|----------|
-| [#110](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/110) | PBI-115 | Migrate REST polling to WebSocket subscription | 5 | Critical |
-| — | — | Volume sub-chart persistence & polish | 2 | High |
+| [#110](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/110) | PBI-115 | WebSocket subscription migration | 5 | Done |
 
 ### Moved to Sprint 5
 

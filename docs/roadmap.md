@@ -73,7 +73,7 @@
 |---|---|
 | **Milestone** | [Sprint 4](https://github.com/Fedos113/SWP_TickFrame_28_team/milestone/5) |
 | **Dates** | Week 5 (2026-06-30 – 2026-07-06) |
-| **Goal** | Deliver MVP v2 by addressing all critical customer feedback from Sprint 3: WebSocket migration, DB caching, Volume sub-chart, UI redesign, drawing toolbar modernization, multi-interval support, and analysis range fix. RSI deferred to Sprint 5. |
+| **Goal** | Deliver MVP v2 by addressing all critical customer feedback from Sprint 3: DB caching, Volume sub-chart, UI redesign, drawing toolbar modernization, multi-interval support, analysis range fix, and WebSocket live data pipeline. RSI deferred to Sprint 5. |
 | **Focus** | Customer-driven improvements, architecture hardening, real-time data pipeline, UI/UX overhaul |
 
 **Completed PBIs:**
@@ -84,12 +84,9 @@
 - [#125 PBI-124](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/125) — ML inference performance optimization XGBoost (Critical) ✅
 - [#126 PBI-125](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/126) — UI cleanup & sidebar resize (Medium) ✅
 - [#158 PBI-126](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/158) — UI redesign: coin icons, Fear & Greed Index, sidebar overhaul (Medium) ✅
-- [#158 PBI-127](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/158) — Drawing toolbar re-architecture with lightweight-charts-drawing library (High) ✅
+- [#159 PBI-127](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/159) — Drawing toolbar re-architecture with lightweight-charts-drawing library (High) ✅
 - [#113 PBI-118](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/113) — Volume sub-chart implementation (High) ✅
-
-**Remaining PBIs:**
-- [#110 PBI-115](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/110) — Migrate REST polling → WebSocket subscription (Critical)
-- Volume sub-chart persistence & polish (High) — basic volume implemented, extra polish tracked informally
+- [#110 PBI-115](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/110) — WebSocket subscription migration (Critical) ✅
 
 **Deferred to Sprint 5:**
 - [#112 PBI-117](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/112) — RSI indicator sub-chart (High) — rendering complexity with current library
@@ -100,7 +97,7 @@
 
 | Field | Value |
 |---|---|
-| **Goal** | Complete remaining MVP v2 features — WebSocket migration, RSI indicator, polish |
+| **Goal** | RSI indicator implementation, frontend polish, remaining A5 deliverables |
 | **Focus** | Real-time data pipeline completion, indicator expansion, testing coverage |
 
 **Planned items:**
