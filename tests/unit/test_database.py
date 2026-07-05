@@ -1,6 +1,8 @@
 """Unit tests for DatabaseService."""
 
+import shutil
 import tempfile
+from pathlib import Path
 
 import pytest
 from tickframe.backend.services.database import DatabaseService
@@ -8,17 +10,21 @@ from tickframe.backend.services.database import DatabaseService
 
 @pytest.fixture
 def db():
-    with tempfile.NamedTemporaryFile(suffix=".db") as f:
-        svc = DatabaseService(f.name)
+    tmpdir = Path(tempfile.mkdtemp(prefix="tickframe-db-", suffix="-test"))
+    path = tmpdir / "test.db"
+    svc = DatabaseService(path)
+    try:
         yield svc
+    finally:
+        shutil.rmtree(tmpdir, ignore_errors=True)
 
 
 @pytest.mark.asyncio
 async def test_init_creates_tables(db):
     await db.init()
-    conn = db._conn()
-    tables = conn.execute("SELECT name FROM sqlite_master WHERE type='table'").fetchall()
-    names = {r["name"] for r in tables}
+    with db._conn() as conn:
+        tables = conn.execute("SELECT name FROM sqlite_master WHERE type='table'").fetchall()
+        names = {r["name"] for r in tables}
     assert "settings" in names
     assert "drawings" in names
     assert "candles" in names
