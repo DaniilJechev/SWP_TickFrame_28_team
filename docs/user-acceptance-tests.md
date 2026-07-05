@@ -47,7 +47,7 @@
 | **Expected result** | Chart loads new candle data for each timeframe within 2 seconds. All timeframes display correct interval data. WebSocket continues pushing live updates after switch. |
 | **Execution result** | ⏳ Partial |
 | **Execution history** | 2026-06-26 — ❌ Not tested — Only 5m timeframe available in Sprint 3. Customer was informed this is scheduled for Sprint 4. |
-| | 2026-07-03 — ⏳ Partial — Timeframe switching (5m, 15m, 1h, 4h, 1d) works and candle data differs per interval. However, pattern analysys works only on 5m timeframes. |
+| | 2026-07-03 — ⏳ Partial — Timeframe switching (5m, 15m, 1h, 4h, 1d) works and candle data differs per interval. However, pattern analysis works only on 5m timeframes. |
 
 ---
 
