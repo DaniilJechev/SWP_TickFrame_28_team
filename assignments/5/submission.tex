@@ -1,0 +1,388 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{titlesec}
+\usepackage{longtable}
+\usepackage[left=1cm, right=1cm, top=2.5cm, bottom=2.5cm]{geometry}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,
+    urlcolor=cyan,
+    pdftitle={Assignment 5 Moodle Submission Report - Team 28},
+}
+
+\titleformat{\section}{\large\bfseries}{\thesection}{1em}{}[\titlerule[0.5pt]]
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{1em}{}
+
+\begin{document}
+
+% =========================================================================
+% HEADER
+% =========================================================================
+\begin{center}
+    {\Large\textbf{INNOPOLIS UNIVERSITY}} \\
+    \vspace{0.1cm}
+    {\Large\textbf{Software Project (SWP) --- Spring 2026}} \\
+    \vspace{0.5cm}
+    \textbf{Large Assignment 5: MVP v2 Sprint 4 Increment Report} \\
+    \vspace{0.3cm}
+    \textbf{Project Name:} SWP TickFrame \quad \| \quad \textbf{Team Number:} Team 28 \\
+    \textbf{Submission Date:} \today
+\end{center}
+\vspace{0.5cm}
+
+% =========================================================================
+% SECTION 1: TEAM STRUCTURE & TECHNICAL RESPONSIBILITIES
+% =========================================================================
+\section{Team Structure and Technical Responsibilities}
+The table below maps the team's Scrum roles and technical ownership for Assignment 5 (Sprint 4).
+\vspace{0.2cm}
+
+\begin{table}[h!]
+\centering
+\small
+\begin{tabular}{lllll}
+\toprule
+\textbf{Full Name} & \textbf{University Email} & \textbf{GitHub} & \textbf{Scrum Role} & \textbf{Technical Domain} \\
+\midrule
+F.~Kozhevnikov & f.kozhevnikov@innopolis.university & \href{https://github.com/Fedos113}{Fedos113} & Product Owner & Backend / Frontend / Architecture / CI \\
+A.~Gafarov & a.gafarov@innopolis.university & \href{https://github.com/omarichev}{omarichev} & Developer & Backend / Documentation / Reports \\
+A.~Mindubaev & a.mindubaev@innopolis.university & \href{https://github.com/pug228}{pug228} & Developer & Quality / CI / Testing \\
+D.~Zhechev & d.zhechev@innopolis.university & \href{https://github.com/DaniilJechev}{DaniilJechev} & Scrum Master & ML / Quant Engineering \\
+M.~Bezborodov & m.bezborodov@innopolis.university & \href{https://github.com/MikhailBezborodov024}{MikhailBezborodov024} & Developer & Frontend / UI \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% =========================================================================
+% SECTION 2: SUMMARY OF CONTRIBUTIONS
+% =========================================================================
+\section{Summary of Contributions --- Sprint 4}
+
+\subsection{F.~Kozhevnikov (Fedos113) --- Product Owner / Full-Stack}
+\begin{itemize}[leftmargin=*]
+    \item Repository reorganization and Assignment 5 scaffolding (\textbf{PR \#119}, closes \#116, \#117, \#118).
+    \item Created 5 delivery-plan documents for Parts 3--13 and Moodle PDF (\textbf{PR \#136}, closes \#131, \#132, \#133, \#134, \#135).
+    \item Frontend optimisations: charts.js enhancements, CSS refinement, index.html restructuring.
+    \item Updated \texttt{lychee.yml}, \texttt{roadmap.md}, Process/Repository Requirements (\textbf{PR \#119}).
+    \item Implemented WebSocket subscription migration for real-time candle/ticker data (PBI-115, \#110).
+    \item Implemented 3-tier SQLite candle caching with warmup for all 5 timeframes (PBI-121, \#122).
+    \item Implemented Volume sub-chart with pane management (\textbf{PR \#160}, closes PBI-128, \#113).
+    \item Implemented multi-interval support (5m, 15m, 1h, 4h, 1d) with chart switching (PBI-120, \#115).
+    \item Implemented configurable analysis range slider (100--500k candles) (PBI-122, \#123).
+    \item Added Fear \& Greed Index integration, 24h price change icon, WebSocket live sidebar (1s intervals).
+    \item Reviewed PR \#142 (architecture docs, ADRs) --- APPROVED.
+    \item Reviewed PR \#148 (testing, QA, DoD, CI) --- APPROVED.
+    \item Reviewed PR \#157 (UAT execution results) --- APPROVED.
+\end{itemize}
+
+\subsection{A.~Gafarov (omarichev) --- Developer / Documentation}
+\begin{itemize}[leftmargin=*]
+    \item Updated UAT scenarios for Sprint 4 / MVP v2 (UAT-006, UAT-007) (\textbf{PR \#143}, closes \#143).
+    \item Updated UAT documentation with Sprint 4 execution results from 2026-07-03 customer session (\textbf{PR \#151}, closes \#150).
+    \item Updated UAT scenarios with final Sprint 4 execution results and customer feedback (\textbf{PR \#157}, closes \#152, \#153, \#154).
+    \item Conducted UAT execution session with customer on 2026-07-03.
+    \item Updated \texttt{context.md} \S24 with UAT execution results.
+\end{itemize}
+
+\subsection{A.~Mindubaev (pug228) --- Developer / Quality \& CI}
+\begin{itemize}[leftmargin=*]
+    \item Filled \texttt{docs/development-process.md} with git workflow, board config, and CI pipeline (Part 3) (\textbf{PR \#142}, closes \#139).
+    \item Created architecture documentation with 3 views (static, dynamic, deployment) as PlantUML + rendered SVGs (Part 4) (\textbf{PR \#142}, closes \#140).
+    \item Created 3 ADRs (WebSocket migration, SQLite persistence, ML microservice) linked to QR-001/002/003 (Part 5) (\textbf{PR \#142}, closes \#141).
+    \item Extended testing, QA documentation, and Definition of Done for MVP v2 (Part 6) (\textbf{PR \#148}, closes \#144).
+    \item Added WebSocket and Database unit tests and QRT-004/QRT-005 for Sprint 4 modules (\textbf{PR \#148}, closes \#145).
+    \item Extended existing tests for multi-interval, analysis range, and fixed performance QRT threshold (\textbf{PR \#148}, closes \#146).
+    \item Added frontend JavaScript testing pipeline with Vitest and ESLint (\textbf{PR \#148}, closes \#147).
+    \item Reviewed PR \#119 (A5 scaffolding) --- APPROVED.
+    \item Reviewed PR \#136 (delivery plans) --- APPROVED.
+    \item Updated \texttt{docs/development-process.md}, architecture docs (3 views + SVGs), 3 ADRs, DoD, \texttt{context.md} \S21.
+\end{itemize}
+
+\subsection{D.~Zhechev (DaniilJechev) --- Scrum Master / ML Engineer}
+\begin{itemize}[leftmargin=*]
+    \item Reviewed PR \#119 (A5 scaffolding) --- APPROVED.
+    \item Maintained ML microservice and pattern detection model.
+\end{itemize}
+
+\subsection{M.~Bezborodov (MikhailBezborodov024) --- Developer / Frontend}
+\begin{itemize}[leftmargin=*]
+    \item Reviewed PR \#151 (UAT execution results) --- APPROVED.
+    \item Limited direct participation in Sprint 4 implementation work.
+\end{itemize}
+
+% =========================================================================
+% SECTION 3: COMMIT-HASH PERMALINKS
+% =========================================================================
+\section{Commit-Hash Permalinks}
+
+\subsection{reports/week5/README.md}
+\url{https://github.com/Fedos113/SWP_TickFrame_28_team/blob/193de326e39943443afc0fa1546d465f214841ed/reports/week5/README.md}
+
+\subsection{Submission commit --- repository tree}
+\url{https://github.com/Fedos113/SWP_TickFrame_28_team/tree/193de326e39943443afc0fa1546d465f214841ed}
+
+% =========================================================================
+% SECTION 4: LIVE BOARD AND BACKLOG LINKS
+% =========================================================================
+\section{Live Board and Backlog Links}
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Product Backlog board/view:} \
+          \url{https://github.com/users/Fedos113/projects/1/views/1}
+
+    \item \textbf{Sprint Backlog board/view:} \
+          \url{https://github.com/users/Fedos113/projects/1/views/1}
+
+    \item \textbf{Sprint 4 milestone:} \
+          \url{https://github.com/Fedos113/SWP_TickFrame_28_team/milestone/5}
+
+    \item \textbf{SemVer release mapped to MVP v2 (v2.0.0):} \
+          \url{https://github.com/Fedos113/SWP_TickFrame_28_team/releases/tag/v2.0.0}
+
+    \item \textbf{Deployed product:} \
+          \url{http://localhost:8080} (Docker Compose on local VM)
+
+    \item \textbf{Public sanitized demo video ($<$2 min):} \
+          \url{https://TODO_PUBLIC_DEMO_VIDEO_URL} % Replace with actual public video link
+\end{itemize}
+
+% =========================================================================
+% SECTION 5: LIVE DOCUMENTATION LINKS
+% =========================================================================
+\section{Live Documentation Links (Assignment 5 Maintained Assets)}
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{docs/roadmap.md:} \url{https://github.com/Fedos113/SWP_TickFrame_28_team/blob/main/docs/roadmap.md}
+    \item \textbf{docs/definition-of-done.md:} \url{https://github.com/Fedos113/SWP_TickFrame_28_team/blob/main/docs/definition-of-done.md}
+    \item \textbf{docs/testing.md:} \url{https://github.com/Fedos113/SWP_TickFrame_28_team/blob/main/docs/testing.md}
+    \item \textbf{docs/quality-requirements.md:} \url{https://github.com/Fedos113/SWP_TickFrame_28_team/blob/main/docs/quality-requirements.md}
+    \item \textbf{docs/quality-requirement-tests.md:} \url{https://github.com/Fedos113/SWP_TickFrame_28_team/blob/main/docs/quality-requirement-tests.md}
+    \item \textbf{docs/user-acceptance-tests.md:} \url{https://github.com/Fedos113/SWP_TickFrame_28_team/blob/main/docs/user-acceptance-tests.md}
+    \item \textbf{docs/development-process.md:} \url{https://github.com/Fedos113/SWP_TickFrame_28_team/blob/main/docs/development-process.md}
+    \item \textbf{docs/architecture/README.md:} \url{https://github.com/Fedos113/SWP_TickFrame_28_team/blob/main/docs/architecture/README.md}
+    \item \textbf{docs/architecture/adr/:} \url{https://github.com/Fedos113/SWP_TickFrame_28_team/tree/main/docs/architecture/adr}
+    \item \textbf{CHANGELOG.md:} \url{https://github.com/Fedos113/SWP_TickFrame_28_team/blob/main/CHANGELOG.md}
+    \item \textbf{README.md:} \url{https://github.com/Fedos113/SWP_TickFrame_28_team/blob/main/README.md}
+\end{itemize}
+
+% =========================================================================
+% SECTION 6: REVIEWED ISSUE-LINKED PRs
+% =========================================================================
+\section{Reviewed Issue-Linked PRs / MRs (Sprint 4 Evidence)}
+
+Each listed PR is linked to at least one issue and has been reviewed by a different team member where indicated.
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{PR \#119:} Repository reorganization and Assignment 5 scaffolding. \
+          \textbf{Closes issues:} \#116, \#117, \#118. \
+          \textbf{Author:} Fedor Kozhevnikov (Fedos113). \
+          \textbf{Reviewers:} A.~Mindubaev (pug228) --- APPROVED, D.~Zhechev (DaniilJechev) --- APPROVED. \
+          \url{https://github.com/Fedos113/SWP_TickFrame_28_team/pull/119}
+
+    \item \textbf{PR \#136:} Add Week 5 delivery plans for Parts 3--13 and Moodle PDF. \
+          \textbf{Closes issues:} \#131, \#132, \#133, \#134, \#135. \
+          \textbf{Author:} Fedor Kozhevnikov (Fedos113). \
+          \textbf{Reviewer:} A.~Mindubaev (pug228) --- APPROVED. \
+          \url{https://github.com/Fedos113/SWP_TickFrame_28_team/pull/136}
+
+    \item \textbf{PR \#142:} Assignment 5 Parts 3--5: development-process.md, architecture views (3 PlantUML + SVGs), 3 ADRs. \
+          \textbf{Closes issues:} \#139, \#140, \#141. \
+          \textbf{Author:} A.~Mindubaev (pug228). \
+          \textbf{Reviewer:} Fedor Kozhevnikov (Fedos113) --- APPROVED. \
+          \url{https://github.com/Fedos113/SWP_TickFrame_28_team/pull/142}
+
+    \item \textbf{PR \#148:} Part 6 --- extend testing, QA docs, DoD, and CI for MVP v2 (WebSocket/DB tests, QRT-004/005, multi-interval tests, Vitest pipeline). \
+          \textbf{Closes issues:} \#144, \#145, \#146, \#147. \
+          \textbf{Author:} A.~Mindubaev (pug228). \
+          \textbf{Reviewer:} Fedor Kozhevnikov (Fedos113) --- APPROVED. \
+          \url{https://github.com/Fedos113/SWP_TickFrame_28_team/pull/148}
+
+    \item \textbf{PR \#151:} Update UAT scenarios with Sprint 4 execution results. \
+          \textbf{Closes issues:} \#150. \
+          \textbf{Author:} A.~Gafarov (omarichev). \
+          \textbf{Reviewer:} M.~Bezborodov (MikhailBezborodov024) --- APPROVED. \
+          \url{https://github.com/Fedos113/SWP_TickFrame_28_team/pull/151}
+
+    \item \textbf{PR \#157:} Final update of UAT scenarios with Sprint 4 execution results and customer feedback. \
+          \textbf{Closes issues:} \#152, \#153, \#154. \
+          \textbf{Author:} A.~Gafarov (omarichev). \
+          \textbf{Reviewer:} Fedor Kozhevnikov (Fedos113) --- APPROVED. \
+          \url{https://github.com/Fedos113/SWP_TickFrame_28_team/pull/157}
+
+    \item \textbf{PR \#160:} Volume sub-chart implementation (PBI-128). \
+          \textbf{Closes issues:} PBI-128 (\#160). \
+          \textbf{Author:} Fedor Kozhevnikov (Fedos113). \
+          \url{https://github.com/Fedos113/SWP_TickFrame_28_team/pull/160}
+\end{itemize}
+
+% =========================================================================
+% SECTION 7: MVP v2 ACCESS INSTRUCTIONS
+% =========================================================================
+\section{MVP v2 Access Instructions}
+
+The MVP v2 increment is delivered as a Docker Compose stack with two services: the TickFrame web application (port 8080) and the ML microservice (port 8001).
+
+\subsection{Docker Deployment (Recommended)}
+\begin{enumerate}[leftmargin=*]
+    \item Clone the repository at the submission commit:
+\begin{verbatim}
+git clone https://github.com/Fedos113/SWP_TickFrame_28_team.git
+cd SWP_TickFrame_28_team
+git checkout 193de326e39943443afc0fa1546d465f214841ed
+\end{verbatim}
+    \item Copy the environment template:
+\begin{verbatim}
+cp .env.example .env
+\end{verbatim}
+    \item Build and run with Docker Compose:
+\begin{verbatim}
+docker compose up --build
+\end{verbatim}
+    \item Open \texttt{http://localhost:8080} in a browser (host port mapped to 8080 by default).
+\end{enumerate}
+
+\subsection{Local Development (No Docker)}
+\begin{enumerate}[leftmargin=*]
+    \item Clone and checkout as above.
+    \item Create a virtual environment and install dependencies:
+\begin{verbatim}
+python -m venv .venv
+.venv\Scripts\Activate.ps1  # Windows
+# source .venv/bin/activate  # Linux/macOS
+pip install -r requirements.txt
+pip install -r tests/requirements.txt
+\end{verbatim}
+    \item Start the FastAPI server:
+\begin{verbatim}
+uvicorn tickframe.backend.main:app --host 0.0.0.0 --port 8000
+\end{verbatim}
+    \item Open \texttt{http://localhost:8000} in a browser.
+\end{enumerate}
+
+\subsection{Verification}
+Once the server is running, confirm:
+\begin{itemize}
+    \item \texttt{GET /api/health} --- returns \texttt{\{"status":"ok"\}}
+    \item \texttt{GET /api/coins} --- returns 10 trading pairs with live prices
+    \item \texttt{GET /api/coins/BTCUSDT/candles?interval=5m\&limit=200} --- OHLCV candle data
+    \item \texttt{POST /api/analyze/BTCUSDT} --- pattern analysis endpoint
+    \item \texttt{WS /ws/candles/BTCUSDT?interval=5m} --- real-time candle stream
+    \item Volume sub-chart visible below main chart
+    \item Multi-interval selector (5m, 15m, 1h, 4h, 1d) functional
+    \item Analysis range slider visible in settings
+\end{itemize}
+
+% =========================================================================
+% SECTION 8: CUSTOMER UAT AND SPRINT REVIEW RECORDING
+% =========================================================================
+\section{Customer Meeting Recordings}
+
+\subsection{UAT and Sprint Review Recording (Combined Meeting)}
+\textbf{Recording link (instructor access only):} \
+\url{https://TODO_UAT_REVIEW_RECORDING_URL} \
+\textit{Permissions are restricted to Innopolis University instructors and graders.}
+
+\textbf{Timecodes:}
+\begin{itemize}
+    \item \textbf{UAT session:} \texttt{00:00--15:00} --- customer tested WebSocket live candles, Volume sub-chart, multi-interval switching, configurable analysis range, Fear \& Greed Index
+    \item \textbf{Sprint Review discussion:} \texttt{15:00--35:00} --- feedback, RSI deferral discussion, pattern filtering request, action items for Sprint 5
+\end{itemize}
+
+\subsection{Rehearsed Presentation Video}
+\textbf{Presentation video link (instructor access only):} \
+\url{https://TODO_PRESENTATION_VIDEO_URL}
+
+% =========================================================================
+% SECTION 9: CUSTOMER REVIEW TRANSCRIPT / NOTES
+% =========================================================================
+\section{Customer Review Transcript and Notes}
+
+\subsection{Permission status}
+Recording: Granted \\
+Public transcript publication: Permitted \\
+Private instructor sharing: Permitted
+
+\subsection{Review date and participants}
+\textbf{Date:} July 3, 2026 \\
+\textbf{Participants:} Customer / Product Owner, Frontend Developer, ML Engineer, Scrum Master \\
+(4 team members, 1--2 customer-side participants) \\
+\textbf{Meeting type:} Sprint Review / UAT (Combined)
+
+\subsection{Sprint goal reviewed}
+MVP v2 --- WebSocket migration from REST polling, SQLite candle caching (3-tier), Volume sub-chart, multi-interval support (5m/15m/1h/4h/1d), configurable analysis range ($\leq$50k default), architecture documentation, and ADRs.
+
+\subsection{Summary of customer feedback}
+\textbf{Positive:}
+\begin{itemize}
+    \item WebSocket live candles approved --- real-time data flow confirmed working
+    \item Volume sub-chart well received --- bars sync correctly with candle direction
+    \item Multi-interval switching works smoothly across all 5 timeframes
+    \item Configurable analysis range slider confirmed useful
+    \item Architecture documentation and ADRs praised for clarity
+\end{itemize}
+
+\textbf{Critical feedback and requested changes:}
+\begin{itemize}
+    \item \textbf{RSI indicator is critical} --- must be implemented in Sprint 5 (re-scoped to specialised library)
+    \item Pattern-type filtering requested --- new PBI added to backlog
+    \item Confidence threshold controls for pattern detection --- new PBI
+    \item Additional coin metrics (24h change, 5m change) --- low priority backlog
+    \item UI polish needed --- minor glitches in multi-interval switching
+\end{itemize}
+
+\subsection{Resulting Product Backlog updates}
+\begin{itemize}
+    \item \textbf{PBI promoted:} RSI sub-chart --- re-implement using specialised library (Sprint 5)
+    \item \textbf{New PBI:} Pattern-type filtering + confidence threshold controls
+    \item \textbf{New PBI:} Additional coin metrics (24h change, 5m change)
+    \item \textbf{New PBI:} UI polish and glitch fixes for multi-interval switching
+    \item \textbf{New PBI:} Persist analysis results to database
+    \item \textbf{New PBI:} Double Top / Double Bottom ML model completion
+    \item \textbf{New PBI:} Port ML detection to additional timeframes
+\end{itemize}
+
+Full transcript with timestamps: \texttt{reports/week5/customer-review-transcript.md} \\
+Summary of decisions: \texttt{reports/week5/customer-review-summary.md}
+
+% =========================================================================
+% SECTION 10: PUBLIC SANITIZED SPRINT REVIEW SUMMARY
+% =========================================================================
+\section{Public Sanitized Sprint Review Summary}
+
+\texttt{reports/week5/sprint-review-summary.md} \\
+\url{https://github.com/Fedos113/SWP_TickFrame_28_team/blob/main/reports/week5/sprint-review-summary.md}
+
+% =========================================================================
+% SECTION 11: PRIVATE ACCESS INSTRUCTIONS
+% =========================================================================
+\section{Private Access Instructions}
+
+The MVP v2 increment is accessible via Docker Compose on the team's local VM. No authentication is required.
+
+\begin{itemize}
+    \item \textbf{Deployment URL:} \texttt{http://localhost:8080} (or VM IP on the local network)
+    \item \textbf{No credentials required} --- Bybit public API works without authentication.
+    \item For higher rate limits, add \texttt{BYBIT\_API\_KEY} and \texttt{BYBIT\_API\_SECRET} to \texttt{.env} (optional).
+\end{itemize}
+
+% =========================================================================
+% SECTION 12: INSTRUCTOR-ONLY EVIDENCE
+% =========================================================================
+\section{Instructor-Only Evidence}
+
+The following evidence is not committed to the public repository and is provided only through this Moodle submission:
+\begin{itemize}
+    \item Customer UAT and Sprint Review recording (private Google Drive link) --- Section 8 above.
+    \item Rehearsed presentation video (private link) --- Section 8 above.
+    \item Customer consent for recording was obtained verbally at the start of the meeting.
+    \item No real credentials, PII, or customer-identifying evidence beyond what is already sanitized in the public transcript.
+\end{itemize}
+
+\end{document}
