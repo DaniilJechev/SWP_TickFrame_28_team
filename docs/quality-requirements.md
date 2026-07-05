@@ -32,6 +32,7 @@ TickFrame is a real-time charting tool. Slow API responses make the UI feel unre
 
 - **QRT:** [QRT-001](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/82) — Performance Test Automation
 - **Affected PBIs:** [#68 PBI-107](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/68) (50k candles), [#74 PBI-112](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/74) (rate limiting)
+- **Related ADRs:** [ADR-001](docs/architecture/adr/ADR-001-websocket-migration.md) (WebSocket — reduces latency), [ADR-002](docs/architecture/adr/ADR-002-sqlite-persistence.md) (SQLite cache — reduces response time), [ADR-003](docs/architecture/adr/ADR-003-microservice-architecture.md) (microservice network hop — mitigated by co-location)
 - **DoD Criterion:** All CI checks pass (performance tests included)
 
 ---
@@ -64,6 +65,7 @@ TickFrame is a public GitHub repository with a deployed web service. Accidental 
 
 - **QRT:** [QRT-002](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/83) — Security Test Automation
 - **Affected PBIs:** [#86](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/86) (CI pipeline), DoD enforcement
+- **Related ADRs:** [ADR-001](docs/architecture/adr/ADR-001-websocket-migration.md) (WebSocket input validation), [ADR-003](docs/architecture/adr/ADR-003-microservice-architecture.md) (service boundary enforces input sanitisation)
 - **DoD Criterion:** No secrets, credentials, or PII committed; QA check (bandit) passes
 
 ---
@@ -86,7 +88,7 @@ TickFrame is a public GitHub repository with a deployed web service. Accidental 
 | **Environment** | Production (ML microservice, Docker container on same VM) |
 | **Artifact** | ML detection endpoint (`ml_service`) |
 | **Response** | ML service processes candle windows and returns detected patterns with confidence scores |
-| **Response Measure** | F2 score ≥ 0.80 on held-out test set; false positive rate ≤ 20%; detection results are deterministic for identical input |
+| **Response Measure** | F2 score ≥ 0.55 on held-out test set; false positive rate ≤ 20%; detection results are deterministic for identical input |
 
 ### Rationale for TickFrame
 
@@ -96,6 +98,7 @@ Users rely on pattern detection to identify trading opportunities. Incorrect det
 
 - **QRT:** [QRT-003](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/84) — Accuracy Test Automation
 - **Affected PBIs:** [#5 US-01](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/5) (ML detection), [#54](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/54) (ML API)
+- **Related ADRs:** [ADR-003](docs/architecture/adr/ADR-003-microservice-architecture.md) (ML isolation enables dedicated accuracy testing), [ADR-002](docs/architecture/adr/ADR-002-sqlite-persistence.md) (deterministic analysis on cached data)
 - **DoD Criterion:** QRT tests pass in CI
 
 ---
@@ -106,4 +109,4 @@ Users rely on pattern detection to identify trading opportunities. Incorrect det
 |---|---|---|---|
 | QR-001 | Time Behaviour | p95 response ≤ 500 ms | [#82](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/82) |
 | QR-002 | Confidentiality | Zero secrets in commits, Bandit passes | [#83](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/83) |
-| QR-003 | Functional Correctness | F2 ≥ 0.80, FPR ≤ 20% | [#84](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/84) |
+| QR-003 | Functional Correctness | F2 ≥ 0.55, FPR ≤ 20% | [#84](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/84) |

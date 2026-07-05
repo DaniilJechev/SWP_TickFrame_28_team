@@ -89,14 +89,22 @@ A PBI is **Done** when:
 | [#124](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/124) | PBI-123 | ML pattern visualization with merged segments | 2 | Done |
 | [#125](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/125) | PBI-124 | ML inference performance optimization (XGBoost) | 5 | Done |
 | [#126](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/126) | PBI-125 | UI cleanup & sidebar resize with persistence | 2 | Done |
+| [#158](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/158) | PBI-126 | UI redesign — coin icons, Fear & Greed Index, sidebar overhaul | 3 | Done |
+| [#158](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/158) | PBI-127 | Drawing toolbar re-architecture with lightweight-charts-drawing library | 5 | Done |
+| [#113](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/113) | PBI-118 | Volume sub-chart implementation | 3 | Done |
 
 ### Remaining PBIs
 
 | # | PBI | Title | SP | Priority |
 |---|-----|-------|----|----------|
 | [#110](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/110) | PBI-115 | Migrate REST polling to WebSocket subscription | 5 | Critical |
-| [#112](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/112) | PBI-117 | RSI indicator sub-chart | 3 | High |
-| [#113](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/113) | PBI-118 | Volume sub-chart below main chart | 3 | High |
+| — | — | Volume sub-chart persistence & polish | 2 | High |
+
+### Moved to Sprint 5
+
+| # | PBI | Title | SP | Priority | Reason |
+|---|-----|-------|----|----------|--------|
+| [#112](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/112) | PBI-117 | RSI indicator sub-chart | 3 | High | Rendering complexity with current charting library |
 
 ### Superseded PBIs (folded into completed work above)
 

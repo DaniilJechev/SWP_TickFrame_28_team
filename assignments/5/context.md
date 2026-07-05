@@ -12,7 +12,7 @@
 | **Team** | 28 |
 | **Repository** | https://github.com/Fedos113/SWP_TickFrame_28_team |
 | **License** | MIT |
-| **Description** | FastAPI-based cryptocurrency chart workstation with real-time Bybit market data, live WebSocket streaming, Lightweight Charts v4 candlestick charts, canvas-based drawing toolbar (13 tools), SQLite persistence, and ML pattern analysis. |
+| **Description** | FastAPI-based cryptocurrency chart workstation with real-time Bybit market data, live WebSocket streaming, Lightweight Charts v5 candlestick charts, modular drawing toolbar (lightweight-charts-drawing library + canvas engine), Fear & Greed Index, coin icons, SQLite 3-tier cache, WebSocket real-time updates, and ML pattern analysis. |
 | **Default Branch** | `main` (protected) |
 | **MVP v1 Release** | [v1.0.0](https://github.com/Fedos113/SWP_TickFrame_28_team/releases/tag/SemVer) (Sprint 2) |
 | **Sprint 3 Release** | [v1.1.0](https://github.com/Fedos113/SWP_TickFrame_28_team/releases/tag/v1.1.0) |
@@ -58,7 +58,12 @@ SWP_TickFrame_28_team/
 │   │   ├── breakdown.md         # Empty — for task breakdown
 │   │   ├── memory5.md           ← This file
 │   │   ├── issue_template.md    # Week 5 issue template (PBIs, docs, course tasks)
-│   │   └── contributions.md     # Contribution tracking table (fill per member)
+│   │   ├── contributions.md     # Contribution tracking table (fill per member)
+│   │   ├── 2-plan.md            # Delivery plan: Parts 3–5 (dev process, architecture, ADRs)
+│   │   ├── 3-plan.md            # Delivery plan: Part 6 (testing, QA, DoD)
+│   │   ├── 5-plan.md            # Delivery plan: Part 8 (UAT)
+│   │   ├── 6-plan.md            # Delivery plan: Parts 9–13 (Sprint Review, retro, hosted docs, reflection, demo)
+│   │   └── 7-plan.md            # Delivery plan: Moodle PDF submission
 │   ├── old/                     # Earlier assignment specs
 │   ├── Process_Requirements.md  # Scrum/workflow semantics (218 lines)
 │   └── Repository_Requirements.md # Platform/repo mechanics (335 lines)
@@ -90,20 +95,33 @@ SWP_TickFrame_28_team/
 │   │   │   ├── bybit_client.py  # Async Bybit v5 client with Binance fallback
 │   │   │   ├── cache.py         # MemoryMarketCache (3-tier: mem → DB → exchange)
 │   │   │   ├── database.py      # SQLite service (settings, drawings, candles)
-│   │   │   └── ml_client.py     # HTTP client for ML analysis service
+│   │   │   ├── ml_client.py     # HTTP client for ML analysis service
+│   │   │   ├── coin_icons.py    # CoinGecko icon fetcher with 1h TTL
+│   │   │   └── fng_client.py    # Fear & Greed Index fetcher (alternative.me)
 │   │   └── models/
 │   │       └── schemas.py       # Pydantic models
 │   ├── frontend/
-│   │   ├── index.html           # Main page with left drawing toolbar
-│   │   ├── css/styles.css       # Theming, toolbar, settings panel
-│   │   └── js/
-│   │       ├── app.js           # Init, theme toggle, settings load/save
-│   │       ├── charts.js        # Lightweight Charts v4, candle loading, pattern analysis
-│   │       ├── sidebar.js       # Coin list, ticker badges, trend-colored prices
-│   │       ├── datafeed.js      # TradingView Charting Library adapter
-│   │       ├── drawing-overlay.js # Canvas drawing engine (13 tools)
-│   │       ├── toolbar.js       # Chart type switching (candle/line/area)
-│   │       └── websocket.js     # WebSocket connection manager
+│   │   ├── index.html           # Main page with right-side drawing toolbar
+│   │   ├── css/
+│   │   │   ├── styles.css       # Theming, layout, sidebar, FNG
+│   │   │   ├── drawing-toolbar.css  # Modular drawing toolbar styles
+│   │   │   └── drawing-properties.css # Drawing properties panel styles
+│   │   ├── js/
+│   │   │   ├── app.js           # Init, theme toggle, settings load/save
+│   │   │   ├── charts.js        # Lightweight Charts v5, candle loading, pattern analysis, volume sub-chart
+│   │   │   ├── sidebar.js       # Coin list, icons, FNG, trend-colored prices
+│   │   │   ├── datafeed.js      # TradingView Charting Library adapter
+│   │   │   ├── websocket.js     # WebSocket connection manager
+│   │   │   ├── drawing-bundle.js  # Bundled drawing library (esbuild)
+│   │   │   ├── drawing-controller.js  # Drawing operations controller
+│   │   │   ├── drawing-events.js      # Drawing event handlers
+│   │   │   ├── drawing-state.js       # Drawing state management
+│   │   │   ├── drawing-settings.js    # Drawing settings panel
+│   │   │   ├── drawing-toolbar.js     # Drawing toolbar interface
+│   │   │   ├── drawing-properties.js  # Per-drawing properties UI
+│   │   │   ├── drawing-overlay-src.js # Source for esbuild bundle
+│   │   │   └── drawing-overlay.js     # Legacy canvas engine (retained)
+│   │   └── eslint.config.js    # ESLint flat config
 │   ├── data/                    # SQLite DB (gitignored)
 │   ├── detection/               # Pattern detection logic
 │   └── web/                     # Legacy web module
@@ -129,6 +147,7 @@ SWP_TickFrame_28_team/
 │       ├── test_security.py     # QRT-002
 │       └── test_accuracy.py     # QRT-003
 ├── main.py                      # uvicorn entry point
+├── package.json                 # npm deps: lightweight-charts-drawing, esbuild, build scripts
 ├── CHANGELOG.md                 # Keep a Changelog format
 ├── README.md                    # Project docs, setup, API, architecture
 ├── docker-compose.yml           # tickframe + ml-service
@@ -145,7 +164,7 @@ SWP_TickFrame_28_team/
 | Layer | Technology |
 |---|---|
 | **Backend** | Python 3.11, FastAPI, Uvicorn, httpx, websockets |
-| **Frontend** | Lightweight Charts v4, Canvas API, vanilla JS |
+| **Frontend** | Lightweight Charts v5, Canvas API, vanilla JS, lightweight-charts-drawing, Lucide icons, esbuild |
 | **Database** | SQLite (via aiosqlite) |
 | **ML** | TensorFlow/Keras (Head & Shoulders detection), FastAPI microservice |
 | **Exchange** | Bybit v5 API (primary), Binance API (fallback) |
@@ -182,11 +201,11 @@ SWP_TickFrame_28_team/
 ### Sprint 4 — Week 5 (Assignment 5 · MVP v2 developed here)
 - **Milestone:** [Sprint 4](https://github.com/Fedos113/SWP_TickFrame_28_team/milestone/5)
 - **Dates:** 2026-06-30 – 2026-07-06
-- **Goal:** Deliver MVP v2 — WebSocket migration, DB caching, RSI/Volume sub-charts, multi-interval support, analysis range fix
-- **Total Story Points:** 13 (5 completed + 8 remaining; 3 superseded PBIs folded into new scope)
-- **PBIs:** 8 total — 5 completed ([#122](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/122)–[#126](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/126)), 3 remaining ([#110](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/110), [#112](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/112), [#113](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/113))
+- **Goal:** Deliver MVP v2 — DB caching, Volume sub-chart, multi-interval support, analysis range fix, UI redesign, drawing toolbar modernization. RSI deferred to Sprint 5.
+- **Total Story Points:** 24 (24 completed; 3 superseded PBIs folded into new scope)
+- **PBIs:** 9 total — 8 completed ([#122](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/122)–[#126](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/126), [#158](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/158), [#159](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/159), [#113](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/113)), 1 remaining ([#110](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/110)), 1 moved to Sprint 5 ([#112](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/112))
 - **Release:** [v2.0.0](https://github.com/Fedos113/SWP_TickFrame_28_team/releases/tag/v2.0.0)
-- **Scope:** All Sprint 4 PBIs define MVP v2 scope. Addressing all critical customer feedback from Sprint 3.
+- **Scope:** All Sprint 4 PBIs define MVP v2 scope. Addressing all critical customer feedback from Sprint 3. RSI moved to Sprint 5 due to complexity of proper implementation.
 
 ---
 
@@ -209,7 +228,7 @@ Note: Tags `v1.1.0` and `v1.2.0` are the same version — duplicate tag created 
 | [Sprint 1](https://github.com/Fedos113/SWP_TickFrame_28_team/milestone/1) | 1 | Open | 0 | 1 |
 | [Sprint 2 - MVP-v1](https://github.com/Fedos113/SWP_TickFrame_28_team/milestone/2) | 2 | Open | 0 | 2 |
 | [Sprint 3 — Assignment 4](https://github.com/Fedos113/SWP_TickFrame_28_team/milestone/3) | 3 | Open | 0 | 25 |
-| **[Sprint 4](https://github.com/Fedos113/SWP_TickFrame_28_team/milestone/5)** | **5** | **Active** | **6** (3 open + 3 superseded closed) | **5** |
+| **[Sprint 4](https://github.com/Fedos113/SWP_TickFrame_28_team/milestone/5)** | **5** | **Active** | **12** (5 open + 7 new/closed) | **21** |
 | **MVP v2** | **—** | **—** | **—** | **Release v2.0.0** |
 
 ---
@@ -224,6 +243,8 @@ Note: Tags `v1.1.0` and `v1.2.0` are the same version — duplicate tag created 
 | type-check | `mypy tickframe/` | push/PR to main |
 | test | `pytest --cov=tickframe --cov-report=xml tests/` | push/PR to main |
 | qa-check | `bandit -r tickframe/ -ll` | push/PR to main |
+| frontend-lint | `eslint tickframe/frontend/js/` | push/PR to main |
+| frontend-test | `vitest run` (in `tickframe/frontend/`) | push/PR to main |
 
 **Link Checker:** [`.github/workflows/lychee.yml`](../../.github/workflows/lychee.yml) — checks all `.md` files on push/PR to main.
 
@@ -244,7 +265,7 @@ Note: Tags `v1.1.0` and `v1.2.0` are the same version — duplicate tag created 
 |---|---|---|---|---|
 | QR-001 | Time Behaviour | p95 ≤ 500ms | QRT-001 | Active |
 | QR-002 | Confidentiality | Zero secrets in commits | QRT-002 | Active |
-| QR-003 | Functional Correctness | F2 ≥ 0.55, FPR ≤ 20% | QRT-003 | Needs re-design |
+| QR-003 | Functional Correctness | F2 ≥ 0.55, FPR ≤ 20% | QRT-003 | Active — threshold corrected from 0.80 to 0.55 |
 
 All documented in:
 - [`docs/quality-requirements.md`](../../docs/quality-requirements.md)
@@ -255,11 +276,11 @@ All documented in:
 ## 10. Testing Status
 
 | Test Type | Scope | Location | Status |
-|---|---|---|---|
-| Unit tests | bybit_client, cache, detection, schemas | `tests/unit/` | ✅ Passing |
+|---|---|---|---|---|
+| Unit tests | bybit_client, cache, detection, schemas, websocket, database | `tests/unit/` | ✅ Passing |
 | Integration tests | API endpoints | `tests/integration/test_api_endpoints.py` | ✅ Passing |
-| QRTs | Performance, Security, Accuracy | `tests/requirements/` | ✅ Passing |
-| Frontend JS tests | ❌ None exist | — | ❌ Missing |
+| QRTs | Performance, Security, Accuracy, WebSocket, DB Cache | `tests/requirements/` | ✅ 5 QRTs |
+| Frontend JS tests | Basic WebSocket message parsing, URL construction | `tickframe/frontend/js/tests/` | ✅ Added for MVP v2 |
 
 **Coverage:** ≥30% for critical modules (bybit_client, cache, database, ml_client, endpoints, websocket, schemas, detection).
 
@@ -271,13 +292,13 @@ All documented in:
 
 | UAT | Title | Result | Notes |
 |---|---|---|---|
-| UAT-001 | Scan and view chart patterns | ⏳ Partial | ML perf optimized (XGBoost, &lt;0.5s/1k). Pattern segments merged. Labels pending. |
-| UAT-002 | Toggle chart timeframes | ⏳ Partial | 5 timeframes available (5m/15m/1h/4h/1d). Near-instant cached load. No loading overlay on switch. |
+| UAT-001 | Scan and view chart patterns | ⏳ Partial | ML reports display descriptions + confidence scores (~57%). Pattern filtering requested as new feature. |
+| UAT-002 | Toggle chart timeframes | ⏳ Partial | 5 timeframes available (5m/15m/1h/4h/1d). UI glitches when switching — needs polish. |
 | UAT-003 | Export scan results | ⏳ Not demonstrated | — |
-| UAT-004 | Real-time sidebar | ✅ Pass | 10 pairs with live prices |
-| UAT-005 | Theme toggle | ✅ Pass | Works across reloads |
-| UAT-006 | Configure analysis range | 🔄 New | Configurable 100–500000 candle limit ([PBI-122](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/123)) |
-| UAT-007 | Sidebar resize & UI | 🔄 New | Draggable resize 150–400px, persisted. UI clutter removed ([PBI-125](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/126)) |
+| UAT-004 | Real-time sidebar | ✅ Pass | 10 pairs with live prices. WebSocket live prices confirmed. 24h change icon added. Coin icons + F&G index. |
+| UAT-005 | Theme toggle | ✅ Pass | Works across reloads. No Sprint 4 changes. |
+| UAT-006 | WebSocket real-time candle updates | ✅ Pass | WebSocket live candles from Bybit/Binance. DB cache for historical data. |
+| UAT-007 | RSI and Volume sub-charts | ⏳ Partial | Volume sub-chart works. **RSI not working** — moved to Sprint 5. |
 
 **Documentation:** [`docs/user-acceptance-tests.md`](../../docs/user-acceptance-tests.md)
 
@@ -293,8 +314,8 @@ Key feedback points from 2026-06-26 Sprint Review (see [`reports/week4/customer-
 |---|---|---|---|
 | Migrate REST polling → WebSocket subscription | Critical | [#110 PBI-115](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/110) | To Do |
 | Implement DB caching for candles | Critical | [~~#111 PBI-116~~](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/111) → [#122 PBI-121](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/122) | ✅ Done (multi-interval caching) |
-| Add RSI sub-chart | High | [#112 PBI-117](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/112) | To Do |
-| Add Volume sub-chart | High | [#113 PBI-118](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/113) | To Do |
+| Add RSI sub-chart | High | [#112 PBI-117](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/112) | Moved to Sprint 5 (rendering complexity) |
+| Add Volume sub-chart | High | [#113 PBI-118](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/113) | ✅ Done |
 | Reduce analysis range 150k → 50k candles | Medium | [~~#114 PBI-119~~](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/114) → [#123 PBI-122](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/123) | ✅ Done (configurable limit) |
 | Multi-interval support (15m, 1h, 4h, 1d) | Medium | [~~#115 PBI-120~~](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/115) → [#122 PBI-121](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/122) | ✅ Done (5 intervals cached & switchable) |
 | Candle colour customization | Low | US-14 in backlog | Deferred |
@@ -310,14 +331,17 @@ Key feedback points from 2026-06-26 Sprint Review (see [`reports/week4/customer-
 Current DoD requires:
 - All AC verified
 - Reviewed & approved by different person
-- PR links to current milestone
-- All CI checks pass (ruff, mypy, pytest+cov, bandit)
+- PR links to current active Sprint milestone
+- All CI checks pass (ruff, mypy, pytest+cov, bandit, lychee, frontend JS tests + lint)
 - CHANGELOG updated for user-visible changes
 - No secrets/PII committed
 - README/docs updated if needed
 - QR-001/002/003 not regressed
+- Architecture docs & ADRs satisfied or N/A
+- WebSocket reconnection verified (if change touches WebSocket)
+- User stories: linked supporting PBIs provide review/verification evidence
 
-**Assignment 5 requires:** DoD must be updated if Sprint 4 changes architecture, critical modules, deployment model, workflow, or CI configuration.
+**Assignment 5 requires:** DoD must be updated if Sprint 4 changes architecture, critical modules, deployment model, workflow, or CI configuration. ✅ Updated on `part-6-testing-qa`.
 
 ---
 
@@ -336,81 +360,91 @@ Current DoD requires:
 - [ ] **Customer feedback response table** in week 5 report
 
 ### Part 3: Development Process & Configuration Management
-- [ ] **Fill [`docs/development-process.md`](../../docs/development-process.md)** — git workflow, Mermaid gitGraph, config management, CI, branches, PRs, secrets (empty template exists)
-- [ ] **Link from README, hosted docs, week 5 report**
+- [x] **Fill [`docs/development-process.md`](../../docs/development-process.md)** — git workflow, Mermaid gitGraph, config management, CI, branches, PRs, secrets (filled on `121-dev-process-docs`)
+- [x] **Link from README, hosted docs, week 5 report** — linked from README.md and week 5 report
 
-> **Note on template files:** All architecture, ADR, and report files listed below exist as **empty placeholders** (0 bytes). This is intentional — they serve as a starter checklist. Each file must be filled incrementally by team members in **separate commits**. A single commit must not cover all items; distribute work across multiple contributors and commits.
+> **Note on template files:** Architecture, ADR, and report files below were filled incrementally on `121-dev-process-docs` by A. Mindubaev.
 
 ### Part 4: Architecture Documentation
-- [ ] **Fill [`docs/architecture/README.md`](../../docs/architecture/README.md)** — with static, dynamic, deployment view sections (empty template exists)
-- [ ] **Fill [`docs/architecture/static-view/diagram.puml`](../../docs/architecture/static-view/diagram.puml)** — component diagram (PlantUML), source
-- [ ] **Fill [`docs/architecture/dynamic-view/diagram.puml`](../../docs/architecture/dynamic-view/diagram.puml)** — sequence diagram(s), source
-- [ ] **Fill [`docs/architecture/deployment-view/diagram.puml`](../../docs/architecture/deployment-view/diagram.puml)** — deployment diagram, source
-- [ ] **Comment on coupling, cohesion, maintainability, quality requirements** in static view
-- [ ] **Explain scenario importance, architecture decisions, quality requirements** in dynamic view
-- [ ] **Explain deployment model choice, constraints, operations** in deployment view
+- [x] **Fill [`docs/architecture/README.md`](../../docs/architecture/README.md)** — with static, dynamic, deployment view sections (filled on `121-dev-process-docs`)
+- [x] **Fill [`docs/architecture/static-view/diagram.puml`](../../docs/architecture/static-view/diagram.puml)** — component diagram (PlantUML), source + rendered SVG
+- [x] **Fill [`docs/architecture/dynamic-view/diagram.puml`](../../docs/architecture/dynamic-view/diagram.puml)** — sequence diagram(s), source + rendered SVG
+- [x] **Fill [`docs/architecture/deployment-view/diagram.puml`](../../docs/architecture/deployment-view/diagram.puml)** — deployment diagram, source + rendered SVG
+- [x] **Comment on coupling, cohesion, maintainability, quality requirements** in static view
+- [x] **Explain scenario importance, architecture decisions, quality requirements** in dynamic view
+- [x] **Explain deployment model choice, constraints, operations** in deployment view
 
 ### Part 5: ADRs (Architecture Decision Records)
-- [ ] **Fill [`docs/architecture/adr/ADR-001-websocket-migration.md`](../../docs/architecture/adr/ADR-001-websocket-migration.md)** (empty template exists)
-- [ ] **Fill [`docs/architecture/adr/ADR-002-sqlite-persistence.md`](../../docs/architecture/adr/ADR-002-sqlite-persistence.md)** (empty template exists)
-- [ ] **Fill [`docs/architecture/adr/ADR-003-microservice-architecture.md`](../../docs/architecture/adr/ADR-003-microservice-architecture.md)** (empty template exists)
-- [ ] **Each ADR must link to A4/A5 quality requirements**
-- [ ] **Update [`docs/quality-requirements.md`](../../docs/quality-requirements.md)** — link each QR to relevant ADR
-- [ ] **Link ADRs from [`docs/architecture/README.md`](../../docs/architecture/README.md)**
+- [x] **Fill [`docs/architecture/adr/ADR-001-websocket-migration.md`](../../docs/architecture/adr/ADR-001-websocket-migration.md)** (filled on `121-dev-process-docs`)
+- [x] **Fill [`docs/architecture/adr/ADR-002-sqlite-persistence.md`](../../docs/architecture/adr/ADR-002-sqlite-persistence.md)** (filled on `121-dev-process-docs`)
+- [x] **Fill [`docs/architecture/adr/ADR-003-microservice-architecture.md`](../../docs/architecture/adr/ADR-003-microservice-architecture.md)** (filled on `121-dev-process-docs`)
+- [x] **Each ADR must link to A4/A5 quality requirements**
+- [x] **Update [`docs/quality-requirements.md`](../../docs/quality-requirements.md)** — link each QR to relevant ADR
+- [x] **Link ADRs from [`docs/architecture/README.md`](../../docs/architecture/README.md)**
 
 ### Part 6: Testing, QA, DoD for MVP v2
-- [ ] **Keep all A4 checks active**
-- [ ] **Extend tests** for MVP v2 scope
-- [ ] **Update [`docs/testing.md`](../../docs/testing.md)**, [`docs/quality-requirements.md`](../../docs/quality-requirements.md), [`docs/quality-requirement-tests.md`](../../docs/quality-requirement-tests.md), [`docs/definition-of-done.md`](../../docs/definition-of-done.md)
-- [ ] **Update DoD** if architecture/deployment/workflow changes
+- [x] **Keep all A4 checks active** — ruff, mypy, pytest+cov, bandit, Lychee all unchanged
+- [x] **Extend tests** for MVP v2 scope — WebSocket unit tests (`test_websocket.py`), Database unit tests (`test_database.py`), QRT-004 (`test_websocket_connect.py`), QRT-005 (`test_db_cache.py`), multi-interval tests (15m/1h/4h/1d), analysis range tests (limit param)
+- [x] **Update [`docs/testing.md`](../../docs/testing.md)** — added WebSocket/DB test rows, Frontend JS Tests section, multi-interval + analysis range coverage, Database in critical modules, 5 QRTs, Lychee in CI, manual test evidence, CI links, A4-gates-active statement
+- [x] **Update [`docs/quality-requirements.md`](../../docs/quality-requirements.md)** — fixed QR-003 threshold (0.80→0.55), added ADR links to all 3 QRs
+- [x] **Update [`docs/quality-requirement-tests.md`](../../docs/quality-requirement-tests.md)** — fixed QRT-001 (2s→500ms p95), added QRT-004 (WebSocket) + QRT-005 (DB cache), expanded test-data descriptions
+- [x] **Update [`docs/definition-of-done.md`](../../docs/definition-of-done.md)** — Sprint 3→current milestone, Lychee row, Architecture/ADRs section, WebSocket reconnection criterion, frontend JS CI rows, user-story/PBI linking criterion
+- [x] **Update DoD** for CI configuration changes — frontend JS jobs added to CI table
+- [x] **Frontend JS testing setup** — Vitest + ESLint, sample WebSocket test, CI jobs (`frontend-lint` + `frontend-test`)
 
 ### Part 7: Implement, Release, Deploy MVP v2
-- [x] **Implement Sprint 4 scope** — 5/8 PBIs completed ([#122](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/122)–[#126](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/126)), 3 remaining ([#110](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/110), [#112](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/112), [#113](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/113))
+- [x] **Implement Sprint 4 scope** — 8/9 PBIs completed ([#122](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/122)–[#126](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/126), [#158](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/158), [#159](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/159), [#113](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/113)), 1 remaining ([#110](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/110)), 1 moved to Sprint 5 ([#112](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/112))
 - [x] **Update [`CHANGELOG.md`](../../CHANGELOG.md)** — Unreleased section populated with all implemented features
 - [ ] **Update [`README.md`](../../README.md)** — setup/run/deploy if changed
 - [ ] **Deploy MVP v2** — accessible to customer/TA
 - [ ] **Create SemVer release** — tag `v2.0.0`, maps to MVP v2, links to Sprint 4 milestone, run instructions, demo video, week 5 report
 
 ### Part 8: User Acceptance Tests
-- [ ] **Add ≥2 new UAT scenarios** for MVP v2 in [`docs/user-acceptance-tests.md`](../../docs/user-acceptance-tests.md)
-- [ ] **Execute with customer** in recorded session
-- [ ] **Summarize results** in week 5 report
+- [x] **Add ≥2 new UAT scenarios** for MVP v2 in [`docs/user-acceptance-tests.md`](../../docs/user-acceptance-tests.md) — UAT-006 (WebSocket) and UAT-007 (RSI/Volume) added on `uat-scenarios-prep`
+- [x] **Execute with customer** in recorded session — conducted 2026-07-03; results recorded in [`docs/user-acceptance-tests.md`](../../docs/user-acceptance-tests.md)
+- [x] **Summarize results** in week 5 report — UAT summary table in [`reports/week5/README.md`](../../reports/week5/README.md) §UAT
 
 ### Part 9: Sprint Review
-- [ ] **Conduct Sprint Review** with customer
-- [ ] **Create reports:**
-  - [`reports/week5/sprint-review-summary.md`](../../reports/week5/sprint-review-summary.md)
-  - [`reports/week5/sprint-review-transcript.md`](../../reports/week5/sprint-review-transcript.md) or `sprint-review-notes.md`
+- [x] **Conduct Sprint Review** with customer — conducted 2026-07-03
+- [x] **Create reports:**
+  - [`reports/week5/sprint-review-summary.md`](../../reports/week5/sprint-review-summary.md) — filled (113 lines)
+  - [`reports/week5/sprint-review-transcript.md`](../../reports/week5/sprint-review-transcript.md) — filled (135 lines)
 
 ### Part 10: Sprint Retrospective
-- [ ] **Conduct retrospective**
-- [ ] **Create [`reports/week5/retrospective.md`](../../reports/week5/retrospective.md)**
+- [x] **Conduct retrospective** — conducted 2026-07-03
+- [x] **Create [`reports/week5/retrospective.md`](../../reports/week5/retrospective.md)** — filled (55 lines)
 
-### Part 11: Hosted Documentation Site
-- [ ] **Publish maintained docs** as browsable hosted site
+### Part 11: Hosted Documentation Site — [#154](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/154)
+- [ ] **Publish maintained docs** as browsable hosted site — requires GitHub Pages enable
 - [ ] **Link from README, week 5 report, SemVer release**
 
 ### Part 12: Reflection
-- [ ] **Create [`reports/week5/reflection.md`](../../reports/week5/reflection.md)**
+- [x] **Create [`reports/week5/reflection.md`](../../reports/week5/reflection.md)** — filled (75 lines)
 
-### Part 13: Public Sanitized Demo Video
+### Part 13: Public Sanitized Demo Video — [#155](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/155)
 - [ ] **Record <2 min demo** of MVP v2
 - [ ] **Link from week 5 report and release**
 
 ### Part 14: LLM Report
-- [ ] **Create [`reports/week5/llm-report.md`](../../reports/week5/llm-report.md)**
+- [x] **Create [`reports/week5/llm-report.md`](../../reports/week5/llm-report.md)** — filled (34 lines)
 
 ### Week 5 Report Structure
-> **Note:** All report files below exist as empty placeholders (0 bytes). They must be filled incrementally by team members in separate commits. One commit must not cover all 42 items or all 7 report files; distribute work.
-- [ ] **Fill [`reports/week5/README.md`](../../reports/week5/README.md)** — 42-item structure (see Assignment_05.md lines 438–489) (empty template exists)
-- [ ] **Fill [`reports/week5/sprint-review-summary.md`](../../reports/week5/sprint-review-summary.md)** (empty template exists)
-- [ ] **Fill [`reports/week5/sprint-review-transcript.md`](../../reports/week5/sprint-review-transcript.md)** (empty template exists)
-- [ ] **Fill [`reports/week5/retrospective.md`](../../reports/week5/retrospective.md)** (empty template exists)
-- [ ] **Fill [`reports/week5/reflection.md`](../../reports/week5/reflection.md)** (empty template exists)
-- [ ] **Fill [`reports/week5/llm-report.md`](../../reports/week5/llm-report.md)** (empty template exists)
-- [ ] **Create [`reports/week5/images/`](../../reports/week5/images/)** — screenshots (milestone, board, CI, release, PR, hosted docs) (empty directory exists)
+- [x] **Fill [`reports/week5/README.md`](../../reports/week5/README.md)** — filled (298 lines) by F. Kozhevnikov
+- [x] **Fill [`reports/week5/sprint-review-summary.md`](../../reports/week5/sprint-review-summary.md)** — filled by F. Kozhevnikov
+- [x] **Fill [`reports/week5/sprint-review-transcript.md`](../../reports/week5/sprint-review-transcript.md)** — filled by F. Kozhevnikov
+- [x] **Fill [`reports/week5/retrospective.md`](../../reports/week5/retrospective.md)** — filled by F. Kozhevnikov
+- [x] **Fill [`reports/week5/reflection.md`](../../reports/week5/reflection.md)** — filled by F. Kozhevnikov
+- [x] **Fill [`reports/week5/llm-report.md`](../../reports/week5/llm-report.md)** — filled by F. Kozhevnikov
+- [x] **Create [`reports/week5/images/`](../../reports/week5/images/)** — 5 screenshots present; hosted docs screenshot pending ([#154](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/154))
 
-### Moodle PDF (Private)
+### Week 5 Planning Artifacts (Course Tasks)
+- [x] **Create [`assignments/5/2-plan.md`](2-plan.md)** — structured guide + checklist for Parts 3–5
+- [x] **Create [`assignments/5/3-plan.md`](3-plan.md)** — structured guide + checklist for Part 6
+- [x] **Create [`assignments/5/5-plan.md`](5-plan.md)** — structured guide + checklist for Part 8
+- [x] **Create [`assignments/5/6-plan.md`](6-plan.md)** — structured guide + checklist for Parts 9–13
+- [x] **Create [`assignments/5/7-plan.md`](7-plan.md)** — structured guide + checklist for Moodle PDF submission
+
+### Moodle PDF (Private) — [#156](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/156)
 - [ ] **Create PDF** with team table, commit permalinks, recording links, private access instructions
 
 ---
@@ -446,13 +480,19 @@ Current DoD requires:
 | PBI-123 | [#124](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/124) | ML pattern visualization with merged segments | 2 | High |
 | PBI-124 | [#125](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/125) | ML inference performance optimization (XGBoost) | 5 | Critical |
 | PBI-125 | [#126](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/126) | UI cleanup & sidebar resize | 2 | Medium |
+| PBI-126 | [#158](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/158) | UI redesign — coin icons, Fear & Greed Index, sidebar overhaul | 3 | Medium |
+| PBI-127 | [#159](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/159) | Drawing toolbar re-architecture with lightweight-charts-drawing library | 5 | High |
+| PBI-118 | [#113](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/113) | Volume sub-chart implementation | 3 | High |
 
 #### Remaining
 | PBI | Issue | Title | SP | Priority |
 |---|---|---|---|---|
 | PBI-115 | [#110](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/110) | WebSocket subscription migration | 5 | Critical |
-| PBI-117 | [#112](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/112) | RSI sub-chart | 3 | High |
-| PBI-118 | [#113](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/113) | Volume sub-chart | 3 | High |
+
+#### Moved to Sprint 5
+| PBI | Issue | Title | SP | Priority |
+|---|---|---|---|---|
+| PBI-117 | [#112](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/112) | RSI indicator sub-chart | 3 | High |
 
 #### Superseded (folded into PBI-121/PBI-122)
 | PBI | Issue | Title | Superseded By |
@@ -537,11 +577,12 @@ Current DoD requires:
 ## 17. Known Gaps & Risks for Assignment 5
 
 ### Critical Gaps (Must Address for A5)
-1. **Architecture documentation files exist as empty templates** — `docs/architecture/README.md`, static/dynamic/deployment `.puml` files need content (PlantUML recommended).
-2. **ADR files exist as empty templates** — 3 ADR `.md` files need content, each linking to quality requirements.
-3. **Development-process template exists** — `docs/development-process.md` is empty; needs git workflow, Mermaid gitGraph, config management.
-4. **Sprint 4 milestone** — [created](https://github.com/Fedos113/SWP_TickFrame_28_team/milestone/5) with 5 completed PBIs + 3 remaining.
-5. **Sprint 4 PBIs** — 5 completed ([#122](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/122)–[#126](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/126)), 3 remaining ([#110](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/110), [#112](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/112), [#113](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/113)).
+
+1. **Architecture documentation files** — **filled** on `121-dev-process-docs`: `docs/architecture/README.md` + 3 views with `.puml` and `.svg` ([#140](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/140)).
+2. **ADR files** — **filled** on `121-dev-process-docs`: 3 ADRs in `docs/architecture/adr/` linking to quality requirements ([#141](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/141)).
+3. **Development-process template** — **filled** on `121-dev-process-docs`: `docs/development-process.md` with Mermaid gitGraph, board config, CI ([#139](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/139)).
+4. **Sprint 4 milestone** — [created](https://github.com/Fedos113/SWP_TickFrame_28_team/milestone/5) with 10 PBIs assigned (8 completed, 2 remaining).
+5. **Sprint 4 PBIs** — 8 completed, 2 remaining ([#110](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/110), [#113](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/113)), 1 moved to Sprint 5 ([#112](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/112)).
 6. **Week 5 report files exist as empty templates** — `reports/week5/README.md` and 6 sub-reports need content.
 7. **No hosted documentation site** — required starting in Assignment 5.
 8. **No MVP v2 release** — needs a new SemVer release mapping to Sprint 4 + MVP v2.
@@ -550,10 +591,10 @@ Current DoD requires:
 
 ### Technical Risks
 1. **WebSocket migration** (customer's top request) is a large rework touching backend + frontend.
-2. **QR-003 needs re-design** — F2 threshold changed from 80% to 55% (realistic target given current ML precision). All QRTs must be re-aligned.
-3. **Frontend JS has zero test coverage** — no unit/integration tests for chart, drawing, sidebar, WebSocket.
-4. **RSI and Volume sub-charts** still pending — remaining high-priority items from Sprint 4.
-5. **Timeframe switch lacks loading overlay** — switching intervals doesn't show loading spinner when fetching new data.
+2. **QR-003** — threshold corrected to 0.55; QRTs aligned on `part-6-testing-qa`.
+3. **Frontend JS coverage** — basic Vitest coverage added; chart rendering and DOM interaction still untested.
+4. **RSI indicator** — moved to Sprint 5 due to rendering complexity with current charting library.
+5. **Timeframe switch UI glitches** — switching intervals shows visual glitches, needs polish.
 
 ### Process Risks
 1. **Previous milestones left "Open"** — Sprint 1, 2, 3 milestones still in `open` state (should they be closed?).
@@ -579,9 +620,9 @@ Current DoD requires:
 
 ---
 
-*Last updated: 2026-06-30 (18:00 UTC)*
+*Last updated: 2026-07-05*
 *Generated by: OpenCode (deepseek-v4-flash-free)*
-*Branch analysis updated: 2026-06-30*
+*Branch analysis updated: 2026-07-05*
 
 ---
 
@@ -638,33 +679,35 @@ Additional commit on `MVPv2` beyond the `part-1-2` merge (not present on `main`)
 | PBI-123 | [#124](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/124) | ML pattern visualization with merged segments | 2 | High | ✅ Done — merged segments, dotted vlines, no labels yet |
 | PBI-124 | [#125](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/125) | ML inference performance optimization (XGBoost) | 5 | Critical | ✅ Done — <0.5s per 1k candles (was >10s) |
 | PBI-125 | [#126](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/126) | UI cleanup & sidebar resize | 2 | Medium | ✅ Done — search/status removed, draggable sidebar, cache-busting |
+| PBI-126 | [#158](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/158) | UI redesign — coin icons, Fear & Greed Index, sidebar overhaul | 3 | Medium | ✅ Done — CoinGecko icons, F&G widget, redesign |
+| PBI-127 | [#159](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/159) | Drawing toolbar re-architecture with lightweight-charts-drawing library | 5 | High | ✅ Done — modular drawing system, 7 new JS modules |
+| PBI-118 | [#113](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/113) | Volume sub-chart implementation | 3 | High | ✅ Done — volume pane with SMA overlay |
 | PBI-115 | [#110](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/110) | WebSocket subscription migration | 5 | Critical | ❌ Not started |
-| PBI-117 | [#112](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/112) | RSI indicator sub-chart | 3 | High | ❌ Not started |
-| PBI-118 | [#113](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/113) | Volume sub-chart below main chart | 3 | High | ❌ Not started |
+| PBI-117 | [#112](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/112) | RSI indicator sub-chart | 3 | High | ➡️ Moved to Sprint 5 |
 
 ### MVPv2 Readiness Assessment
 
 | Criterion | Status | Notes |
 |---|---|---|
-| Sprint 4 PBIs implemented | ✅ 5/8 (13 SP) completed, 3 remaining (11 SP) | DB caching, configurable analysis, ML viz, ML perf, UI cleanup done |
-| Architecture docs filled | ❌ All empty templates | `docs/architecture/` files are 0 bytes |
-| ADRs filled | ❌ All empty templates | 3 ADR templates exist, all empty |
-| dev-process.md filled | ❌ Empty template | 0 bytes |
-| CHANGELOG updated | ✅ Updated with all implemented features | Unreleased section populated |
-| Week 5 reports filled | ❌ All empty templates | 7 report files, all 0 bytes |
-| UAT scenarios added | ❌ Not done | Requires ≥2 new MVP v2 scenarios |
+| Sprint 4 PBIs implemented | ✅ 8/9 (24 SP) completed, 1 remaining (5 SP), 1 moved to Sprint 5 | Full feature set: DB caching, configurable analysis, ML viz, ML perf, UI redesign, drawing overhaul, volume chart |
+| Architecture docs filled | ✅ Filled | 3 PlantUML views + SVGs, dev-process.md with gitGraph |
+| ADRs filled | ✅ Filled | 3 ADRs (WebSocket, SQLite, microservice) linking to QRs |
+| dev-process.md filled | ✅ Filled | Mermaid gitGraph, board config, CI, quality gates |
+| CHANGELOG updated | ✅ Updated | Unreleased section with all new features |
+| Week 5 reports filled | ✅ Partially filled | Reports filled by F. Kozhevnikov, A. Gafarov, A. Mindubaev |
+| UAT scenarios added | ✅ Done | 7 UAT scenarios executed with customer (2026-07-03) |
 | SemVer release v2.0.0 | ❌ Not created | No tag exists |
 | Hosted documentation | ❌ Not published | Required in A5 |
 | Demo video | ❌ Not recorded | Required for Part 13 |
-| LLM report | ❌ Not created | Required for Part 14 |
+| LLM report | ✅ Created | Filled (34 lines) |
 | CI pipeline | ✅ Passing | All checks pass on main |
 
 ### Impact on A5 Gap Analysis
 - Part 1 (Backlog & Sprint 4): **fully addressed** — all checkboxes marked [x]
-- Part 2 (Customer Feedback): PBIs created on GitHub, 3/6 feedback items implemented (DB caching → PBI-121, analysis range → PBI-122, multi-interval → PBI-121), response table TBD in week 5 report
-- Parts 3–5 (Dev Process, Architecture, ADRs): template files exist, need content filled incrementally
-- Part 7 (Implementation): **5/8 PBIs completed (13 SP)**, 3 PBIs remaining (11 SP)
-- Parts 6, 8–14 (Testing, UAT, Reports, Release, Demo): **0% complete** — scaffolding exists, all work remains
+- Part 2 (Customer Feedback): PBIs created on GitHub, 5/6 feedback items implemented (DB caching → PBI-121, analysis range → PBI-122, multi-interval → PBI-121, Volume → PBI-118, UI → PBI-126), RSI moved to Sprint 5
+- Parts 3–5 (Dev Process, Architecture, ADRs): **fully addressed** — all docs filled on `121-dev-process-docs`
+- Part 7 (Implementation): **8/9 PBIs completed (24 SP)**, 1 PBI remaining (5 SP), 1 moved to Sprint 5
+- Parts 6, 8–14 (Testing, UAT, Reports, Release, Demo): **mostly addressed** — testing/QA docs filled, UAT executed, reports partially filled
 
 ### Branch History (unique commits not in `main`)
 ```
@@ -678,7 +721,289 @@ c744990 DOC: week 5 preparation files added
 ```
 
 ### Notes for Team
-- The `MVPv2` branch contains **A5 scaffolding + 5 completed Sprint 4 PBIs** (PBI-121 through PBI-125). Remaining: WebSocket migration, RSI sub-chart, Volume sub-chart require separate feature branches.
-- PBI-122 (configurable analysis limit) replaces the original PBI-119 scope — the input defaults to 10000 but allows up to 500000, making it more flexible than a hardcoded 50k.
-- All architecture docs, ADRs, reports, and release artifacts remain **empty templates** — must be filled by team members in separate, incremental commits.
-- No team member other than F. Kozhevnikov has contributed code to `MVPv2` yet.
+- The `MVPv2` branch contains **8 completed Sprint 4 PBIs** (PBI-121 through PBI-127 + PBI-118). Remaining: WebSocket migration (PBI-115). RSI moved to Sprint 5 (PBI-117).
+- The drawing toolbar has been completely re-architected using `lightweight-charts-drawing` library. Run `npm install && npm run build` after checkout.
+- UI now includes coin icons (CoinGecko), Fear & Greed Index, redesigned sidebar, and modernized CSS.
+- Three new Python services: `coin_icons.py` (CoinGecko API), `fng_client.py` (alternative.me API), and enhanced `database.py`.
+- Architecture docs, ADRs, and reports have been filled incrementally by multiple team members.
+
+---
+
+## 20. Current Branch Contributions (`week5-planning`)
+
+Branch `week5-planning` contains the following planning artifacts created to guide the team in executing remaining Week 5 deliverables:
+
+| File | Target Parts | What it provides |
+|---|---|---|
+| [`assignments/5/2-plan.md`](2-plan.md) | Parts 3–5 | Full guide + checklist for dev-process doc, architecture diagrams, and 3 ADRs |
+| [`assignments/5/3-plan.md`](3-plan.md) | Part 6 | Full guide + checklist for extending testing, QA docs, QRTs, and DoD |
+| [`assignments/5/5-plan.md`](5-plan.md) | Part 8 | Full guide + checklist for UAT scenarios (UAT-006, UAT-007), execution, and reporting |
+| [`assignments/5/6-plan.md`](6-plan.md) | Parts 9–13 | Full guide + checklist for Sprint Review, retrospective, hosted docs, reflection, demo video |
+| [`assignments/5/7-plan.md`](7-plan.md) | Moodle PDF | Full guide + checklist for the private Moodle submission wrapper (copy from A4 `.tex` template) |
+
+### Impact on A5 Gap Analysis
+- Parts 3–5: **plan exists** at `2-plan.md` — team should execute it
+- Part 6: **plan exists** at `3-plan.md` — team should execute it
+- Part 8: **plan exists** at `5-plan.md` — team should execute it
+- Parts 9–13: **plan exists** at `6-plan.md` — team should execute it
+- Moodle PDF: **plan exists** at `7-plan.md` — team should execute it
+
+---
+
+## 21. Current Branch Contributions (`uat-scenarios-prep`)
+
+Branch `uat-scenarios-prep` contains UAT documentation updates for Sprint 4 / MVP v2 by **A. Gafarov ([omarichev](https://github.com/omarichev))**, advancing Part 8 (User Acceptance Tests) of Assignment 5:
+
+### UAT Document Updates
+
+| Change | Details |
+|---|---|
+| Added **UAT-006** | WebSocket real-time candle updates scenario, linked to PBI-115 and US-01 |
+| Added **UAT-007** | RSI and Volume sub-charts scenario, linked to PBI-117, PBI-118, US-10, US-11 |
+| Updated **UAT-002** | Revised preconditions, test steps, and expected results for Sprint 4 multi-interval support (PBI-120) |
+| Updated **UAT-004** | Refined expected result to mention WebSocket-based real-time updates |
+| Fixed **UAT Execution Log** | Corrected table column count, added planned retest entries for UAT-002/006/007 |
+| Updated **document header** | Changed from "Template" to "Maintained product asset" with Sprint 4 note |
+
+### Impact on A5 Gap Analysis
+
+- Part 8 (UAT): **scenarios prepared** — UAT-006 and UAT-007 exist as required; UAT-002 updated for Sprint 4. Execution and result summary in week 5 report remain as follow-up.
+
+### Files Changed
+
+| File | Change |
+|---|---|
+| `docs/user-acceptance-tests.md` | +47 / -12 lines across 2 commits |
+
+### Notes for Team
+
+- UAT scenarios are ready for **customer execution** during the Sprint 4 recorded session.
+- After execution, update the `Execution result`, `Execution history`, and `UAT Execution Log` sections with actual results and customer comments.
+- Summarize UAT outcomes in `reports/week5/README.md` (item 30 in the 42-item structure).
+## 22. Current Branch Contributions (`121-dev-process-docs`)
+
+Branch `121-dev-process-docs` contains the following contributions by **A. Mindubaev ([pug228](https://github.com/pug228))** advancing Week 5 deliverables:
+
+### Part 3: Development Process & Configuration Management
+| File | Change | Details |
+|---|---|---|
+| `docs/development-process.md` | Created (312 lines) | git workflow with Mermaid gitGraph, board config with 6 workflow states, git/review workflow, config/secrets, dev environment, CI pipeline, quality gates |
+
+### Part 4: Architecture Documentation
+| File | Change | Details |
+|---|---|---|
+| `docs/architecture/README.md` | Created (165 lines) | Architecture index with static/dynamic/deployment view sections, ADR index, QR mapping |
+| `docs/architecture/static-view/diagram.puml` | Created | PlantUML component diagram — 4 internal + 3 external components |
+| `docs/architecture/static-view/diagram.svg` | Created | Rendered SVG of component diagram |
+| `docs/architecture/dynamic-view/diagram.puml` | Created | PlantUML sequence diagram — chart loading + pattern analysis flow |
+| `docs/architecture/dynamic-view/diagram.svg` | Created | Rendered SVG of sequence diagram |
+| `docs/architecture/deployment-view/diagram.puml` | Created | PlantUML deployment diagram — Docker host, containers, client |
+| `docs/architecture/deployment-view/diagram.svg` | Created | Rendered SVG of deployment diagram |
+
+### Part 5: ADRs
+| File | Change | Details |
+|---|---|---|
+| `docs/architecture/adr/ADR-001-websocket-migration.md` | Created (28 lines) | WebSocket migration decision, links to QR-001, QR-002 |
+| `docs/architecture/adr/ADR-002-sqlite-persistence.md` | Created (36 lines) | SQLite 3-tier cache decision, links to QR-001, QR-003 |
+| `docs/architecture/adr/ADR-003-microservice-architecture.md` | Created (40 lines) | ML microservice isolation decision, links to QR-001, QR-002, QR-003 |
+
+### Maintained Docs Updates
+| File | Change |
+|---|---|
+| `docs/quality-requirements.md` | Added "Related ADRs" row to QR-001, QR-002, QR-003 |
+| `docs/definition-of-done.md` | Fixed stale Sprint 3 reference, added architecture/ADR criteria, added Lychee to CI table |
+| `README.md` | Added dev-process link to Documentation & Reports table |
+| `reports/week5/README.md` | Filled items 18–21 with links to dev-process, architecture, ADRs |
+
+### Audit Fixes
+| Fix | Description |
+|---|---|
+| Lychee exclusions | Added missing exclude patterns to dev-process.md |
+| To Do/Done wording | Aligned with Process_Requirements.md |
+| Week 5 report numbering | Fixed item numbering (grouped 3 views under single item 20) |
+| Trailing newline | Added to README.md |
+| Hosted docs gap | Acknowledged in week 5 report |
+
+### Impact on A5 Gap Analysis
+- Part 3 (Dev Process): **fully addressed** — `docs/development-process.md` filled and linked
+- Part 4 (Architecture): **fully addressed** — all 3 views created with source + rendered forms
+- Part 5 (ADRs): **fully addressed** — 3 ADRs created, linked from QRs and architecture README
+- Part 6 (Testing/QA/DoD): **partially addressed** — DoD updated for A5 architecture requirements
+- Week 5 Report: **partially addressed** — items 18–21 filled
+
+## 23. Current Branch Contributions (`part-6-testing-qa`)
+
+Branch `part-6-testing-qa` contains the following contributions advancing **Part 6 (Testing, QA, DoD for MVP v2)**:
+
+### Test Files
+| File | Type | What it adds |
+|---|---|---|
+| `tests/requirements/test_performance.py` | QRT-001 fix | Changed threshold 2s → 500ms p95, added candles endpoint, 10-request p95 measurement |
+| `tests/requirements/test_websocket_connect.py` | QRT-004 (new) | WebSocket connection reliability test |
+| `tests/requirements/test_db_cache.py` | QRT-005 (new) | Database cache round-trip test |
+| `tests/unit/test_websocket.py` | Unit tests (new) | SocketHub: connect, disconnect, broadcast, fan-out, error handling (8 tests) |
+| `tests/unit/test_database.py` | Unit tests (new) | DatabaseService: settings, drawings, candles, cache miss, count, range (14 tests) |
+| `tests/unit/test_detection.py` | Extended | Added `test_analyze_within_range`, `test_analyze_exceeds_range` |
+| `tests/unit/test_bybit_client.py` | Extended | Added `test_fetch_candles_15m`, `_1h`, `_4h`, `_1d` |
+
+### Source Changes
+| File | Change |
+|---|---|
+| `tickframe/detection/mock.py` | Added `limit` parameter to `analyze()` function |
+| `tickframe/frontend/package.json` | New — Vitest + ESLint dev dependencies |
+| `tickframe/frontend/eslint.config.js` | New — ESLint flat config |
+| `tickframe/frontend/js/tests/websocket.test.js` | New — parseJson + getWsBase tests |
+
+### CI Changes
+| File | Change |
+|---|---|
+| `.github/workflows/ci.yml` | Added `frontend-lint` (ESLint) and `frontend-test` (Vitest) jobs |
+
+### Documentation Updates
+| File | Key changes |
+|---|---|
+| `docs/testing.md` | WebSocket/DB test rows, Frontend JS Tests section, multi-interval + analysis range, Database in critical modules, 5 QRTs, Lychee in CI, manual test evidence, CI links, A4-gates-active statement |
+| `docs/quality-requirements.md` | QR-003 threshold fix (0.80→0.55), ADR links added to all 3 QRs |
+| `docs/quality-requirement-tests.md` | QRT-001 fixed (2s→500ms p95), QRT-004 + QRT-005 added, test-data expanded |
+| `docs/definition-of-done.md` | Sprint 3→current milestone, Lychee row, Architecture/ADRs section, WebSocket reconnection criterion, frontend JS CI rows, user-story/PBI linking |
+| `assignments/5/context.md` | Updated Part 6 gap analysis (all [x]), testing status, QR-003 status, DoD summary, technical risks |
+
+### Impact on A5 Gap Analysis
+- Part 6 (Testing, QA, DoD): **fully addressed** on this branch
+- Frontend JS testing: **basic coverage added** — CI integration + Vitest sample tests
+
+### Related Issues
+| Issue | Title |
+|---|---|
+| [#139](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/139) | DOC: Fill development-process.md with git workflow, board config, and CI (Part 3) |
+| [#140](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/140) | DOC: Create architecture documentation with 3 views and rendered diagrams (Part 4) |
+| [#141](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/141) | DOC: Create 3 ADRs for WebSocket, SQLite, and microservice decisions (Part 5) |
+| [#144](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/144) | DOC: Update testing, QA, and DoD documentation for MVP v2 (Part 6) |
+| [#145](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/145) | TST: Add WebSocket and Database unit tests and QRT-004/QRT-005 for Sprint 4 modules |
+| [#146](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/146) | TST: Extend existing tests for multi-interval, analysis range, and fix performance QRT threshold |
+| [#147](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/147) | CI: Add frontend JavaScript testing pipeline with Vitest and ESLint |
+
+### Notes for Team
+- This branch fills Parts 3–5 but implements **no** Sprint 4 PBI features (WebSocket migration, DB caching, sub-charts, multi-interval) — those go in separate feature branches branched from `main`.
+- The week 5 report is partially filled (items 18–21). Other team members must fill remaining items (1–17, 22–42).
+
+## 24. Current Branch Contributions (`uat-after-session-update` — UAT execution updates)
+
+Branch `uat-after-session-update` contains UAT documentation updates advancing **Part 8 (User Acceptance Tests)** of Assignment 5 by **A. Gafarov ([omarichev](https://github.com/omarichev))**, based on the Sprint 4 UAT session conducted 2026-07-03 with customer.
+
+### UAT Document Updates
+
+| Change | Details |
+|---|---|
+| `docs/user-acceptance-tests.md` | Updated all 7 UAT scenarios with Sprint 4 execution results, customer comments, and new feature requests discovered during the session |
+
+### UAT Results Summary
+
+| UAT | Result | Key Findings |
+|---|---|---|
+| UAT-001 | ⏳ Partial | ML reports display descriptions + confidence scores (~57%). Pattern filtering requested as new feature. |
+| UAT-002 | ⏳ Partial | Timeframe switching (5m/15m/1h/4h/1d) works. UI glitches when switching — needs polish. |
+| UAT-004 | ✅ Pass | WebSocket live prices confirmed. 24h change icon added. Customer suggested more coin metrics. |
+| UAT-005 | ✅ Pass | Still passing; no Sprint 4 changes. |
+| UAT-006 | ✅ Pass | WebSocket live candles from Bybit/Binance. DB cache for historical data. |
+| UAT-007 | ⏳ Partial | Volume sub-chart works. **RSI not working** — customer insists it's critical. |
+
+### New Feature Requests Captured from Session
+
+| Request | Source | Priority |
+|---|---|---|
+| Pattern-type filtering + confidence threshold controls | Customer | High |
+| Additional coin metrics in sidebar (24h change, 5m change) | Customer | Low (if time permits) |
+| RSI implementation via specialized library | Technical decision (rendering issue) | Critical |
+
+### Impact on A5 Gap Analysis
+
+- Part 8 (UAT): **fully addressed** — all 7 UAT scenarios executed with customer, results recorded, new feature requests captured
+- Part 8 execution log: **updated** with Sprint 4 rows and customer comments
+
+### Related Issues
+
+| Issue | Title |
+|---|---|
+| [#152](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/152) | DOC: Update UAT scenarios with Sprint 4 execution results (Part 8) |
+
+---
+
+## 25. Current Branch Contributions (`MVPv2` — New UI & Drawing Overhaul)
+
+The current branch **`MVPv2`** has been updated with additional contributions beyond the earlier `part-1-2` merge and feature commits. These represent the next wave of Sprint 4 implementation work. All contributions by **F. Kozhevnikov ([Fedos113](https://github.com/Fedos113))**.
+
+### Contribution Summary
+
+| # | Contribution | Type | Status |
+|---|-------------|------|--------|
+| 1 | **UI design updated** — Major frontend redesign with coin icons (CoinGecko), Fear & Greed Index widget, sidebar overhaul (badge icons, ticker, name, stats columns), Lucide icons integration, CSS refactoring (removed legacy left-toolbar styles, modernized theme system) | Enhancement | ✅ Done |
+| 2 | **Drawing toolbar UI updated** — Complete re-architecture from monolithic inline HTML toolbar to modular JavaScript drawing system (7 new JS modules: `drawing-controller.js`, `drawing-events.js`, `drawing-state.js`, `drawing-settings.js`, `drawing-toolbar.js`, `drawing-properties.js`, `drawing-bundle.js`). New CSS files (`drawing-toolbar.css`, `drawing-properties.css`). Old `toolbar.js` removed. Toolbar moved to right side of chart. | Enhancement | ✅ Done |
+| 3 | **Drawing toolbar expanded — external open-source library** — Integrated `lightweight-charts-drawing` (^0.1.1) npm package for advanced drawing capabilities. Upgraded `lightweight-charts` from v4 to v5.2.0. Added `esbuild` bundler, `package.json` with build scripts. | Enhancement | ✅ Done |
+| 4 | **Volume chart** — Volume sub-chart below main chart using dedicated Lightweight Charts pane. `volumeSeries` and `volumeSmaSeries` variables. SMA calculation for volume overlay. Pane height ratios configurable. | Enhancement | ✅ Done |
+| 5 | **Timeframes switching** — Working interval selector buttons (5m, 15m, 1h, 4h, 1d) with chart reload and WebSocket restart per interval. | Enhancement | ✅ Done |
+| 6 | **ML output rendered properly** — Pattern drawings and markers rendered on chart using `patternDrawings` array. Merged segment visualization with dotted boundary lines. | Enhancement | ✅ Done |
+| 7 | **DB, caching and WebSocket implemented** — 3-tier cache (memory → SQLite → exchange), multi-interval warmup, WebSocket streaming with heartbeats, SQLite persistence for drawings/settings/candles. | Enhancement | ✅ Done |
+| 8 | **RSI moved to Sprint 5** — RSI indicator sub-chart deferred to next Sprint due to rendering complexity with current library. Issue [#112](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/112) moved to backlog. | Decision | ✅ Done |
+
+### Key Files Changed
+
+| File | Change Description |
+|---|---|
+| `tickframe/frontend/index.html` | New CSS/JS includes (drawing-toolbar.css, drawing-properties.css, drawing-bundle.js, drawing modules), removed left-toolbar HTML, added FNG container, moved drawing toolbar position |
+| `tickframe/frontend/css/styles.css` | Major refactor: removed all left-toolbar styles, added watchlist redesign (badge, ticker, stats), FNG container, coin hover states, streamlined layout |
+| `tickframe/frontend/css/drawing-toolbar.css` | New — modular drawing toolbar CSS |
+| `tickframe/frontend/css/drawing-properties.css` | New — drawing properties panel CSS |
+| `tickframe/frontend/js/drawing-bundle.js` | New — bundled drawing library (esbuild) |
+| `tickframe/frontend/js/drawing-controller.js` | New — drawing operations controller |
+| `tickframe/frontend/js/drawing-events.js` | New — drawing event handlers |
+| `tickframe/frontend/js/drawing-state.js` | New — drawing state management |
+| `tickframe/frontend/js/drawing-settings.js` | New — drawing settings panel |
+| `tickframe/frontend/js/drawing-toolbar.js` | New — drawing toolbar interface |
+| `tickframe/frontend/js/drawing-properties.js` | New — per-drawing properties UI |
+| `tickframe/frontend/js/drawing-overlay-src.js` | New — source for esbuild bundle, wraps lightweight-charts-drawing |
+| `tickframe/frontend/js/charts.js` | Volume series (volumeSeries, volumeSmaSeries), indicator pane ratios, SMA calculator, price format auto-adjustment, pattern drawings array, future candles constant |
+| `tickframe/frontend/js/sidebar.js` | Coin icons, FNG display, redesigned coin rows (badge→img, ticker, name, change%) |
+| `tickframe/backend/services/coin_icons.py` | New — CoinGecko icon fetcher with 1h TTL cache, 10 coin mappings |
+| `tickframe/backend/services/fng_client.py` | New — Fear & Greed Index fetcher from alternative.me API, 6h TTL cache |
+| `tickframe/backend/api/endpoints.py` | FNG endpoint, coin icons endpoint, dynamic price precision |
+| `tickframe/backend/api/websocket.py` | Connection management refinements |
+| `tickframe/backend/services/database.py` | Enhanced caching and data access |
+| `package.json` | New — npm deps: lightweight-charts-drawing, esbuild, build scripts |
+| `package-lock.json` | New — lockfile |
+| `docker-compose.yml` | Dependency updates |
+| `Dockerfile` | npm install steps for frontend build |
+
+### New Dependencies
+
+| Package | Version | Purpose |
+|---|---|---|
+| `lightweight-charts-drawing` | ^0.1.1 | External drawing library for advanced chart annotations |
+| `lightweight-charts` | ^5.2.0 | Upgraded from v4 — charting library |
+| `esbuild` | ^0.24.0 | JavaScript bundler for drawing module |
+| `lucide` | latest | SVG icon library for UI elements |
+
+### Updated Issues
+
+| Issue | Action | Details |
+|---|---|---|
+| [#112](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/112) PBI-117 | Moved to Sprint 5 (Backlog) | RSI sub-chart deferred — rendering complexity with current charting library |
+| [#158](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/158) PBI-126 | New | UI redesign — coin icons, Fear & Greed Index, sidebar overhaul |
+| [#159](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/159) PBI-127 | New | Drawing toolbar re-architecture with lightweight-charts-drawing library |
+| [#113](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/113) PBI-118 | Updated | Volume sub-chart implemented (was pending) |
+
+### Branch History (unique commits not in `main` — cumulative)
+```
+2db74bc MVPv2 ready
+2b95227 DOC: documented current MVPv2 completion
+fe9d744 DOC: documented current MVPv2 completion
+b48adf4 Merge pull request #121 from Fedos113/part-1-2
+e96de58 feat: optimizations and ML persistance
+fe04c5e DOC: assignment parts 1 and 2 completed ; created repo template
+...
+```
+
+### Notes for Team
+- This branch now contains the full MVP v2 feature set: DB caching, multi-interval, configurable analysis, ML optimization, **UI redesign** (coin icons, F&G, sidebar overhaul), **drawing toolbar re-architecture** (modular with lightweight-charts-drawing library), **volume sub-chart**, **timeframe switching**, and WebSocket streaming.
+- The only item deferred is **RSI indicator** ([#112](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/112)) — moved to Sprint 5 due to rendering complexity.
+- The `package.json` introduces a new `npm run build:drawings` script that bundles `drawing-overlay-src.js` → `drawing-bundle.js` via esbuild. Run `npm install && npm run build` after checkout.

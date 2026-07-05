@@ -73,17 +73,26 @@
 |---|---|
 | **Milestone** | [Sprint 4](https://github.com/Fedos113/SWP_TickFrame_28_team/milestone/5) |
 | **Dates** | Week 5 (2026-06-30 – 2026-07-06) |
-| **Goal** | Deliver MVP v2 by addressing all critical customer feedback from Sprint 3: WebSocket migration, DB caching, RSI/Volume sub-charts, multi-interval support, and analysis range fix. |
-| **Focus** | Customer-driven improvements, architecture hardening, real-time data pipeline |
+| **Goal** | Deliver MVP v2 by addressing all critical customer feedback from Sprint 3: WebSocket migration, DB caching, Volume sub-chart, UI redesign, drawing toolbar modernization, multi-interval support, and analysis range fix. RSI deferred to Sprint 5. |
+| **Focus** | Customer-driven improvements, architecture hardening, real-time data pipeline, UI/UX overhaul |
 
-**Planned items (customer feedback PBIs):**
+**Completed PBIs:**
 
+- [#122 PBI-121](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/122) — Multi-interval database caching & instant chart loading (Critical) ✅
+- [#123 PBI-122](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/123) — Configurable candle analysis limit (Medium) ✅
+- [#124 PBI-123](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/124) — ML pattern visualization with merged segments (High) ✅
+- [#125 PBI-124](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/125) — ML inference performance optimization XGBoost (Critical) ✅
+- [#126 PBI-125](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/126) — UI cleanup & sidebar resize (Medium) ✅
+- [#158 PBI-126](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/158) — UI redesign: coin icons, Fear & Greed Index, sidebar overhaul (Medium) ✅
+- [#158 PBI-127](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/158) — Drawing toolbar re-architecture with lightweight-charts-drawing library (High) ✅
+- [#113 PBI-118](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/113) — Volume sub-chart implementation (High) ✅
+
+**Remaining PBIs:**
 - [#110 PBI-115](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/110) — Migrate REST polling → WebSocket subscription (Critical)
-- [#111 PBI-116](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/111) — Implement SQLite-based candle caching (Critical)
-- [#112 PBI-117](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/112) — Add RSI indicator sub-chart (High)
-- [#113 PBI-118](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/113) — Add Volume sub-chart (High)
-- [#114 PBI-119](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/114) — Reduce analysis range to 50k candles (Medium)
-- [#115 PBI-120](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/115) — Multi-interval support 15m/1h/4h/1d (Medium)
+- Volume sub-chart persistence & polish (High) — basic volume implemented, extra polish tracked informally
+
+**Deferred to Sprint 5:**
+- [#112 PBI-117](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/112) — RSI indicator sub-chart (High) — rendering complexity with current library
 
 ---
 
@@ -91,11 +100,13 @@
 
 | Field | Value |
 |---|---|
-| **Goal** | TBD — architecture docs, ADRs, process documentation |
-| **Focus** | Maintained documentation, quality gates, testing expansion |
+| **Goal** | Complete remaining MVP v2 features — WebSocket migration, RSI indicator, polish |
+| **Focus** | Real-time data pipeline completion, indicator expansion, testing coverage |
 
 **Planned items:**
-- US-12 — Crypto Fear and Greed Index
+- [#112 PBI-117](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/112) — RSI indicator sub-chart (High)
+- Volume sub-chart persistence & polish (High)
+- US-12 — Crypto Fear and Greed Index (partial done — API connected, UI widget needed)
 - US-14 — Customize chart colors in settings
 - Frontend JS test coverage
 - QRT re-design for updated QR-003 threshold (F2 ≥ 55%)
