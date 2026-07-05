@@ -18,6 +18,68 @@
 | **Sprint 3 Release** | [v1.1.0](https://github.com/Fedos113/SWP_TickFrame_28_team/releases/tag/v1.1.0) |
 | **MVP v2 Release** | [v2.0.0](https://github.com/Fedos113/SWP_TickFrame_28_team/releases/tag/v2.0.0) — target for Assignment 5 |
 | **All Backlog Data** | Stored in [`docs/backlog.md`](../../docs/backlog.md) — authoritative PBI index |
+| **Week 5 ML Training** | XGBoost pattern detection pipeline — Head & Shoulders, Double Tops/Bottoms, S3 integration |
+
+---
+
+## 1.1 Week 5 — Sprint 4 ML Training Pipeline (feat/week5-ml-training-pipeline)
+
+**Status**: ✅ Completed
+
+**ML Model**: XGBoost classifier for technical chart pattern detection (Head & Shoulders, Inverse H&S, Double Tops/Bottoms)
+
+**Data Source**: HTX crypto exchange (OHLCV 5-minute candles, historical 2018-present)
+
+**Pipeline Components**:
+1. **Data Collection & Preprocessing**
+   - HTX exchange integration (ccxt library)
+   - 5-minute OHLCV historical data download
+   - Data validation and duplicate removal
+   - 80/20 train/test split with time-series ordering
+
+2. **Pattern Detection Engine**
+   - Head & Shoulders (v13): Dynamic fractal detection with symmetry checks
+   - Inverse H&S (v13): Reversal pattern detection
+   - Double Tops (v3): Strict hierarchical filtering with trend validation
+   - Double Bottoms (v3): Context-aware bottom detection
+   - Smart labeling algorithm with position tracking
+
+3. **Feature Engineering**
+   - 18 technical indicators
+   - Macro high/low indices with 3-point sequential patterns
+   - ATR-normalized price deviations and symmetry metrics
+   - Head dominance, shoulder symmetry, neckline slope features
+   - Time-based pattern structure features
+
+4. **Model Training & Hyperparameter Tuning**
+   - XGBoost multiclass classifier (3 classes: Noise, Classic H&S, Inverse H&S)
+   - Cross-validation: 5-fold TimeSeriesSplit (prevents data leakage)
+   - RandomizedSearchCV for hyperparameter optimization (n_iter=15)
+   - Class balancing: Weighted sample approach for imbalanced data
+   - Loss function: Multi-class softprob with mlogloss metric
+
+5. **Evaluation & Threshold Optimization**
+   - PR-AUC (Average Precision) per-class scoring
+   - F-beta score tuning (beta=2.35) favoring recall over precision
+   - Tolerance-based metrics (±3 candle window) for practical trading signals
+   - NMS (Non-Maximum Suppression) clustering to collapse duplicate signals
+   - Business metrics: Real recall (72%+), real precision (20-25%)
+
+6. **Results Storage & S3 Integration**
+   - Model saved: XGBoost JSON format (binary-compatible)
+   - Training/test data pickled for reproducibility
+   - False positives analysis: Visualization charts uploaded to Yandex Cloud S3
+   - S3 buckets: `xgboost_v1_fp_classic`, `xgboost_v1_fp_inverse`
+   - boto3 client configured for Yandex Cloud endpoint
+
+**PBI Mapping**:
+- PBI-124: ML pattern visualization with merged segments
+- PBI-125: ML inference performance optimization (XGBoost)
+
+**Key Files**:
+- `ml_R&D/general_pipeline.ipynb` — 92-cell Jupyter notebook (complete training pipeline)
+- `ml_service/models/xgb_hs_detector_MVP1.json` — Trained model artifact
+- Feature matrices and raw data cached locally and on Google Drive
 
 ---
 
