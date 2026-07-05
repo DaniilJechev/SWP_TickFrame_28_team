@@ -1,0 +1,232 @@
+:root {
+  --dp-bg: rgba(28, 28, 32, 0.85);
+  --dp-border: rgba(255, 255, 255, 0.06);
+  --dp-text: rgba(255, 255, 255, 0.85);
+  --dp-muted: rgba(255, 255, 255, 0.4);
+  --dp-active: #26a69a;
+  --dp-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+body.light {
+  --dp-bg: rgba(245, 247, 250, 0.92);
+  --dp-border: rgba(0, 0, 0, 0.06);
+  --dp-text: rgba(0, 0, 0, 0.85);
+  --dp-muted: rgba(0, 0, 0, 0.4);
+  --dp-active: #1f9d8f;
+  --dp-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+}
+
+.drawing-properties {
+  position: fixed;
+  z-index: 51;
+  width: 220px;
+  background: var(--dp-bg);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-radius: 14px;
+  box-shadow: var(--dp-shadow);
+  padding: 16px;
+  display: none;
+  animation: dp-in 0.18s ease;
+  border: 1px solid var(--dp-border);
+}
+
+@keyframes dp-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.dp-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--dp-text);
+  text-transform: capitalize;
+  margin-bottom: 14px;
+  padding-right: 20px;
+}
+
+.dp-section {
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.dp-section:last-child {
+  margin-bottom: 0;
+}
+
+.dp-section-label {
+  font-size: 11px;
+  color: var(--dp-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  flex-shrink: 0;
+  min-width: 52px;
+}
+
+.dp-colors {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.dp-color {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: transform 0.12s ease, border-color 0.12s ease;
+  padding: 0;
+  outline: none;
+}
+
+.dp-color:hover {
+  transform: scale(1.15);
+}
+
+.dp-color.active {
+  border-color: var(--dp-active);
+  transform: scale(1.15);
+}
+
+.dp-slider-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  justify-content: flex-end;
+}
+
+.dp-slider {
+  width: 80px;
+  height: 4px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: var(--dp-border);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+
+.dp-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--dp-active);
+  cursor: pointer;
+  transition: transform 0.12s ease;
+}
+
+.dp-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
+.dp-slider-val {
+  font-size: 11px;
+  color: var(--dp-muted);
+  min-width: 24px;
+  text-align: right;
+}
+
+.dp-line-styles {
+  display: flex;
+  gap: 4px;
+}
+
+.dp-line-style {
+  width: 32px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  padding: 2px;
+  transition: border-color 0.12s ease;
+}
+
+.dp-line-style:hover {
+  border-color: var(--dp-muted);
+}
+
+.dp-line-style.active {
+  border-color: var(--dp-active);
+}
+
+.dp-line-style canvas {
+  display: block;
+}
+
+.dp-toggle {
+  position: relative;
+  display: inline-block;
+  width: 32px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.dp-toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+
+.dp-toggle-slider {
+  position: absolute;
+  inset: 0;
+  background: var(--dp-border);
+  border-radius: 9px;
+  transition: background 0.2s ease;
+}
+
+.dp-toggle-slider::before {
+  content: '';
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  left: 2px;
+  top: 2px;
+  background: var(--dp-text);
+  border-radius: 50%;
+  transition: transform 0.2s ease;
+}
+
+.dp-toggle input:checked + .dp-toggle-slider {
+  background: var(--dp-active);
+}
+
+.dp-toggle input:checked + .dp-toggle-slider::before {
+  transform: translateX(14px);
+  background: #fff;
+}
+
+.dp-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  color: var(--dp-muted);
+  cursor: pointer;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+
+.dp-close:hover {
+  background: var(--dp-hover, rgba(255,255,255,0.08));
+  color: var(--dp-text);
+}

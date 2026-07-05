@@ -8,6 +8,8 @@ from pydantic import BaseModel
 from ..models.schemas import AnalyzeResponse, CandleResponse, CoinSummary, PriceResponse
 from ..services.cache import MemoryMarketCache
 from ..services.database import DatabaseService
+from ..services.coin_icons import coin_icons_client
+from ..services.fng_client import fng_client
 from ..services.ml_client import MlClient
 
 router = APIRouter(prefix="/api", tags=["market"])
@@ -38,6 +40,16 @@ def get_database(request: Request) -> DatabaseService:
 @router.get("/health")
 async def health() -> dict[str, str]:
     return {"status": "ok"}
+
+
+@router.get("/sentiment")
+async def get_market_sentiment() -> dict:
+    return await fng_client.get_index()
+
+
+@router.get("/coins/icons")
+async def get_coin_icons(db: DatabaseService = Depends(get_database)) -> dict[str, str]:
+    return await coin_icons_client.get_icons(db=db)
 
 
 @router.get("/coins", response_model=list[CoinSummary])
@@ -127,21 +139,49 @@ async def analyze_patterns(
 class DrawingsPayload(BaseModel):
     symbol: str = ""
     drawings: list = []
+    drawings_data: list | dict | str | None = None
+
+
+class ToolbarPositionPayload(BaseModel):
+    left: int = 16
+    top: int = 12
 
 
 class SettingsPayload(BaseModel):
     settings: dict[str, str] = {}
 
 
+@router.get("/toolbar-position")
+async def get_toolbar_position(db: DatabaseService = Depends(get_database)) -> dict:
+    pos = await db.load_toolbar_position()
+    if pos:
+        return pos
+    return {"left": 16, "top": 12}
+
+
+@router.post("/toolbar-position")
+async def save_toolbar_position(
+    payload: ToolbarPositionPayload, db: DatabaseService = Depends(get_database)
+) -> dict:
+    await db.save_toolbar_position(payload.left, payload.top)
+    return {"status": "ok"}
+
+
 @router.get("/drawings")
 async def get_drawings(symbol: str = "", db: DatabaseService = Depends(get_database)) -> dict:
+    blob = await db.load_drawings_blob(symbol)
+    if blob:
+        return {"drawings_data": blob}
     drawings = await db.load_drawings(symbol)
     return {"drawings": drawings}
 
 
 @router.post("/drawings")
 async def save_drawings(payload: DrawingsPayload, db: DatabaseService = Depends(get_database)) -> dict:
-    await db.save_drawings(payload.symbol, payload.drawings)
+    if payload.drawings_data is not None:
+        await db.save_drawings_blob(payload.symbol, payload.drawings_data)
+    else:
+        await db.save_drawings(payload.symbol, payload.drawings)
     return {"status": "ok"}
 
 

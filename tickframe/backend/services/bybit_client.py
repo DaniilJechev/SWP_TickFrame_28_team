@@ -55,6 +55,7 @@ DEFAULT_PRICE_HINTS = {
 }
 
 BINANCE_BASE_URL = "https://api.binance.com"
+BINANCE_HEADERS = {"User-Agent": "TickFrame/1.0", "Accept": "application/json"}
 
 BINANCE_INTERVAL_MAP = {
     "1m": "1m", "3m": "3m", "5m": "5m", "15m": "15m", "30m": "30m",
@@ -164,7 +165,7 @@ class BybitClient:
                 remaining = limit - len(all_candles)
                 batch_limit = min(max_per_request, remaining)
                 await self._rate_limiter.acquire()
-                async with httpx.AsyncClient(timeout=10.0) as client:
+                async with httpx.AsyncClient(timeout=10.0, headers=BINANCE_HEADERS) as client:
                     params: dict[str, str | int] = {"symbol": pair, "interval": binance_interval, "limit": batch_limit}
                     if end_time is not None:
                         params["endTime"] = str(end_time)
@@ -303,7 +304,7 @@ class BybitClient:
     async def _fetch_binance_ticker(self, pair: str) -> Snapshot:
         try:
             await self._rate_limiter.acquire()
-            async with httpx.AsyncClient(timeout=10.0) as client:
+            async with httpx.AsyncClient(timeout=10.0, headers=BINANCE_HEADERS) as client:
                 resp = await client.get(
                     f"{BINANCE_BASE_URL}/api/v3/ticker/24hr",
                     params={"symbol": pair},
@@ -322,6 +323,11 @@ class BybitClient:
                     source="binance",
                     updated_at=utc_now(),
                 )
+        except httpx.HTTPStatusError as exc:
+            status = exc.response.status_code
+            body = exc.response.text
+            LOGGER.warning("Binance ticker failed for %s: %s %s", pair, status, body)
+            raise
         except Exception as exc:
             LOGGER.warning("Binance ticker failed for %s: %s", pair, exc)
             raise

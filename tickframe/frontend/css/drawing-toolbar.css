@@ -1,0 +1,373 @@
+:root {
+  --toolbar-bg: rgba(28, 28, 32, 0.78);
+  --toolbar-hover: rgba(255, 255, 255, 0.08);
+  --toolbar-active: #26a69a;
+  --toolbar-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+  --toolbar-radius: 14px;
+  --toolbar-width: 90px;
+  --toolbar-gap: 2px;
+  --icon-size: 18px;
+  --divider: rgba(255, 255, 255, 0.06);
+  --text-muted: rgba(255, 255, 255, 0.45);
+  --text-bright: rgba(255, 255, 255, 0.9);
+}
+
+body.light {
+  --toolbar-bg: rgba(245, 247, 250, 0.88);
+  --toolbar-hover: rgba(0, 0, 0, 0.06);
+  --toolbar-active: #1f9d8f;
+  --toolbar-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+  --divider: rgba(0, 0, 0, 0.06);
+  --text-muted: rgba(0, 0, 0, 0.4);
+  --text-bright: rgba(0, 0, 0, 0.85);
+}
+
+.drawing-toolbar {
+  position: absolute;
+  left: 16px;
+  top: 12px;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  width: var(--toolbar-width);
+  background: var(--toolbar-bg);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-radius: var(--toolbar-radius);
+  box-shadow: var(--toolbar-shadow);
+  padding: 3px 4px 6px;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.dt-drag-handle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 16px;
+  cursor: grab;
+  color: var(--text-muted);
+  opacity: 0.35;
+  transition: opacity 0.15s ease;
+  margin-bottom: 1px;
+  border-radius: 6px;
+}
+
+.dt-drag-handle:hover {
+  opacity: 0.8;
+}
+
+.dt-drag-handle.dragging {
+  cursor: grabbing;
+  opacity: 0.8;
+}
+
+.dt-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+  padding: 3px 0;
+  position: relative;
+}
+
+.dt-group + .dt-group::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 10px;
+  right: 10px;
+  height: 1px;
+  background: var(--divider);
+}
+
+.dt-btn {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  border-radius: 10px;
+  color: var(--text-muted);
+  cursor: pointer;
+  position: relative;
+  transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease;
+  outline: none;
+}
+
+.dt-btn:hover {
+  background: var(--toolbar-hover);
+  color: var(--text-bright);
+  transform: scale(1.05);
+}
+
+.dt-btn:active {
+  transform: scale(0.95);
+}
+
+.dt-btn:focus-visible {
+  box-shadow: 0 0 0 2px var(--toolbar-active);
+}
+
+.dt-btn.active {
+  background: var(--toolbar-active);
+  color: #fff;
+}
+
+.dt-btn.active:hover {
+  background: var(--toolbar-active);
+  color: #fff;
+  transform: scale(1.05);
+}
+
+.dt-btn.active:active {
+  transform: scale(0.95);
+}
+
+.dt-btn[data-tool="delete"]:hover,
+.dt-btn[data-tool="clear"]:hover {
+  color: #ef5350;
+}
+
+.dt-btn[data-tool="delete"].active,
+.dt-btn[data-tool="clear"].active {
+  background: transparent;
+  color: var(--text-muted);
+}
+
+.dt-btn i {
+  pointer-events: none;
+}
+
+/* Tooltip */
+.dt-tooltip {
+  position: fixed;
+  z-index: 9999;
+  background: var(--toolbar-bg);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 12px;
+  color: var(--text-bright);
+  white-space: nowrap;
+  pointer-events: none;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  animation: dt-tooltip-in 0.15s ease;
+  line-height: 1.4;
+}
+
+@keyframes dt-tooltip-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.dt-tooltip-shortcut {
+  color: var(--text-muted);
+  margin-left: 6px;
+  font-size: 11px;
+}
+
+/* Settings Panel */
+.dt-settings-panel {
+  position: fixed;
+  z-index: 51;
+  background: var(--toolbar-bg);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-radius: var(--toolbar-radius);
+  box-shadow: var(--toolbar-shadow);
+  padding: 14px 16px 16px;
+  min-width: 200px;
+  max-width: 260px;
+  user-select: none;
+  -webkit-user-select: none;
+  animation: dt-tooltip-in 0.15s ease;
+}
+
+.dt-settings-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-bright);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 12px;
+  padding-right: 20px;
+}
+
+.dt-settings-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.dt-settings-row {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.dt-settings-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.dt-settings-swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.dt-color-swatch {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: border-color 0.12s ease, transform 0.12s ease;
+  outline: none;
+  padding: 0;
+}
+
+.dt-color-swatch:hover {
+  transform: scale(1.2);
+}
+
+.dt-color-swatch.active {
+  border-color: var(--text-bright);
+  transform: scale(1.15);
+}
+
+.dt-settings-style-row .dt-settings-style-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.dt-width-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 4px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+
+.dt-width-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--toolbar-active);
+  border: 2px solid rgba(255,255,255,0.3);
+  cursor: pointer;
+}
+
+.dt-width-value {
+  font-size: 11px;
+  color: var(--text-bright);
+  text-align: right;
+  margin-top: -4px;
+}
+
+.dt-settings-dash-row {
+  display: flex;
+  gap: 4px;
+}
+
+.dt-dash-btn {
+  flex: 1;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: border-color 0.12s ease, background 0.12s ease;
+  outline: none;
+  padding: 2px;
+}
+
+.dt-dash-btn:hover {
+  background: var(--toolbar-hover);
+  border-color: rgba(255,255,255,0.2);
+}
+
+.dt-dash-btn.active {
+  border-color: var(--toolbar-active);
+  background: rgba(38,166,154,0.15);
+}
+
+.dt-settings-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: background 0.12s ease, color 0.12s ease;
+  outline: none;
+  padding: 0;
+}
+
+.dt-settings-close:hover {
+  background: var(--toolbar-hover);
+  color: var(--text-bright);
+}
+
+body.light .dt-settings-panel {
+  --toolbar-bg: rgba(245, 247, 250, 0.95);
+}
+
+body.light .dt-width-slider {
+  background: rgba(0,0,0,0.12);
+}
+
+body.light .dt-dash-btn {
+  border-color: rgba(0,0,0,0.12);
+}
+
+body.light .dt-dash-btn:hover {
+  background: rgba(0,0,0,0.05);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .drawing-toolbar {
+    left: 8px;
+    top: 60px;
+    width: 80px;
+    padding: 3px 2px 4px;
+    border-radius: 12px;
+  }
+  .dt-drag-handle {
+    height: 14px;
+  }
+  .dt-group {
+    gap: 1px;
+  }
+  .dt-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+  }
+  .dt-btn i {
+    width: 16px !important;
+    height: 16px !important;
+  }
+}

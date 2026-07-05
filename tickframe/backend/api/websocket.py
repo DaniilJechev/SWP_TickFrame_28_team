@@ -73,7 +73,17 @@ async def candle_stream(websocket: WebSocket, symbol: str) -> None:
         previous_signature = None
         tick = 0
         while True:
-            payload = await cache.get_candles(pair, interval, limit)
+            if previous_signature is None:
+                payload = await cache.get_candles(pair, interval, limit)
+            else:
+                candle_payload = await cache.client.fetch_candles(pair, interval, 2)
+                payload = {
+                    "symbol": pair,
+                    "interval": interval,
+                    "source": candle_payload.source,
+                    "updated_at": candle_payload.updated_at,
+                    "candles": candle_payload.candles,
+                }
             candles = payload["candles"]
             last_candle = candles[-1] if candles else None
             current_signature = None
@@ -91,10 +101,9 @@ async def candle_stream(websocket: WebSocket, symbol: str) -> None:
             elif current_signature != previous_signature and last_candle is not None:
                 await websocket.send_json({"type": "update", "symbol": pair, "interval": interval, "candle": last_candle, "updated_at": payload["updated_at"]})
             else:
-                # Heartbeat every 5s so frontend knows connection is alive
                 await websocket.send_json({"type": "heartbeat", "timestamp": payload.get("updated_at", utc_now())})
             previous_signature = current_signature
             tick += 1
-            await asyncio.sleep(5)
+            await asyncio.sleep(1)
     except WebSocketDisconnect:
         pass

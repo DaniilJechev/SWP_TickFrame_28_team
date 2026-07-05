@@ -1,0 +1,17 @@
+{
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build:drawings": "esbuild tickframe/frontend/js/drawing-overlay-src.js --bundle --format=iife --global-name=DrawingLib --outfile=tickframe/frontend/js/drawing-bundle.js",
+    "build": "npm run build:drawings"
+  },
+  "dependencies": {
+    "lightweight-charts-drawing": "^0.1.1"
+  },
+  "devDependencies": {
+    "esbuild": "^0.24.0"
+  },
+  "peerDependencies": {
+    "lightweight-charts": "^5.2.0"
+  }
+}
