@@ -5,14 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>TickFrame</title>
     <link rel="stylesheet" href="/css/styles.css?v=1">
+    <link rel="stylesheet" href="/css/drawing-toolbar.css?v=1">
+    <link rel="stylesheet" href="/css/drawing-properties.css?v=1">
   </head>
   <body>
     <div class="app">
       <aside class="sidebar">
         <div class="logo">TickFrame</div>
         <div class="watchlist" id="watchlist"></div>
+        <div class="fng-container" id="fng-container"></div>
       </aside>
-      <div class="sidebar-resize-handle" title="Drag to resize sidebar"></div>
 
       <main class="main">
         <header class="topbar">
@@ -30,60 +32,10 @@
         </header>
 
         <div class="chart-area">
-          <div class="left-toolbar" id="leftToolbar">
-            <div class="lt-group">
-              <button class="lt-btn lt-cursor active" data-tool="" title="Cursor (Esc)">
-                <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 2l2 14 4-5 5 4"/></svg>
-              </button>
-            </div>
-            <div class="lt-sep"></div>
-            <div class="lt-group-label">Lines</div>
-            <div class="lt-group">
-              <button class="lt-btn lt-tool" data-tool="trendline" title="Trend Line"></button>
-              <button class="lt-btn lt-tool" data-tool="hline" title="Horizontal Line"></button>
-              <button class="lt-btn lt-tool" data-tool="vline" title="Vertical Line"></button>
-              <button class="lt-btn lt-tool" data-tool="ray" title="Ray"></button>
-              <button class="lt-btn lt-tool" data-tool="crossline" title="Cross Line"></button>
-            </div>
-            <div class="lt-sep"></div>
-            <div class="lt-group-label">Measure</div>
-            <div class="lt-group">
-              <button class="lt-btn lt-tool" data-tool="fib" title="Fibonacci"></button>
-              <button class="lt-btn lt-tool" data-tool="pricerange_pct" title="Price Range %"></button>
-            </div>
-            <div class="lt-sep"></div>
-            <div class="lt-group-label">Shapes</div>
-            <div class="lt-group">
-              <button class="lt-btn lt-tool" data-tool="rectangle" title="Rectangle"></button>
-              <button class="lt-btn lt-tool" data-tool="circle" title="Circle"></button>
-              <button class="lt-btn lt-tool" data-tool="arrow" title="Arrow"></button>
-              <button class="lt-btn lt-tool" data-tool="text" title="Text"></button>
-              <button class="lt-btn lt-tool" data-tool="brush" title="Brush (Freehand)"></button>
-            </div>
-            <div class="lt-spacer"></div>
-            <div class="lt-sep"></div>
-            <div class="lt-group">
-              <button class="lt-btn" id="btn-fit" title="Fit content to chart">
-                <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12v5h5M17 8V3h-5M3 8V3h5M17 12v5h-5"/></svg>
-              </button>
-              <button class="lt-btn" id="btn-undo" title="Undo last drawing">
-                <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 10l4-4M4 10l4 4"/><path d="M4 10h9a3 3 0 010 6h-2"/></svg>
-              </button>
-              <button class="lt-btn" id="btn-clear-all" title="Clear all drawings">
-                <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="4" y1="4" x2="16" y2="16"/><line x1="16" y1="4" x2="4" y2="16"/></svg>
-              </button>
-            </div>
-            <div class="lt-sep" id="ltDrawingSep" style="display:none"></div>
-            <div class="lt-drawing-settings" id="ltDrawingSettings" style="display:none">
-              <button class="lt-btn" id="btn-drawing-settings" title="Drawing Settings">
-                <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="10" cy="10" r="3"/><path d="M10 1v2m0 14v2M1 10h2m14 0h2M3.5 3.5l1.4 1.4m10.6 10.6l1.4 1.4M3.5 16.5l1.4-1.4m10.6-10.6l1.4-1.4"/></svg>
-              </button>
-            </div>
-          </div>
-
           <section class="content">
             <div class="chart-container">
               <div id="chart"></div>
+              <div class="drawing-toolbar" id="drawingToolbar"></div>
               <div class="chart-loading-overlay" id="chartLoading">
                 <div class="chart-loading-spinner"></div>
               </div>
@@ -106,12 +58,19 @@
     </div>
 
     <script src="/lib/charting_library/charting_library.min.js"></script>
-    <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.development.js"></script>
+    <script src="https://unpkg.com/lightweight-charts@5.2.0/dist/lightweight-charts.standalone.development.js"></script>
     <script src="/js/datafeed.js?v=1"></script>
     <script src="/js/sidebar.js?v=1"></script>
     <script src="/js/charts.js?v=1"></script>
+    <script src="/js/drawing-bundle.js?v=1"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script src="/js/drawing-events.js?v=1"></script>
+    <script src="/js/drawing-state.js?v=1"></script>
+    <script src="/js/drawing-settings.js?v=1"></script>
+    <script src="/js/drawing-controller.js?v=1"></script>
+    <script src="/js/drawing-toolbar.js?v=1"></script>
+    <script src="/js/drawing-properties.js?v=1"></script>
     <script src="/js/drawing-overlay.js?v=1"></script>
-    <script src="/js/toolbar.js?v=1"></script>
     <script src="/js/app.js?v=1"></script>
   </body>
 </html>

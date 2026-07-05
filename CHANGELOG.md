@@ -7,13 +7,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- Nothing yet.
+- **UI redesign — Coin icons, Fear & Greed Index, sidebar overhaul**: Coin rows now show icon images (CoinGecko), ticker symbol, full name, and 24h change %. Fear & Greed Index widget added to sidebar with SVG gauge. Lucide icons integrated for UI elements. Dynamic price precision based on magnitude. ([#158](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/158))
+- **Drawing toolbar re-architecture with lightweight-charts-drawing library**: Complete modular rewrite of drawing system — 7 new JS modules (controller, events, state, settings, toolbar, properties, bundle). External `lightweight-charts-drawing` library integrated for advanced drawing capabilities. Toolbar moved to right side of chart. Dedicated CSS files (`drawing-toolbar.css`, `drawing-properties.css`). ([#158](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/158))
+- **Lightweight Charts v5 upgrade**: Upgraded from v4 to v5.2.0, enabling new API features and improved rendering.
+- **Volume sub-chart**: Dedicated volume pane below main chart with volume series (colored bars) and SMA overlay line. Configurable pane height ratios for main vs volume view. ([#113](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/113))
+- **Coin icon service**: New `coin_icons.py` backend service fetches coin logos from CoinGecko API with 1-hour TTL cache. Exposed via `/api/coins/icons` endpoint.
+- **Fear & Greed Index service**: New `fng_client.py` backend service fetches market sentiment index from alternative.me API with 6-hour TTL cache. Exposed via `/api/fng` endpoint.
+- **esbuild bundling pipeline**: `package.json` with `npm run build:drawings` script that bundles `drawing-overlay-src.js` → `drawing-bundle.js` via esbuild for production.
+- **Multi-interval database caching & warmup**: Backend warmup loads candles for all 5 intervals (5m, 15m, 1h, 4h, 1d) from SQLite into memory in parallel. Three-tier cache (mem → DB → exchange) with sub-millisecond cache hits on coin/interval switch. ([#122](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/122))
+- **Configurable candle analysis limit**: Input field next to ANALYZE PATTERNS button lets users set 100–500000 candles for pattern detection. Passed as `limit` param to `/api/analyze/{symbol}`. ([#123](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/123))
+- **ML pattern visualization with merged segments**: Pattern results rendered as merged, non-overlapping window segments (50-candle windows) with dotted red vertical boundary lines. Overlapping segments merged into contiguous blocks. ([#124](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/124))
+- **ML inference performance optimization**: XGBoost-based pipeline replaces slow TensorFlow approach. Inference time reduced from >10s to <0.5s per 1k candles with NMS clustering and smart geometry features. ([#125](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/125))
+- **Sidebar resize with persistence**: Draggable resize handle between sidebar and main area. Width constrained to 150–400px and persisted in localStorage (`tickframe_sidebar_width`). Touch event support included. ([#126](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/126))
+- **Cache-busting for static assets**: `?v=1` query param appended to all CSS/JS links to force browser cache invalidation on deployment. ([#126](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/126))
+- **Timeframe switching UI**: Working interval selector buttons (5m, 15m, 1h, 4h, 1d) in top bar trigger chart reload and WebSocket restart for selected interval.
 
 ### Changed
-- Nothing yet.
+- **Lightweight Charts upgraded**: From v4 (unpkg `latest`) to v5.2.0 (pinned version) — improved performance and new drawing API.
+- **Drawing toolbar architecture**: From monolithic inline HTML toolbar with single `drawing-overlay.js` to modular 7-file JavaScript system with esbuild bundling.
+- **Coin sidebar design**: From simple badge+name+price to rich layout with coin icon, ticker, full name, price, and 24h change percentage.
+- **Theme system**: Streamlined CSS variables; left-toolbar theme styles removed (toolbar moved to right side with dedicated CSS).
+- **Timeframe warmup expanded**: From single 5m interval to all 5 intervals (5m, 15m, 1h, 4h, 1d) during cache warmup phase.
+- **Analysis input default**: Default candle limit changed from hardcoded 50000 to configurable 10000 (range 100–500000).
 
 ### Fixed
-- Nothing yet.
+- **Pattern segment collision**: Overlapping 50-candle window segments are now merged into contiguous blocks instead of rendering overlapping/double boundary lines.
+- **V-line positioning**: `_visibleBottomPrice()` helper fixes v-line rendering at bottom of visible price range instead of hardcoded price=0.
+- **Text tool 1-point commit logic**: Fixed to only auto-commit single-point tools that aren't the text tool (which requires label input).
+
+### Removed
+- **Old left-toolbar HTML**: Inline HTML for left drawing toolbar removed — replaced by modular right-side toolbar.
+- **Legacy `toolbar.js`**: Replaced by new modular drawing system.
+- **Old left-toolbar CSS**: All `.left-toolbar`, `.lt-btn`, `.lt-sep`, `.lt-group` styles removed from `styles.css`.
+- **Search input**: Removed from sidebar (no backend search support).
+- **Toolbar status bar** (`#tb-status`): Redundant status indicator removed.
+- **Redact button** from left toolbar: Superfluous entry removed.
 
 ---
 

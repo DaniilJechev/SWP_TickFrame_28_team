@@ -49,6 +49,9 @@ document.addEventListener('DOMContentLoaded', () => {
       window.currentSymbol = symbol;
       updateTitle(symbol);
       _initialLoadDone = true;
+      if (typeof origSetActive === 'function') {
+        origSetActive(symbol);
+      }
     };
   }
 
@@ -73,6 +76,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const dark = !body.classList.contains('light');
     window.TFChart?.applyChartTheme?.(dark);
     saveSetting('theme', dark ? 'dark' : 'light');
+    if (typeof loadFearAndGreed === 'function') loadFearAndGreed();
+    if (window.TFDraw && window.TFDraw.redraw) {
+      window.TFDraw.redraw();
+    }
   });
 
   // analyze button

@@ -144,6 +144,7 @@ class TickFrameDatafeed {
   }
 
   _stopWs() {
+    this._wsId++;
     if (this._ws) { this._ws.close(); this._ws = null; }
   }
 }

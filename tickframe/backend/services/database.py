@@ -35,6 +35,22 @@ class DatabaseService:
                 selected  INTEGER NOT NULL DEFAULT 0,
                 created   TEXT NOT NULL DEFAULT (datetime('now'))
             );
+            CREATE TABLE IF NOT EXISTS drawings_blob (
+                symbol TEXT PRIMARY KEY,
+                data   TEXT NOT NULL,
+                updated TEXT NOT NULL DEFAULT (datetime('now'))
+            );
+            CREATE TABLE IF NOT EXISTS toolbar_position (
+                id        INTEGER PRIMARY KEY DEFAULT 1 CHECK (id = 1),
+                pos_left  INTEGER NOT NULL DEFAULT 16,
+                pos_top   INTEGER NOT NULL DEFAULT 12
+            );
+            INSERT INTO toolbar_position (id, pos_left, pos_top) VALUES (1, 16, 12)
+                ON CONFLICT(id) DO NOTHING;
+            CREATE TABLE IF NOT EXISTS coin_icons (
+                symbol  TEXT PRIMARY KEY,
+                url     TEXT NOT NULL
+            );
             CREATE TABLE IF NOT EXISTS candles (
                 symbol    TEXT NOT NULL,
                 interval  TEXT NOT NULL,
@@ -88,6 +104,59 @@ class DatabaseService:
         loop = asyncio.get_running_loop()
         return await loop.run_in_executor(None, self._all_settings)
 
+    # --- Toolbar Position ---
+
+    def _save_toolbar_position(self, left: int, top: int) -> None:
+        with self._conn() as conn:
+            conn.execute(
+                "UPDATE toolbar_position SET pos_left = ?, pos_top = ? WHERE id = 1",
+                (left, top),
+            )
+
+    def _load_toolbar_position(self) -> dict | None:
+        with self._conn() as conn:
+            row = conn.execute(
+                "SELECT pos_left, pos_top FROM toolbar_position WHERE id = 1"
+            ).fetchone()
+            if row:
+                return {"left": row["pos_left"], "top": row["pos_top"]}
+            return None
+
+    async def save_toolbar_position(self, left: int, top: int) -> None:
+        loop = asyncio.get_running_loop()
+        await loop.run_in_executor(None, self._save_toolbar_position, left, top)
+
+    async def load_toolbar_position(self) -> dict | None:
+        loop = asyncio.get_running_loop()
+        return await loop.run_in_executor(None, self._load_toolbar_position)
+
+    # --- Coin Icons ---
+
+    def _save_coin_icons(self, icons: dict[str, str]) -> None:
+        with self._conn() as conn:
+            conn.execute("BEGIN")
+            for sym, url in icons.items():
+                conn.execute(
+                    "INSERT INTO coin_icons (symbol, url) VALUES (?, ?) ON CONFLICT(symbol) DO UPDATE SET url = excluded.url",
+                    (sym, url),
+                )
+            conn.execute("COMMIT")
+
+    def _load_coin_icons(self) -> dict[str, str]:
+        with self._conn() as conn:
+            rows = conn.execute("SELECT symbol, url FROM coin_icons").fetchall()
+            return {r["symbol"]: r["url"] for r in rows}
+
+    async def save_coin_icons(self, icons: dict[str, str]) -> None:
+        if not icons:
+            return
+        loop = asyncio.get_running_loop()
+        await loop.run_in_executor(None, self._save_coin_icons, icons)
+
+    async def load_coin_icons(self) -> dict[str, str]:
+        loop = asyncio.get_running_loop()
+        return await loop.run_in_executor(None, self._load_coin_icons)
+
     # --- Drawings ---
 
     def _load_drawings(self, symbol: str) -> list[dict]:
@@ -120,6 +189,34 @@ class DatabaseService:
     async def save_drawings(self, symbol: str, drawings: list[dict]) -> None:
         loop = asyncio.get_running_loop()
         await loop.run_in_executor(None, self._save_drawings, symbol, drawings)
+
+    # --- Drawings Blob (new library format) ---
+
+    def _save_drawings_blob(self, symbol: str, data: list | dict | str) -> None:
+        serialized = json.dumps(data) if not isinstance(data, str) else data
+        with self._conn() as conn:
+            conn.execute(
+                "INSERT INTO drawings_blob (symbol, data, updated) VALUES (?, ?, datetime('now')) "
+                "ON CONFLICT(symbol) DO UPDATE SET data = excluded.data, updated = excluded.updated",
+                (symbol, serialized),
+            )
+
+    def _load_drawings_blob(self, symbol: str) -> list | dict | None:
+        with self._conn() as conn:
+            row = conn.execute(
+                "SELECT data FROM drawings_blob WHERE symbol = ?", (symbol,)
+            ).fetchone()
+            if row:
+                return json.loads(row["data"])
+            return None
+
+    async def save_drawings_blob(self, symbol: str, data: list | dict | str) -> None:
+        loop = asyncio.get_running_loop()
+        await loop.run_in_executor(None, self._save_drawings_blob, symbol, data)
+
+    async def load_drawings_blob(self, symbol: str) -> list | dict | None:
+        loop = asyncio.get_running_loop()
+        return await loop.run_in_executor(None, self._load_drawings_blob, symbol)
 
     # --- Candles ---
 

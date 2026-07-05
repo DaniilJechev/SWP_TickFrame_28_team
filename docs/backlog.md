@@ -80,14 +80,33 @@ A PBI is **Done** when:
 
 **Goal:** Deliver MVP v2 by addressing critical customer feedback from Sprint 3 — WebSocket migration, DB caching, RSI/Volume sub-charts, multi-interval support, analysis range fix.
 
+### Completed PBIs
+
 | # | PBI | Title | SP | Status |
 |---|-----|-------|----|--------|
-| [#110](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/110) | PBI-115 | Migrate REST polling to WebSocket subscription | 5 | To Do |
-| [#111](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/111) | PBI-116 | SQLite-based candle caching with background refresh | 3 | To Do |
-| [#112](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/112) | PBI-117 | RSI indicator sub-chart | 3 | To Do |
-| [#113](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/113) | PBI-118 | Volume sub-chart below main chart | 3 | To Do |
-| [#114](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/114) | PBI-119 | Reduce analysis range to 50k candles | 1 | To Do |
-| [#115](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/115) | PBI-120 | Multi-interval support (15m, 1h, 4h, 1d) | 3 | To Do |
+| [#122](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/122) | PBI-121 | Multi-interval database caching with near-instant chart loading | 3 | Done |
+| [#123](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/123) | PBI-122 | Configurable candle analysis limit for pattern detection | 1 | Done |
+| [#124](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/124) | PBI-123 | ML pattern visualization with merged segments | 2 | Done |
+| [#125](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/125) | PBI-124 | ML inference performance optimization (XGBoost) | 5 | Done |
+| [#126](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/126) | PBI-125 | UI cleanup & sidebar resize with persistence | 2 | Done |
+| [#158](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/158) | PBI-126 | UI redesign — coin icons, Fear & Greed Index, sidebar overhaul | 3 | Done |
+| [#159](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/159) | PBI-127 | Drawing toolbar re-architecture with lightweight-charts-drawing library | 5 | Done |
+| [#113](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/113) | PBI-118 | Volume sub-chart implementation | 3 | Done |
+| [#110](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/110) | PBI-115 | WebSocket subscription migration | 5 | Done |
+
+### Moved to Sprint 5
+
+| # | PBI | Title | SP | Priority | Reason |
+|---|-----|-------|----|----------|--------|
+| [#112](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/112) | PBI-117 | RSI indicator sub-chart | 3 | High | Rendering complexity with current charting library |
+
+### Superseded PBIs (folded into completed work above)
+
+| # | PBI | Title | Reason |
+|---|-----|-------|--------|
+| ~~[#111](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/111)~~ | ~~PBI-116~~ | ~~SQLite-based candle caching~~ | Superseded by PBI-121 (multi-interval caching) |
+| ~~[#114](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/114)~~ | ~~PBI-119~~ | ~~Reduce analysis range to 50k~~ | Superseded by PBI-122 (configurable limit) |
+| ~~[#115](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/115)~~ | ~~PBI-120~~ | ~~Multi-interval support~~ | Superseded by PBI-121 (multi-interval caching) |
 
 ---
 

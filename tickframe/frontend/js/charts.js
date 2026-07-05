@@ -6,13 +6,26 @@ let lastCandles = [];
 let isDarkTheme = true;
 let patternShapes = [];
 let patternMarkers = [];
+let patternDrawings = [];
 let chartInitMode = null;
 let _zoomSub = null;
 let _loadMoreTimer = null;
 let _currentAbort = null;
 let _currentLoadSymbol = '';
+var _loadGen = 0;
 const _MAX_CANDLES = 55000;
+const _FUTURE_CANDLES = 500;
 var _candleCache = {};
+
+let volumeSeries = null;
+let volumeSmaSeries = null;
+
+// Indicator pane height ratios (adjust these to resize sub-charts)
+// Layout: Main (top) → Volume (bottom)
+var INDICATOR_TOP_MAIN = 0;
+var INDICATOR_BOTTOM_MAIN = 0.22;
+var INDICATOR_TOP_VOLUME = 0.78;
+var INDICATOR_BOTTOM_VOLUME = 0;
 
 
 function _formatChartPrice(price) {
@@ -27,6 +40,54 @@ function _formatChartPrice(price) {
   else dec = 8;
   return price.toFixed(dec).replace(/\.?0+$/, '');
 }
+
+function _updatePriceFormat(lastPrice) {
+  if (!candleSeries) return;
+  var abs = Math.abs(lastPrice);
+  var precision, minMove;
+  if (abs >= 1000) { precision = 2; minMove = 0.01; }
+  else if (abs >= 100) { precision = 3; minMove = 0.001; }
+  else if (abs >= 10) { precision = 4; minMove = 0.0001; }
+  else if (abs >= 1) { precision = 5; minMove = 0.00001; }
+  else if (abs >= 0.01) { precision = 6; minMove = 0.000001; }
+  else { precision = 8; minMove = 0.00000001; }
+  candleSeries.applyOptions({
+    priceFormat: { type: 'price', precision: precision, minMove: minMove },
+  });
+}
+
+function _intervalToSeconds(interval) {
+  var match = interval.match(/^(\d+)([smhd])$/);
+  if (!match) return 300;
+  var num = parseInt(match[1]);
+  var unit = match[2];
+  switch (unit) {
+    case 's': return num;
+    case 'm': return num * 60;
+    case 'h': return num * 3600;
+    case 'd': return num * 86400;
+    default: return 300;
+  }
+}
+
+function _maxFutureTime() {
+  if (!lastCandles.length) return 0;
+  return lastCandles[lastCandles.length - 1].time + _FUTURE_CANDLES * _intervalToSeconds(currentInterval);
+}
+
+function calculateSMA(data, period) {
+  var result = [];
+  for (var i = period - 1; i < data.length; i++) {
+    var sum = 0;
+    for (var j = i - period + 1; j <= i; j++) {
+      sum += data[j].value;
+    }
+    result.push({ time: data[i].time, value: sum / period });
+  }
+  return result;
+}
+
+
 
 function showLoading(show) {
   var el = document.getElementById('chartLoading');
@@ -44,8 +105,6 @@ function createChart() {
   if (isChartingLibAvailable()) {
     chartInitMode = 'advanced';
     createAdvancedChart(container);
-    const tb = document.getElementById('leftToolbar');
-    if (tb) tb.style.display = 'none';
   } else {
     chartInitMode = 'lightweight';
     createLightweightChart(container);
@@ -131,127 +190,70 @@ function createLightweightChart(container) {
     priceFormat: { type: 'price', precision: 6, minMove: 0.000001 },
   });
 
+  // ---- Volume sub-chart (histogram + SMA) ----
+  var _HS = window.LightweightCharts.HistogramSeries;
+  var _LS = window.LightweightCharts.LineSeries;
+
+  volumeSeries = lwChart.addSeries(_HS, {
+    priceScaleId: 'volume',
+    priceFormat: { type: 'volume' },
+    lastValueVisible: false,
+    priceLineVisible: false,
+  });
+
+  volumeSmaSeries = lwChart.addSeries(_LS, {
+    priceScaleId: 'volume',
+    color: '#FF9800',
+    lineWidth: 2,
+    lastValueVisible: false,
+    priceLineVisible: false,
+  });
+
   window.chart = lwChart;
   window.candleSeries = candleSeries;
   chart = lwChart;
   applyChartTheme(true);
 
-  var chartContainer = document.querySelector('.chart-container');
-  if (window.DrawingOverlay && chartContainer) {
-    window.DrawingOverlay.init(lwChart, candleSeries, chartContainer);
-  }
+  // Configure price scales AFTER chart is assigned
+  chart.priceScale('volume').applyOptions({
+    scaleMargins: { top: INDICATOR_TOP_VOLUME, bottom: INDICATOR_BOTTOM_VOLUME },
+  });
 
-  if (window.LightweightToolbar) {
-    window.LightweightToolbar.init(lwChart, candleSeries, []);
-  }
+  chart.priceScale('right').applyOptions({
+    scaleMargins: { top: INDICATOR_TOP_MAIN, bottom: INDICATOR_BOTTOM_MAIN },
+  });
+
+
 
   window.addEventListener('resize', () => {
     const r = container.getBoundingClientRect();
     lwChart.resize(Math.max(300, r.width), Math.max(200, r.height));
-    if (window.DrawingOverlay) window.DrawingOverlay.resize();
   });
-
-  if (window.DrawingOverlay) {
-    try {
-      chart.timeScale().subscribeVisibleTimeRangeChange(function () {
-        window.DrawingOverlay.render();
-      });
-    } catch (_) {}
-  }
 
   _zoomSub = chart.timeScale().subscribeVisibleTimeRangeChange(onVisibleRangeChanged);
+
+  if (window.TFDraw && candleSeries) {
+    console.log('charts: calling TFDraw.init');
+    window.TFDraw.init(lwChart, candleSeries, container);
+    window.TFDraw.setSymbol(currentSymbol);
+    console.log('charts: TFDraw.init done');
+  } else {
+    console.warn('charts: TFDraw=' + !!window.TFDraw + ', candleSeries=' + !!candleSeries);
+  }
+
+  loadCandles(currentSymbol, currentInterval);
+  startCandleWs(currentSymbol, currentInterval);
 }
 
-// ----- Self-contained resize system (event delegation) -----
-// Listens on document — NO dependency on createChart() succeeding.
-// Works immediately when this script loads, regardless of errors elsewhere.
+// Restore saved sidebar width
 (function() {
-  var _resizeDrag = null;
-
-  // ----- Persist window sizes to localStorage -----
-  function _saveSizes() {
-    try {
-      var sidebar = document.querySelector('.sidebar');
-      if (sidebar) {
-        localStorage.setItem('tickframe_sidebar_width', sidebar.offsetWidth);
-      }
-    } catch (_) {}
-  }
-
-  function _restoreSizes() {
-    try {
-      var sidebarW = localStorage.getItem('tickframe_sidebar_width');
-      if (sidebarW) {
-        var s = document.querySelector('.sidebar');
-        if (s) s.style.width = Math.max(150, Math.min(400, +sidebarW)) + 'px';
-      }
-    } catch (_) {}
-  }
-
-  // Restore saved sizes once DOM is ready
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', _restoreSizes);
-  } else {
-    _restoreSizes();
-  }
-
-  document.addEventListener('mousedown', function(e) {
-    var t = e.target;
-
-    // Sidebar resize: .sidebar-resize-handle
-    if (t.classList.contains('sidebar-resize-handle')) {
-      e.preventDefault();
-      var sidebar = document.querySelector('.sidebar');
-      if (!sidebar) return;
-      _resizeDrag = { sidebar: sidebar, startX: e.clientX, startW: sidebar.offsetWidth };
-      return;
+  try {
+    var w = localStorage.getItem('tickframe_sidebar_width');
+    if (w) {
+      var s = document.querySelector('.sidebar');
+      if (s) s.style.width = Math.max(150, Math.min(400, +w)) + 'px';
     }
-  });
-
-  document.addEventListener('mousemove', function(e) {
-    if (!_resizeDrag) return;
-    if (_resizeDrag.sidebar) {
-      var newW = Math.max(150, Math.min(400, _resizeDrag.startW + (e.clientX - _resizeDrag.startX)));
-      _resizeDrag.sidebar.style.width = newW + 'px';
-    }
-  });
-
-  document.addEventListener('mouseup', function() {
-    if (_resizeDrag) {
-      _saveSizes();
-      window.dispatchEvent(new Event('resize'));
-      _resizeDrag = null;
-    }
-  });
-
-  // Same for touch
-  document.addEventListener('touchstart', function(e) {
-    var t = e.target;
-    if (t.classList.contains('sidebar-resize-handle')) {
-      e.preventDefault();
-      var sidebar = document.querySelector('.sidebar');
-      if (!sidebar) return;
-      _resizeDrag = { sidebar: sidebar, startX: e.touches[0].clientX, startW: sidebar.offsetWidth };
-      return;
-    }
-  }, { passive: false });
-
-  document.addEventListener('touchmove', function(e) {
-    if (!_resizeDrag) return;
-    e.preventDefault();
-    if (_resizeDrag.sidebar) {
-      var newW = Math.max(150, Math.min(400, _resizeDrag.startW + (e.touches[0].clientX - _resizeDrag.startX)));
-      _resizeDrag.sidebar.style.width = newW + 'px';
-    }
-  }, { passive: false });
-
-  document.addEventListener('touchend', function() {
-    if (_resizeDrag) {
-      _saveSizes();
-      window.dispatchEvent(new Event('resize'));
-      _resizeDrag = null;
-    }
-  });
+  } catch (_) {}
 })();
 
 function onVisibleRangeChanged(range) {
@@ -261,6 +263,13 @@ function onVisibleRangeChanged(range) {
     _loadMoreTimer = setTimeout(function () {
       loadMoreBefore(currentSymbol, currentInterval, lastCandles[0].time);
     }, 400);
+  }
+  var maxTo = _maxFutureTime();
+  if (range.to > maxTo) {
+    chart.timeScale().setVisibleRange({
+      from: range.from,
+      to: maxTo,
+    });
   }
 }
 
@@ -275,7 +284,7 @@ async function loadMoreBefore(symbol, interval, before) {
     var newCandles = data.map(function (c) {
       return {
         time: c.time || c.t || Math.floor(new Date(c[0] || c.ts || Date.now()).getTime() / 1000),
-        open: +c.open, high: +c.high, low: +c.low, close: +c.close,
+        open: +c.open, high: +c.high, low: +c.low, close: +c.close, volume: +c.volume,
       };
     });
 
@@ -297,11 +306,9 @@ async function loadMoreBefore(symbol, interval, before) {
     _candleCache[symbol + '|' + interval] = deduped;
     var series = window.candleSeries;
     if (series) series.setData(deduped);
+    updateIndicators(lastCandles);
 
-    if (window.LightweightToolbar) {
-      window.LightweightToolbar.setData(deduped);
-    }
-    if (window.DrawingOverlay) window.DrawingOverlay.render();
+
   } catch (err) {
     console.error('loadMoreBefore error', err);
   }
@@ -338,12 +345,14 @@ function applyChartTheme(darkMode) {
 async function loadCandles(symbol, interval) {
   if (_currentLoadSymbol === symbol && currentInterval === interval) return;
 
-  currentSymbol = symbol;
-  window.currentSymbol = symbol;
-  currentInterval = interval;
-  _currentLoadSymbol = symbol;
+  var cacheKey = symbol + '|' + interval;
+  var cached = _candleCache[cacheKey];
 
   if (chartInitMode === 'advanced') {
+    currentSymbol = symbol;
+    window.currentSymbol = symbol;
+    currentInterval = interval;
+    _currentLoadSymbol = symbol;
     showLoading(true);
     const datafeed = window._datafeed;
     if (datafeed) {
@@ -360,6 +369,22 @@ async function loadCandles(symbol, interval) {
     return;
   }
 
+  var gen = ++_loadGen;
+
+  if (!cached) {
+    showLoading(true);
+    if (candleSeries) candleSeries.setData([]);
+  }
+
+  currentSymbol = symbol;
+  window.currentSymbol = symbol;
+  currentInterval = interval;
+  _currentLoadSymbol = symbol;
+
+  if (window.TFDraw) {
+    window.TFDraw.setSymbol(symbol);
+  }
+
   window._hideChartLoading = null;
 
   if (_zoomSub) {
@@ -372,27 +397,21 @@ async function loadCandles(symbol, interval) {
     _currentAbort = null;
   }
 
-  var cacheKey = symbol + '|' + interval;
-  var cached = _candleCache[cacheKey];
-
   if (cached) {
     lastCandles = cached;
     var series = window.candleSeries;
     if (series) series.setData(lastCandles);
+    if (lastCandles.length) _updatePriceFormat(lastCandles[lastCandles.length - 1].close);
+    updateIndicators(lastCandles);
 
     if (lastCandles.length > 1) {
+      var intervalSec = _intervalToSeconds(currentInterval);
       chart.timeScale().setVisibleRange({
         from: lastCandles[Math.max(0, lastCandles.length - 10000)].time,
-        to: lastCandles[lastCandles.length - 1].time,
+        to: lastCandles[lastCandles.length - 1].time + intervalSec * 20,
       });
     }
-    if (window.DrawingOverlay) window.DrawingOverlay.setSymbol(symbol);
-    if (window.LightweightToolbar) {
-      window.LightweightToolbar.clearAll();
-    }
     _zoomSub = chart.timeScale().subscribeVisibleTimeRangeChange(onVisibleRangeChanged);
-  } else {
-    showLoading(true);
   }
 
   _currentAbort = new AbortController();
@@ -408,24 +427,22 @@ async function loadCandles(symbol, interval) {
     var normalized = data.map(function (c) {
       return {
         time: c.time || c.t || Math.floor(new Date(c[0] || c.ts || Date.now()).getTime() / 1000),
-        open: +c.open, high: +c.high, low: +c.low, close: +c.close
+        open: +c.open, high: +c.high, low: +c.low, close: +c.close, volume: +c.volume
       };
     });
     lastCandles = normalized;
     _candleCache[cacheKey] = normalized;
     var series = window.candleSeries;
     if (series) series.setData(lastCandles);
+    if (lastCandles.length) _updatePriceFormat(lastCandles[lastCandles.length - 1].close);
+    updateIndicators(lastCandles);
 
     if (lastCandles.length > 1) {
+      var intervalSec = _intervalToSeconds(currentInterval);
       chart.timeScale().setVisibleRange({
         from: lastCandles[Math.max(0, lastCandles.length - 10000)].time,
-        to: lastCandles[lastCandles.length - 1].time,
+        to: lastCandles[lastCandles.length - 1].time + intervalSec * 20,
       });
-    }
-    if (window.DrawingOverlay) window.DrawingOverlay.setSymbol(symbol);
-    if (window.LightweightToolbar) {
-      window.LightweightToolbar.setData(lastCandles);
-      window.LightweightToolbar.clearAll();
     }
     if (!cached) {
       _zoomSub = chart.timeScale().subscribeVisibleTimeRangeChange(onVisibleRangeChanged);
@@ -434,7 +451,9 @@ async function loadCandles(symbol, interval) {
     if (err.name === 'AbortError') return;
     console.error('loadCandles error', err);
   } finally {
-    showLoading(false);
+    if (gen === _loadGen) {
+      showLoading(false);
+    }
     if (_currentAbort && _currentAbort.signal === signal) {
       _currentAbort = null;
     }
@@ -465,21 +484,21 @@ function startCandleWs(symbol, interval) {
         const msg = JSON.parse(ev.data);
         if (msg.type === 'snapshot' && msg.candles) {
           const newCandles = msg.candles.map(c => ({
-            time: c.time, open: +c.open, high: +c.high, low: +c.low, close: +c.close,
+            time: c.time, open: +c.open, high: +c.high, low: +c.low, close: +c.close, volume: +c.volume,
           }));
           if (newCandles.length > lastCandles.length) {
             lastCandles = newCandles;
             _candleCache[currentSymbol + '|' + currentInterval] = newCandles;
             var series = window.candleSeries;
             if (series) series.setData(newCandles);
-        
+            updateIndicators(lastCandles);
           }
           const s = document.getElementById('status');
           if (s) s.innerText = 'LIVE';
         } else if (msg.type === 'update' && msg.candle) {
           const c = msg.candle;
           if (c && c.time && window.candleSeries) {
-            const point = { time: c.time, open: +c.open, high: +c.high, low: +c.low, close: +c.close };
+            const point = { time: c.time, open: +c.open, high: +c.high, low: +c.low, close: +c.close, volume: +c.volume };
             window.candleSeries.update(point);
             if (lastCandles.length) {
               var last = lastCandles[lastCandles.length - 1];
@@ -490,6 +509,7 @@ function startCandleWs(symbol, interval) {
               }
               _candleCache[currentSymbol + '|' + currentInterval] = lastCandles;
             }
+            updateRealtime(point.time, point.close, point.volume, point.open);
         
           }
           const s = document.getElementById('status');
@@ -511,18 +531,27 @@ function stopCandleWs() {
   }
 }
 
+function clearPatternDrawings() {
+  if (!window.DrawingController?.getManager) return;
+  var mgr = window.DrawingController.getManager();
+  if (!mgr) return;
+  patternDrawings.forEach(function (id) {
+    if (!id) return;
+    try { mgr.removeDrawing(id); } catch (e) { }
+  });
+  patternDrawings = [];
+}
+
 function clearPatternShapes() {
   patternShapes.forEach(s => {
-    try {
-      if (s.remove) s.remove();
-      else if (chart && chart.removeShape) chart.removeShape(s);
-    } catch (e) { }
+    try { s.remove(); } catch (e) { }
   });
   patternShapes = [];
   if (typeof candleSeries?.setMarkers === 'function') {
     candleSeries.setMarkers([]);
   }
   patternMarkers = [];
+  clearPatternDrawings();
 }
 
 function renderPatterns(patterns) {
@@ -593,8 +622,6 @@ async function analyzePatterns() {
   btn.disabled = true;
   resultEl.innerText = 'Loading candles from database...';
 
-  if (window.DrawingOverlay) window.DrawingOverlay.clearPatternDrawings();
-
   try {
     const limitInput = document.querySelector('.candle-limit-input');
     const totalLimit = limitInput ? parseInt(limitInput.value) || 10000 : 10000;
@@ -619,28 +646,10 @@ async function analyzePatterns() {
   }
 }
 
-function _visibleBottomPrice() {
-  try {
-    if (!chart) return 0;
-    var ps = chart.priceScale('right');
-    if (!ps) return 0;
-    var r = ps.getVisiblePriceRange();
-    return r ? r.minValue : 0;
-  } catch (_) { return 0; }
-}
-
-function _drawPatternVline(time, opts) {
-  var d = { id: -Date.now() - Math.random(), type: 'vline', _isPattern: true,
-    points: [{ time: time, price: _visibleBottomPrice() }], opts: opts };
-  window.DrawingOverlay.addPatternDrawing(d);
-}
-
 function renderDetectedPatterns(patterns) {
-  if (!window.DrawingOverlay || !chart) return;
-  var vlineOpts = { color: '#ff0000', width: 1, lineStyle: 'dotted', opacity: 1 };
-  var data = lastCandles || [];
+  clearPatternShapes();
 
-  // Build segments for each pattern (50-candle windows)
+  var data = lastCandles || [];
   var segments = [];
   patterns.forEach(function (p) {
     if (p.startTime !== undefined && p.endTime !== undefined) {
@@ -657,7 +666,6 @@ function renderDetectedPatterns(patterns) {
     segments.push({ start: data[startIdx].time, end: ts, patterns: [p] });
   });
 
-  // Sort by start and merge overlapping segments
   segments.sort(function (a, b) { return a.start - b.start; });
   var merged = [];
   segments.forEach(function (seg) {
@@ -674,16 +682,120 @@ function renderDetectedPatterns(patterns) {
     }
   });
 
-  // Draw merged segment boundaries on main chart
-  merged.forEach(function (seg) {
-    _drawPatternVline(seg.start, vlineOpts);
-    _drawPatternVline(seg.end, vlineOpts);
+  var markers = [];
+  var drawingMgr = window.DrawingController?.getManager ? window.DrawingController.getManager() : null;
+  var registry = window.DrawingLib?.getToolRegistry ? window.DrawingLib.getToolRegistry() : null;
+  var fallbackPrice = data.length ? data[data.length - 1].close : 0;
+
+  merged.forEach(function (seg, index) {
+    var topPattern = seg.patterns.reduce(function (best, p) {
+      if (!best || p.confidence > best.confidence) return p;
+      return best;
+    }, null);
+    if (!topPattern) return;
+
+    var label = `${topPattern.pattern_type} - ${(topPattern.confidence * 100).toFixed(0)}%`;
+
+    if (drawingMgr && registry) {
+      var anchors = [
+        { time: seg.start, price: fallbackPrice },
+        { time: seg.end, price: fallbackPrice },
+      ];
+      try {
+        var drawing = registry.createDrawing(
+          'pattern-date-range',
+          'pattern-range-' + index + '-' + Date.now(),
+          anchors,
+          {
+            lineColor: '#26a69a',
+            lineWidth: 1,
+            lineDash: [5, 5],
+          },
+          {
+            labelText: label,
+            showBars: false,
+            showDays: false,
+            showDates: true,
+            filled: false,
+          }
+        );
+        if (drawing && drawing.id) {
+          drawingMgr.addDrawing(drawing);
+          patternDrawings.push(drawing.id);
+        }
+      } catch (e) {
+        console.warn('Unable to create pattern date-range drawing', e);
+      }
+    } else if (chartInitMode === 'advanced' && chart && chart.chart && typeof chart.chart().createShape === 'function') {
+      var shape = chart.chart().createShape(
+        { time: seg.start },
+        {
+          shape: 'vertical_line',
+          color: '#26a69a',
+          width: 1,
+          text: label,
+          textColor: '#26a69a',
+          textFontSize: 12,
+          textBold: true,
+        }
+      );
+      if (shape) patternShapes.push(shape);
+    }
+
+    markers.push({
+      time: seg.start,
+      position: 'aboveBar',
+      color: '#26a69a',
+      shape: 'arrowDown',
+      text: label,
+    });
   });
+
+  if (candleSeries && typeof candleSeries.setMarkers === 'function') {
+    candleSeries.setMarkers(markers);
+    patternMarkers = markers;
+  }
 }
+
+function updateIndicators(candleData) {
+  if (!volumeSeries || !volumeSmaSeries) return;
+  if (!candleData || candleData.length < 20) return;
+
+  var volData = candleData.map(function (c) {
+    return {
+      time: c.time,
+      value: c.volume || 0,
+      color: c.close >= c.open ? '#26a69a' : '#ef5350',
+    };
+  });
+  volumeSeries.setData(volData);
+
+  var volValues = candleData.map(function (c) {
+    return { time: c.time, value: c.volume || 0 };
+  });
+  volumeSmaSeries.setData(calculateSMA(volValues, 20));
+}
+
+function updateRealtime(time, close, volume, open) {
+  if (!volumeSeries) return;
+  volumeSeries.update({
+    time: time,
+    value: volume || 0,
+    color: close >= open ? '#26a69a' : '#ef5350',
+  });
+  if (!lastCandles.length) return;
+  var volValues = lastCandles.map(function (c) {
+    return { time: c.time, value: c.volume || 0 };
+  });
+  volumeSmaSeries.setData(calculateSMA(volValues, 20));
+}
+
+
 
 window.TFChart = {
   createChart, loadCandles, startCandleWs, stopCandleWs, applyChartTheme,
   analyzePatterns, renderPatterns, setActiveSymbol: (s) => { currentSymbol = s; },
+  updateIndicators, updateRealtime,
 };
 
 document.addEventListener('DOMContentLoaded', () => {

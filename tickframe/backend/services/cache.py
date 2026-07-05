@@ -18,7 +18,7 @@ MAX_CANDLES = 55000
 
 
 class MemoryMarketCache:
-    def __init__(self, client: BybitClient, db: DatabaseService | None = None, refresh_interval: int = 5):
+    def __init__(self, client: BybitClient, db: DatabaseService | None = None, refresh_interval: int = 1):
         self.client = client
         self.db = db
         self.refresh_interval = refresh_interval
