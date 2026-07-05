@@ -382,52 +382,51 @@ Current DoD requires:
 - [ ] **Create SemVer release** — tag `v2.0.0`, maps to MVP v2, links to Sprint 4 milestone, run instructions, demo video, week 5 report
 
 ### Part 8: User Acceptance Tests
-- [ ] **Add ≥2 new UAT scenarios** for MVP v2 in [`docs/user-acceptance-tests.md`](../../docs/user-acceptance-tests.md)
-- [ ] **Execute with customer** in recorded session
-- [ ] **Summarize results** in week 5 report
+- [x] **Add ≥2 new UAT scenarios** for MVP v2 in [`docs/user-acceptance-tests.md`](../../docs/user-acceptance-tests.md) — UAT-006 (WebSocket) and UAT-007 (RSI/Volume) added on `uat-scenarios-prep`
+- [x] **Execute with customer** in recorded session — conducted 2026-07-03; results recorded in [`docs/user-acceptance-tests.md`](../../docs/user-acceptance-tests.md)
+- [x] **Summarize results** in week 5 report — UAT summary table in [`reports/week5/README.md`](../../reports/week5/README.md) §UAT
 
 ### Part 9: Sprint Review
-- [ ] **Conduct Sprint Review** with customer
-- [ ] **Create reports:**
-  - [`reports/week5/sprint-review-summary.md`](../../reports/week5/sprint-review-summary.md)
-  - [`reports/week5/sprint-review-transcript.md`](../../reports/week5/sprint-review-transcript.md) or `sprint-review-notes.md`
+- [x] **Conduct Sprint Review** with customer — conducted 2026-07-03
+- [x] **Create reports:**
+  - [`reports/week5/sprint-review-summary.md`](../../reports/week5/sprint-review-summary.md) — filled (113 lines)
+  - [`reports/week5/sprint-review-transcript.md`](../../reports/week5/sprint-review-transcript.md) — filled (135 lines)
 
 ### Part 10: Sprint Retrospective
-- [ ] **Conduct retrospective**
-- [ ] **Create [`reports/week5/retrospective.md`](../../reports/week5/retrospective.md)**
+- [x] **Conduct retrospective** — conducted 2026-07-03
+- [x] **Create [`reports/week5/retrospective.md`](../../reports/week5/retrospective.md)** — filled (55 lines)
 
-### Part 11: Hosted Documentation Site
-- [ ] **Publish maintained docs** as browsable hosted site
+### Part 11: Hosted Documentation Site — [#154](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/154)
+- [ ] **Publish maintained docs** as browsable hosted site — requires GitHub Pages enable
 - [ ] **Link from README, week 5 report, SemVer release**
 
 ### Part 12: Reflection
-- [ ] **Create [`reports/week5/reflection.md`](../../reports/week5/reflection.md)**
+- [x] **Create [`reports/week5/reflection.md`](../../reports/week5/reflection.md)** — filled (75 lines)
 
-### Part 13: Public Sanitized Demo Video
+### Part 13: Public Sanitized Demo Video — [#155](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/155)
 - [ ] **Record <2 min demo** of MVP v2
 - [ ] **Link from week 5 report and release**
 
 ### Part 14: LLM Report
-- [ ] **Create [`reports/week5/llm-report.md`](../../reports/week5/llm-report.md)**
+- [x] **Create [`reports/week5/llm-report.md`](../../reports/week5/llm-report.md)** — filled (34 lines)
 
 ### Week 5 Report Structure
-> **Note:** All report files below exist as empty placeholders (0 bytes). They must be filled incrementally by team members in separate commits. One commit must not cover all 42 items or all 7 report files; distribute work.
-- [ ] **Fill [`reports/week5/README.md`](../../reports/week5/README.md)** — 42-item structure (see Assignment_05.md lines 438–489) (empty template exists)
-- [ ] **Fill [`reports/week5/sprint-review-summary.md`](../../reports/week5/sprint-review-summary.md)** (empty template exists)
-- [ ] **Fill [`reports/week5/sprint-review-transcript.md`](../../reports/week5/sprint-review-transcript.md)** (empty template exists)
-- [ ] **Fill [`reports/week5/retrospective.md`](../../reports/week5/retrospective.md)** (empty template exists)
-- [ ] **Fill [`reports/week5/reflection.md`](../../reports/week5/reflection.md)** (empty template exists)
-- [ ] **Fill [`reports/week5/llm-report.md`](../../reports/week5/llm-report.md)** (empty template exists)
-- [ ] **Create [`reports/week5/images/`](../../reports/week5/images/)** — screenshots (milestone, board, CI, release, PR, hosted docs) (empty directory exists)
+- [x] **Fill [`reports/week5/README.md`](../../reports/week5/README.md)** — filled (298 lines) by F. Kozhevnikov
+- [x] **Fill [`reports/week5/sprint-review-summary.md`](../../reports/week5/sprint-review-summary.md)** — filled by F. Kozhevnikov
+- [x] **Fill [`reports/week5/sprint-review-transcript.md`](../../reports/week5/sprint-review-transcript.md)** — filled by F. Kozhevnikov
+- [x] **Fill [`reports/week5/retrospective.md`](../../reports/week5/retrospective.md)** — filled by F. Kozhevnikov
+- [x] **Fill [`reports/week5/reflection.md`](../../reports/week5/reflection.md)** — filled by F. Kozhevnikov
+- [x] **Fill [`reports/week5/llm-report.md`](../../reports/week5/llm-report.md)** — filled by F. Kozhevnikov
+- [x] **Create [`reports/week5/images/`](../../reports/week5/images/)** — 5 screenshots present; hosted docs screenshot pending ([#154](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/154))
 
 ### Week 5 Planning Artifacts (Course Tasks)
-- [x] **Create [`assignments/5/2-plan.md`](2-plan.md)** — structured guide + checklist for Parts 3–5 (dev-process doc, architecture views, ADRs)
-- [x] **Create [`assignments/5/3-plan.md`](3-plan.md)** — structured guide + checklist for Part 6 (testing, QA, DoD)
-- [x] **Create [`assignments/5/5-plan.md`](5-plan.md)** — structured guide + checklist for Part 8 (UAT scenarios, execution)
-- [x] **Create [`assignments/5/6-plan.md`](6-plan.md)** — structured guide + checklist for Parts 9–13 (Sprint Review, retro, hosted docs, reflection, demo)
+- [x] **Create [`assignments/5/2-plan.md`](2-plan.md)** — structured guide + checklist for Parts 3–5
+- [x] **Create [`assignments/5/3-plan.md`](3-plan.md)** — structured guide + checklist for Part 6
+- [x] **Create [`assignments/5/5-plan.md`](5-plan.md)** — structured guide + checklist for Part 8
+- [x] **Create [`assignments/5/6-plan.md`](6-plan.md)** — structured guide + checklist for Parts 9–13
 - [x] **Create [`assignments/5/7-plan.md`](7-plan.md)** — structured guide + checklist for Moodle PDF submission
 
-### Moodle PDF (Private)
+### Moodle PDF (Private) — [#156](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/156)
 - [ ] **Create PDF** with team table, commit permalinks, recording links, private access instructions
 
 ---
@@ -785,9 +784,9 @@ Branch `part-6-testing-qa` contains the following contributions advancing **Part
 - This branch fills Parts 3–5 but implements **no** Sprint 4 PBI features (WebSocket migration, DB caching, sub-charts, multi-interval) — those go in separate feature branches branched from `main`.
 - The week 5 report is partially filled (items 18–21). Other team members must fill remaining items (1–17, 22–42).
 
-## 24. Current Branch Contributions (`main` — UAT execution updates)
+## 24. Current Branch Contributions (`uat-after-session-update` — UAT execution updates)
 
-Branch `main` contains UAT documentation updates advancing **Part 8 (User Acceptance Tests)** of Assignment 5, based on the Sprint 4 UAT session conducted 2026-07-03 with customer N. Kuzmin.
+Branch `uat-after-session-update` contains UAT documentation updates advancing **Part 8 (User Acceptance Tests)** of Assignment 5 by **A. Gafarov ([omarichev](https://github.com/omarichev))**, based on the Sprint 4 UAT session conducted 2026-07-03 with customer.
 
 ### UAT Document Updates
 
@@ -810,8 +809,8 @@ Branch `main` contains UAT documentation updates advancing **Part 8 (User Accept
 
 | Request | Source | Priority |
 |---|---|---|
-| Pattern-type filtering + confidence threshold controls | Customer (N. Kuzmin) | High |
-| Additional coin metrics in sidebar (24h change, 5m change) | Customer (N. Kuzmin) | Low (if time permits) |
+| Pattern-type filtering + confidence threshold controls | Customer | High |
+| Additional coin metrics in sidebar (24h change, 5m change) | Customer | Low (if time permits) |
 | RSI implementation via specialized library | Technical decision (rendering issue) | Critical |
 
 ### Impact on A5 Gap Analysis
@@ -823,4 +822,4 @@ Branch `main` contains UAT documentation updates advancing **Part 8 (User Accept
 
 | Issue | Title |
 |---|---|
-| [#150](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/150) | DOC: Update UAT scenarios with Sprint 4 execution results (Part 8) |
+| [#152](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/152) | DOC: Update UAT scenarios with Sprint 4 execution results (Part 8) |
