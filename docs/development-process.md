@@ -243,7 +243,7 @@ pip install -r requirements.txt
 uvicorn app.main:app --host 0.0.0.0 --port 8001
 ```
 
-Opens at `http://localhost:8000`. The ML service must be started separately.
+Opens at `http://localhost:8080`. The ML service must be started separately.
 
 ### 5.3 Requirements
 
