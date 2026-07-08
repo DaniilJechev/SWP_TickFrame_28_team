@@ -359,16 +359,16 @@ All contributions on the `6-repo-template` branch, organized by theme:
 - [x] Update root README.md with current setup/run/deploy instructions _(partial — localhost port fixed to 8080)_
 
 ### Part 3: Polish Public Repository Entry Point & Customer-Facing Documentation
-- [ ] Update README.md as main public entry point (product, access, docs, handover links)
-- [ ] README.md must include: project name/description, product access link, hosted docs link, link to `docs/customer-handover.md`, links to `CONTRIBUTING.md` and `AGENTS.md`, setup/run guidance, relevant maintained doc links
-- [x] Customer-facing documentation review covering: README.md, docs/customer-handover.md, access/usage instructions — _partial: localhost ports corrected in README.md, docs/development-process.md, docs/user-acceptance-tests.md_
-- [x] Create/update CONTRIBUTING.md — _template created_
-- [x] Create/update AGENTS.md — _template created_
+- [x] Update README.md as main public entry point (product, access, docs, handover links) — _SVG diagram, Troubleshooting, UI screenshot, relative links added_
+- [x] README.md must include: project name/description, product access link, hosted docs link, link to `docs/customer-handover.md`, links to `CONTRIBUTING.md` and `AGENTS.md`, setup/run guidance, relevant maintained doc links — _all present with Quick Links banner_
+- [x] Customer-facing documentation review covering: README.md, docs/customer-handover.md, access/usage instructions — _full: localhost ports corrected, SVG diagram, Troubleshooting, Known Limitations, UI screenshot, relative links_
+- [x] Create/update CONTRIBUTING.md — _created with workflow, setup, standards, testing, CI, PR process, DoD_
+- [x] Create/update AGENTS.md — _created with safety rules, project context, tech stack, ADRs, testing strategy, assignments reference_
 - [ ] Keep all three current during Week 6 and Week 7
 
 ### Part 4: Maintain Customer Handover Documentation
-- [x] Create/update `docs/customer-handover.md` according to Artifact Requirements — _template created_
-- [ ] Must state: transferred/delegated/retained arrangements, env vars/config/secrets steps, setup/deployment/recovery/verification steps, main doc entry points, whether docs are sufficient for handover level
+- [x] Create/update `docs/customer-handover.md` according to Artifact Requirements — _template with Known Limitations added_
+- [x] Must state: transferred/delegated/retained arrangements, env vars/config/secrets steps, setup/deployment/recovery/verification steps, main doc entry points, whether docs are sufficient for handover level — _all present; handover level: "Ready for independent use" (pending confirmation)_
 - [ ] Keep current during Week 6 and Week 7
 
 ### Part 5: Conduct Week 6 Transition-Readiness Meeting & Customer Trial
@@ -427,6 +427,45 @@ All contributions on the `6-repo-template` branch, organized by theme:
 ### Part 14: Record Public Sanitized Demo Video for MVP v3
 - [ ] Record public demo video explaining final MVP v3 state
 - [ ] Link from `reports/week7/README.md` and final MVP v3 release
+
+---
+
+## 17. Completed Week 6 Contributions (Branch `192-entry-point-docs`)
+
+All contributions on the `192-entry-point-docs` branch, organized by theme:
+
+### A6 Part 3 — Polish Public Repository Entry Point & Customer-Facing Documentation
+
+| Item | Detail | Status |
+|---|---|---|
+| Architecture SVG diagram | Rendered `docs/architecture/static-view/diagram.svg` inline in README; file tree trimmed to top-level dirs; linked to full architecture docs | ✅ Done |
+| Troubleshooting section | Added 6-row table covering common issues (ports, candles, WebSocket, ML, drawings, no-data) to README | ✅ Done |
+| Known Limitations section | Added 8-row table to `docs/customer-handover.md` covering exchange dependency, single-user, no trading, historical depth, ML scope, WebSocket resilience, browser support, mobile | ✅ Done |
+| UI screenshot | Added `docs/images/ui-screenshot.png` rendered below README tagline | ✅ Done |
+| Documentation table cleanup | Converted absolute `blob/main/` URLs to relative paths; trimmed from 16 rows to 9 key entry points | ✅ Done |
+
+### Audit Gap Closure
+
+| Gap | Severity | Status |
+|---|---|---|
+| Missing images in README (no screenshot or diagram) | CRITICAL | ✅ Closed — SVG diagram + UI screenshot added |
+| No "Known Limitations" section in customer-handover | HIGH | ✅ Closed — added |
+| No "Troubleshooting" section in README | HIGH | ✅ Closed — added |
+| Absolute `blob/main/` URLs instead of relative links | MEDIUM | ✅ Closed — converted |
+| Documentation table too long (16 rows) | MEDIUM | ✅ Closed — trimmed to 9 |
+
+### Commits
+
+| Commit | Description |
+|---|---|
+| `15c091d` | Fix A6 Part 3 audit gaps: SVG diagram, Troubleshooting, Known Limitations, relative links, UI screenshot |
+
+### GitHub Issues Link
+
+| Issue | Title | Branch Contribution |
+|---|---|---|
+| [#192](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/192) | DOC: Polish Public Repository Entry Point & Customer-Facing Docs (A6 Part 3) | A6 Part 3 entry-point docs |
+| [#194](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/194) | DOC: Fix A6 Part 3 audit gaps — SVG, troubleshooting, limitations, relative links, screenshot | A6 Part 3 audit gap fixes |
 
 ---
 
@@ -523,5 +562,5 @@ All contributions on the `6-repo-template` branch, organized by theme:
 
 ---
 
-*Last updated: 2026-07-07 (updated with Week 6 branch contributions)*
+*Last updated: 2026-07-08 (updated with Week 6 branch `192-entry-point-docs` contributions)*
 *Generated by: OpenCode (deepseek-v4-flash-free)*
