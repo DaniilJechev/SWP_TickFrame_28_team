@@ -74,7 +74,7 @@ A PBI is **Done** when:
 
 ---
 
-## Sprint 4 — MVP v2 (Current)
+## Sprint 4 — MVP v2 (Previous)
 
 **Milestone:** [Sprint 4](https://github.com/Fedos113/SWP_TickFrame_28_team/milestone/5)
 
@@ -110,18 +110,45 @@ A PBI is **Done** when:
 
 ---
 
-## Backlog (Future Sprints)
+## Sprint 5 — Week 6 Trial Release (Current)
+
+**Milestone:** [Sprint 5](https://github.com/Fedos113/SWP_TickFrame_28_team/milestone/6)
+
+**Goal:** Produce stable trial/handover-candidate release — RSI implementation, customer-facing documentation, handover prep, customer trial.
+
+| # | PBI | Title | SP | Status |
+|---|-----|-------|----|--------|
+| [#112](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/112) | PBI-117 | RSI indicator sub-chart | 3 | To Do |
+| [#177](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/177) | PBI-129 | Customer-facing documentation review and update | — | To Do |
+| [#178](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/178) | — | Create/update CONTRIBUTING.md and AGENTS.md | — | To Do |
+| [#179](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/179) | — | Create/update docs/customer-handover.md | — | To Do |
+| [#180](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/180) | — | Week 6 trial release and deployment | — | To Do |
+
+---
+
+## Sprint 6 — MVP v3 (Next)
+
+**Milestone:** [Sprint 6 — MVP v3](https://github.com/Fedos113/SWP_TickFrame_28_team/milestone/7)
+
+**Goal:** Deliver final course version MVP v3 — follow-up maintenance, fixes from Week 6 trial, final transition, Demo Day preparation.
+
+| # | PBI | Title | SP | Status |
+|---|-----|-------|----|--------|
+| [#181](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/181) | — | Follow-up maintenance from Week 6 trial feedback | — | To Do |
+| [#182](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/182) | — | Final transition and MVP v3 release | — | To Do |
+| [#183](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/183) | — | Record public sanitized demo video for MVP v3 | — | To Do |
+| [#184](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/184) | — | Sprint 5 and Sprint 6 reports | — | To Do |
+| [#185](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/185) | — | Prepare presentation slides and rehearsal | — | To Do |
+
+---
+
+## Backlog (Future Work)
 
 | PBI | Title | Notes |
 |-----|-------|-------|
-| US-07 | Timeframe selector (5m, 15m, 1h, 4h, 1d) | Superseded by PBI-120 |
 | US-09 | Coin search/filter | Search bar for coin list |
-| US-12 | Fear & Greed Index | Market sentiment widget |
 | US-14 | Real-time dashboard | Auto-refreshing dashboard |
 | US-15 | UI polish pass | Layout, spacing, responsive fixes |
-| QR-001 | Performance (chart redraw <2s) | Requires QRT-001 test automation |
-| QR-002 | Security (no secret leaks) | Requires QRT-002 test automation |
-| QR-003 | Accuracy (candle data ~0.1%) | Requires QRT-003 test automation |
 
 ---
 

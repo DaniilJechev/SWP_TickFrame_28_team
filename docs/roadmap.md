@@ -93,20 +93,39 @@
 
 ---
 
-## Sprint 5 — Planned (Next)
+## Sprint 5 — Week 6 Trial Release (Assignment 6)
 
 | Field | Value |
 |---|---|
-| **Goal** | RSI indicator implementation, frontend polish, remaining A5 deliverables |
-| **Focus** | Real-time data pipeline completion, indicator expansion, testing coverage |
+| **Milestone** | [Sprint 5](https://github.com/Fedos113/SWP_TickFrame_28_team/milestone/6) |
+| **Dates** | Week 6 (2026-07-07 – 2026-07-13) |
+| **Goal** | Produce stable trial/handover-candidate release with customer-facing documentation review and transition-readiness evidence. |
+| **Focus** | RSI implementation, documentation polish, handover prep, customer trial |
 
 **Planned items:**
 - [#112 PBI-117](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/112) — RSI indicator sub-chart (High)
-- Volume sub-chart persistence & polish (High)
-- US-12 — Crypto Fear and Greed Index (partial done — API connected, UI widget needed)
-- US-14 — Customize chart colors in settings
-- Frontend JS test coverage
-- QRT re-design for updated QR-003 threshold (F2 ≥ 55%)
+- [#177 PBI-129](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/177) — Customer-facing documentation review and update
+- [#178](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/178) — Create/update CONTRIBUTING.md and AGENTS.md
+- [#179](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/179) — Create/update docs/customer-handover.md
+- [#180](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/180) — Week 6 trial release and deployment
+
+---
+
+## Sprint 6 — MVP v3 (Assignment 6 Week 7)
+
+| Field | Value |
+|---|---|
+| **Milestone** | [Sprint 6 — MVP v3](https://github.com/Fedos113/SWP_TickFrame_28_team/milestone/7) |
+| **Dates** | Week 7 (2026-07-14 – 2026-07-20) |
+| **Goal** | Deliver final course version MVP v3 — follow-up maintenance, fixes from Week 6 trial, final transition, Demo Day preparation. |
+| **Focus** | Customer trial feedback, final transition, MVP v3 release, Demo Day |
+
+**Planned items:**
+- [#181](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/181) — Follow-up maintenance from Week 6 trial feedback
+- [#182](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/182) — Final transition and MVP v3 release
+- [#183](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/183) — Record public sanitized demo video for MVP v3
+- [#184](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/184) — Sprint 5 and Sprint 6 reports (reviews, retros, reflections, LLM)
+- [#185](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/185) — Prepare presentation slides and rehearsal for Demo Day
 
 ---
 

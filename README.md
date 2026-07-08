@@ -115,7 +115,7 @@ uvicorn tickframe.backend.main:app --host 0.0.0.0 --port 8000
 ### 5. Open in browser
 
 ```
-http://localhost:8000
+http://localhost:8080
 ```
 
 > Note: ML service must be started separately for pattern analysis to work.

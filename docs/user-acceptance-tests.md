@@ -23,7 +23,7 @@
 | **User goal** | As a trader, I want to scan cryptocurrency data for chart patterns and view the results visually on the chart. |
 | **Scenario status** | Active |
 | **Preconditions** | Application is running (Docker or local) on a machine with internet access |
-| **Test steps** | 1. Open terminal 2. Run `python -m tickframe scan --symbol BTCUSDT --interval 5m --limit 100` 3. Wait for scan completion 4. Run `python -m tickframe serve` 5. Open browser to `http://localhost:8000` 6. Observe chart with pattern markers |
+| **Test steps** | 1. Open terminal 2. Run `python -m tickframe scan --symbol BTCUSDT --interval 5m --limit 100` 3. Wait for scan completion 4. Run `python -m tickframe serve` 5. Open browser to `http://localhost:8080` 6. Observe chart with pattern markers |
 | **Expected result** | Chart displays candlestick data with detected pattern markers. Clicking a marker shows analysis details. |
 | **Execution result** | ⏳ Partial |
 | **Execution history** | 2026-06-26 — ⏳ Partial — UI displays markers and labels for detected patterns. ML model runs as separate microservice; end-to-end integration not yet complete. Customer reviewed the candidate visualization and confirmed the approach is acceptable. |
@@ -40,7 +40,7 @@
 |---|---|
 | **ID** | UAT-002 |
 | **Title** | Toggle between chart timeframes |
-| **Preconditions** | Web dashboard is open (`http://localhost:8000`) with chart displayed |
+| **Preconditions** | Web dashboard is open (`http://localhost:8080`) with chart displayed |
 | **Test steps** | 1. Locate timeframe selector (5m, 15m, 1h, 4h, 1d) 2. Click each timeframe 3. Observe chart redraw for each selection |
 | **Expected result** | Chart loads new candle data for each timeframe within 2 seconds. All timeframes display correctly. |
 | **Status** | ⏳ Partial |
@@ -48,7 +48,7 @@
 | | 2026-06-30 — 🔄 Updated — All 5 timeframes (5m, 15m, 1h, 4h, 1d) now available and switchable via top-bar buttons. Chart reloads with cached data near-instantly. No loading overlay during timeframe switch. Customer re-test required. |
 | **User goal** | As a trader, I want to switch between chart timeframes (5m, 15m, 1h, 4h, 1d) to analyse price action at different granularities. |
 | **Scenario status** | Active |
-| **Preconditions** | Web dashboard is open (`http://localhost:8000`) with chart displayed (WebSocket connected) |
+| **Preconditions** | Web dashboard is open (`http://localhost:8080`) with chart displayed (WebSocket connected) |
 | **Test steps** | 1. Locate timeframe selector (5m, 15m, 1h, 4h, 1d) 2. Click each timeframe 3. Observe chart redraw within 2s 4. Verify candle data differs per interval |
 | **Expected result** | Chart loads new candle data for each timeframe within 2 seconds. All timeframes display correct interval data. WebSocket continues pushing live updates after switch. |
 | **Execution result** | ⏳ Partial |
@@ -124,7 +124,7 @@
 | **Title** | Chart candles update in real time via WebSocket |
 | **User goal** | As a trader, I want the chart to update automatically without page refreshes so I can track price movements in real time. |
 | **Scenario status** | Active |
-| **Preconditions** | Web dashboard is open (`http://localhost:8000`). Bybit API is reachable. |
+| **Preconditions** | Web dashboard is open (`http://localhost:8080`). Bybit API is reachable. |
 | **Test steps** | 1. Open the dashboard and select BTCUSDT with 5m interval 2. Observe that the latest candle updates without manual refresh after 30 seconds 3. Switch to a different coin (e.g. ETHUSDT) 4. New coin's candles load and continue live-updating |
 | **Expected result** | Candle chart updates in real time without page refreshes. Switching coins loads the new data and continues live updates seamlessly. |
 | **Execution result** | ✅ Pass |
@@ -159,7 +159,7 @@
 |---|---|
 | **ID** | UAT-008 |
 | **Title** | Configure pattern analysis candle range |
-| **Preconditions** | Web dashboard is open (`http://localhost:8000`) with chart displayed for any coin |
+| **Preconditions** | Web dashboard is open (`http://localhost:8080`) with chart displayed for any coin |
 | **Test steps** | 1. Locate the "Candles:" input field next to the ANALYZE PATTERNS button 2. Observe default value is 10000 3. Change value to 50000 4. Click ANALYZE PATTERNS 5. Observe analysis result text confirms "Found N pattern(s) across 50000 candles" 6. Change value to 1000 and re-run analysis 7. Observe result text confirms smaller range |
 | **Expected result** | User can freely adjust the analysis candle count (valid range 100–500000). Analysis runs with the user-specified limit within <2s for up to 50000 candles. Result text reports the actual range used. |
 | **Status** | 🔄 New — requires customer execution |
