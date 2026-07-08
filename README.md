@@ -1,8 +1,24 @@
 # SWP TickFrame — Team 28
 
-FastAPI-based cryptocurrency chart workstation with real-time Bybit market data, live price streaming via WebSockets, candlestick charts (Lightweight Charts v4), a canvas-based drawing toolbar (13 tools), SQLite persistence, and ML pattern analysis.
+FastAPI-based cryptocurrency chart workstation with real-time Bybit market data, live price streaming via WebSockets, candlestick charts (Lightweight Charts v5), a canvas-based drawing toolbar (13 tools), SQLite persistence, and ML pattern analysis.
 
-**Latest Release:** [v1.1.0](https://github.com/Fedos113/SWP_TickFrame_28_team/releases/tag/v1.1.0) (Sprint 3 Increment)
+![SWP TickFrame UI](docs/images/ui-screenshot.png)
+
+---
+
+## Quick Links
+
+| | |
+|---|---|
+| 🚀 **Product Access** | http://10.93.26.164:8080/ |
+| 📖 **Hosted Documentation** | https://Fedos113.github.io/SWP_TickFrame_28_team/ |
+| 📋 **Customer Handover** | [docs/customer-handover.md](docs/customer-handover.md) |
+| 🤝 **Contributing Guide** | [CONTRIBUTING.md](CONTRIBUTING.md) |
+| 🤖 **AI Agent Context** | [AGENTS.md](AGENTS.md) |
+
+---
+
+**Latest Release:** [v2.0.0](https://github.com/Fedos113/SWP_TickFrame_28_team/releases/tag/v2.0.0) (MVP v2)
 
 ---
 
@@ -115,7 +131,7 @@ uvicorn tickframe.backend.main:app --host 0.0.0.0 --port 8000
 ### 5. Open in browser
 
 ```
-http://localhost:8080
+http://localhost:8000
 ```
 
 > Note: ML service must be started separately for pattern analysis to work.
@@ -124,36 +140,21 @@ http://localhost:8080
 
 ## Architecture
 
+![Static architecture diagram](docs/architecture/static-view/diagram.svg)
+
+### Project structure
+
 ```
 tickframe/
-├── backend/
-│   ├── main.py                # FastAPI app, lifespan, static mounts
-│   ├── api/
-│   │   ├── endpoints.py       # REST: health, coins, candles, analyze, drawings, settings
-│   │   └── websocket.py       # WS: market hub, candle streams + heartbeat
-│   ├── services/
-│   │   ├── bybit_client.py    # Async Bybit v5 client with Binance fallback + pagination
-│   │   ├── cache.py           # MemoryMarketCache with DB fallback (3-tier: mem → DB → exchange)
-│   │   ├── database.py        # SQLite service (settings, drawings, candle persistence)
-│   │   └── ml_client.py       # HTTP client for ML pattern analysis service
-│   └── models/
-│       └── schemas.py         # Pydantic models
-├── frontend/
-│   ├── index.html             # Main page with left drawing toolbar
-│   ├── css/styles.css         # Dark/light theme, toolbar, settings panel
-│   └── js/
-│       ├── app.js             # Init, theme toggle, settings load/save
-│       ├── charts.js          # Lightweight Charts v4, candle loading, pattern analysis
-│       ├── sidebar.js         # Coin list with full ticker badges, trend-colored prices
-│       ├── datafeed.js        # TradingView Charting Library datafeed adapter
-│       ├── drawing-overlay.js # Canvas drawing engine: 13 tools, redact mode, undo, per-drawing settings
-│       ├── toolbar.js         # Chart type switching (candle/line/area)
-│       └── websocket.js       # WebSocket connection management
-├── ml_service/                # ML pattern detection microservice
-├── data/tickframe.db          # SQLite database (auto-created, gitignored)
-├── docker-compose.yml         # tickframe + ml-service containers
+├── backend/           # FastAPI app, API endpoints, services, models
+├── frontend/          # HTML, CSS, JS (Lightweight Charts v5, drawing toolbar)
+├── ml_service/        # ML pattern detection microservice
+├── data/tickframe.db  # SQLite database (auto-created, gitignored)
+├── docker-compose.yml # tickframe + ml-service containers
 └── requirements.txt
 ```
+
+See [full architecture docs](docs/architecture/README.md) for component, sequence, and deployment diagrams.
 
 ### Data flow
 
@@ -225,20 +226,31 @@ Key variables:
 
 ---
 
+## Troubleshooting
+
+| Symptom | Likely cause | Fix |
+|---|---|---|
+| `docker compose up` fails on port | Port `8000` or `8080` already in use | `netstat -ano \| findstr ":8080"` → stop conflicting process or change host port in `docker-compose.yml` |
+| UI loads but no candles | Exchange API rate limit or network blocked | Wait 30 s and refresh; verify outbound HTTPS to `api.bybit.com` |
+| WebSocket disconnects | Network timeout after 30 s idle | Auto-reconnect is built in — wait a few seconds |
+| ML analysis returns empty | ML service not running | `curl http://localhost:8001/health`; if down, `docker compose restart ml-service` |
+| Drawings not saving | SQLite file permissions | Ensure `data/` directory is writable by the container (uid 1000) |
+| Charts show "No data" | Interval changed before candle fetch completed | Refresh the page |
+
+For persistent issues, file a [GitHub issue](https://github.com/Fedos113/SWP_TickFrame_28_team/issues).
+
+---
+
 ## Documentation & Reports
 
 | Resource | Link |
 |---|---|
-| Definition of Done | [docs/definition-of-done.md](https://github.com/Fedos113/SWP_TickFrame_28_team/blob/main/docs/definition-of-done.md) |
-| Development Process | [docs/development-process.md](https://github.com/Fedos113/SWP_TickFrame_28_team/blob/main/docs/development-process.md) |
-| Roadmap | [docs/roadmap.md](https://github.com/Fedos113/SWP_TickFrame_28_team/blob/main/docs/roadmap.md) |
-| User Stories | [docs/user-stories.md](https://github.com/Fedos113/SWP_TickFrame_28_team/blob/main/docs/user-stories.md) |
-| Changelog | [CHANGELOG.md](https://github.com/Fedos113/SWP_TickFrame_28_team/blob/main/CHANGELOG.md) |
-| Quality Requirements | [docs/quality-requirements.md](https://github.com/Fedos113/SWP_TickFrame_28_team/blob/main/docs/quality-requirements.md) |
-| Quality Requirement Tests | [docs/quality-requirement-tests.md](https://github.com/Fedos113/SWP_TickFrame_28_team/blob/main/docs/quality-requirement-tests.md) |
-| Testing Strategy | [docs/testing.md](https://github.com/Fedos113/SWP_TickFrame_28_team/blob/main/docs/testing.md) |
-| User Acceptance Tests | [docs/user-acceptance-tests.md](https://github.com/Fedos113/SWP_TickFrame_28_team/blob/main/docs/user-acceptance-tests.md) |
-| Week 4 Reports | [reports/week4/](https://github.com/Fedos113/SWP_TickFrame_28_team/blob/main/reports/week4/README.md) |
-| Week 2 Reports | [reports/week2/](https://github.com/Fedos113/SWP_TickFrame_28_team/blob/main/reports/week2/README.md) |
-| Week 3 Reports | [reports/week3/](https://github.com/Fedos113/SWP_TickFrame_28_team/blob/main/reports/week3/README.md) |
-| License | [MIT](https://github.com/Fedos113/SWP_TickFrame_28_team/blob/main/LICENSE) |
+| Customer Handover | [docs/customer-handover.md](docs/customer-handover.md) |
+| Contributing Guide | [CONTRIBUTING.md](CONTRIBUTING.md) |
+| AI Agent Context | [AGENTS.md](AGENTS.md) |
+| Architecture Docs | [docs/architecture/README.md](docs/architecture/README.md) |
+| Roadmap | [docs/roadmap.md](docs/roadmap.md) |
+| Changelog | [CHANGELOG.md](CHANGELOG.md) |
+| Definition of Done | [docs/definition-of-done.md](docs/definition-of-done.md) |
+| Testing Strategy | [docs/testing.md](docs/testing.md) |
+| Sprint Reports | [reports/](reports/) |
