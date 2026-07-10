@@ -435,9 +435,9 @@ All contributions on the `2.2.0-trial` branch (commit `5884717`), organized by t
 - [ ] Keep all three current during Week 6 and Week 7
 
 ### Part 4: Maintain Customer Handover Documentation
-- [x] Create/update `docs/customer-handover.md` according to Artifact Requirements — _template with Known Limitations added_
+- [x] Create/update `docs/customer-handover.md` according to Artifact Requirements — _enhanced with Transition Scope table, full env var documentation, structured setup/deployment sections, documentation sufficiency assessment, and Week 6 honest handover state_
 - [x] Must state: transferred/delegated/retained arrangements, env vars/config/secrets steps, setup/deployment/recovery/verification steps, main doc entry points, whether docs are sufficient for handover level — _all present; handover level: "Ready for independent use" (pending confirmation)_
-- [ ] Keep current during Week 6 and Week 7
+- [x] Keep current during Week 6 — _updated for Sprint 5; pending Week 7 final transition update_
 
 ### Part 5: Conduct Week 6 Transition-Readiness Meeting & Customer Trial
 - [ ] Meet customer in Week 6 to discuss transition readiness and trial
@@ -534,6 +534,34 @@ All contributions on the `192-entry-point-docs` branch, organized by theme:
 |---|---|---|
 | [#192](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/192) | DOC: Polish Public Repository Entry Point & Customer-Facing Docs (A6 Part 3) | A6 Part 3 entry-point docs |
 | [#194](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/194) | DOC: Fix A6 Part 3 audit gaps — SVG, troubleshooting, limitations, relative links, screenshot | A6 Part 3 audit gap fixes |
+
+---
+
+## 18. Completed Week 6 Contributions (Branch `18-customer-handover-update`)
+
+All contributions on the `18-customer-handover-update` branch, organized by theme:
+
+### A6 Part 4 — Maintain Customer Handover Documentation
+
+| Item | Detail | Status |
+|---|---|---|
+| Transition Scope table | Added explicit transferred/delegated/retained breakdown with ownership notes and fork guidance | ✅ Done |
+| Configuration and Secrets section | Full env var table (7 variables) from `.env.example` with Required/Default/Purpose columns + secrets handling rules (`.gitignore`, `chmod 600`, `cp .env.example .env`) | ✅ Done |
+| Setup and Deployment restructure | Consolidated from scattered sections into 7 sub-sections: Prerequisites, Docker Quick Start, Local Dev, Verification Steps (health endpoints with expected responses), Recovery/Clean Rebuild, Updating, Port Conflicts | ✅ Done |
+| Documentation Entry Points | 14-row table with Purpose column; explicit sufficiency assessment naming 3 Week 7 gaps (customer trial pending, final access TBD, confirmation pending) | ✅ Done |
+| Handover Status enhancement | Honest Week 6 state (Ready for independent use / Pending confirmation) with explanation, expanded handover checklist, and support needs table with Week 7 action plan | ✅ Done |
+
+### Commits
+
+| Commit | Description |
+|---|---|
+| `7d3363b` | DOC: Update docs/customer-handover.md for Week 6 handover state (A6 Part 4) — Transition Scope, Configuration/Secrets, Setup/Deployment, Doc Entry Points, sufficiency assessment |
+
+### GitHub Issues Link
+
+| Issue | Title | Branch Contribution |
+|---|---|---|
+| [#18](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/18) | DOC: Update docs/customer-handover.md for Week 6 handover state (A6 Part 4) | A6 Part 4 customer handover update |
 
 ---
 
