@@ -62,3 +62,19 @@ class AnalyzeResponse(BaseModel):
     interval: str
     limit: int
     patterns: list[Pattern]
+
+
+class IndicatorConfig(BaseModel):
+    uid: str
+    indicatorId: str
+    inputs: dict | None = None
+    overlay: bool = True
+
+
+class IndicatorsResponse(BaseModel):
+    indicators: list[dict]
+
+
+class IndicatorsPayload(BaseModel):
+    symbol: str = ""
+    indicators: list = []

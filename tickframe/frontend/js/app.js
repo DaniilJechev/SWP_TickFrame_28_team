@@ -21,6 +21,60 @@ async function loadSettings() {
 }
 
 var _initialLoadDone = false;
+var _rsiAppliedForSymbol = '';
+
+function initIndicatorSubsystem() {
+  if (window.TFIndicatorController && window.TFIndicatorState && window.TFIndicatorPanel && window.TFIndicatorChips && window.TFIndicatorPanes) {
+    TFIndicatorController.init({
+      getCurrentBarsFn: function () { return window.TFChart ? window.TFChart.getCurrentBars() : []; },
+    });
+    var mainChart = window.TFChart ? window.TFChart.mainChart() : null;
+    var paneArea = document.getElementById('indicatorPanes');
+    if (mainChart && paneArea) {
+      TFIndicatorPanes.init(mainChart, paneArea, paneArea);
+    }
+
+    var volumePane = TFIndicatorPanes.createPane('_volume', 80);
+    if (volumePane) {
+      var volHeader = volumePane.container.querySelector('.indicator-pane-header');
+      if (volHeader) volHeader.textContent = 'Volume';
+      if (window.TFChart && typeof window.TFChart.initVolumePane === 'function') {
+        window.TFChart.initVolumePane(volumePane.chart);
+      }
+    }
+
+    TFIndicatorPanel.init();
+    TFIndicatorChips.init();
+  }
+
+  window._onCandlesUpdated = function (symbol) {
+    if (!window.TFIndicatorController) return;
+    var saved = TFIndicatorState.getApplied().slice();
+    TFIndicatorController.destroyAll();
+    for (var i = 0; i < saved.length; i++) {
+      TFIndicatorController.applyIndicator(saved[i].indicatorId, saved[i].inputs);
+    }
+    if (_rsiAppliedForSymbol !== symbol) {
+      _rsiAppliedForSymbol = symbol;
+      var hasRsi = false;
+      for (var j = 0; j < saved.length; j++) {
+        if (saved[j].indicatorId === 'rsi') { hasRsi = true; break; }
+      }
+      if (!hasRsi) {
+        TFIndicatorController.applyIndicator('rsi');
+      }
+    }
+  };
+}
+
+function indicatorsToggle() {
+  var panel = document.getElementById('indicatorsPanel');
+  if (panel) {
+    panel.classList.toggle('hidden');
+    var btn = document.getElementById('indicatorsToggle');
+    if (btn) btn.classList.toggle('active');
+  }
+}
 
 document.addEventListener('DOMContentLoaded', () => {
   loadSettings();
@@ -43,6 +97,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (titleEl) titleEl.innerText = `Market charts - ${symbolNames[symbol] || symbol}`;
   };
 
+  initIndicatorSubsystem();
+
   var origSetActive = window.TFChart?.setActiveSymbol;
   if (window.TFChart) {
     window.TFChart.setActiveSymbol = (symbol) => {
@@ -51,6 +107,9 @@ document.addEventListener('DOMContentLoaded', () => {
       _initialLoadDone = true;
       if (typeof origSetActive === 'function') {
         origSetActive(symbol);
+      }
+      if (window.TFIndicatorController && typeof TFIndicatorController.loadForSymbol === 'function') {
+        TFIndicatorController.loadForSymbol(symbol);
       }
     };
   }
@@ -68,6 +127,16 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  // indicators toggle
+  var indicatorsToggleBtn = document.getElementById('indicatorsToggle');
+  if (indicatorsToggleBtn) {
+    indicatorsToggleBtn.addEventListener('click', indicatorsToggle);
+  }
+  var indicatorsCloseBtn = document.getElementById('indicatorsClose');
+  if (indicatorsCloseBtn) {
+    indicatorsCloseBtn.addEventListener('click', indicatorsToggle);
+  }
+
   // theme toggle
   const themeBtn = document.getElementById('themeBtn');
   themeBtn?.addEventListener('click', () => {
@@ -79,6 +148,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (typeof loadFearAndGreed === 'function') loadFearAndGreed();
     if (window.TFDraw && window.TFDraw.redraw) {
       window.TFDraw.redraw();
+    }
+    if (window.TFIndicatorPanes && typeof TFIndicatorPanes.applyThemeToAll === 'function') {
+      TFIndicatorPanes.applyThemeToAll(dark);
     }
   });
 

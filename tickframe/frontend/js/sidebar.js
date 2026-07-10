@@ -79,11 +79,12 @@ async function updatePrices() {
   } catch (e) { console.error('updatePrices', e); }
 }
 
-function onCoinClick(symbol) {
+async function onCoinClick(symbol) {
   if (window.TFChart) {
     const interval = document.querySelector('.timeframes button.active')?.dataset.tf || '5m';
+    window.TFChart.stopCandleWs();
     window.TFChart.setActiveSymbol?.(symbol);
-    window.TFChart.loadCandles(symbol, interval);
+    await window.TFChart.loadCandles(symbol, interval);
     window.TFChart.startCandleWs(symbol, interval);
   }
   const resultEl = document.querySelector('.result-text');

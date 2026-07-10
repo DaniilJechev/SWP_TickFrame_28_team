@@ -1,7 +1,11 @@
 var _initialized = false;
+var _controllerInitUnsub = null;
 
 function _onKeyDown(e) {
   if (!DrawingController.getManager()) return;
+
+  var tag = e.target.tagName;
+  if (tag === 'INPUT' || tag === 'TEXTAREA' || e.target.isContentEditable) return;
 
   if (e.key === 'Escape') {
     DrawingController.activateTool(null);
@@ -9,7 +13,7 @@ function _onKeyDown(e) {
     return;
   }
 
-  if (e.key === 'Delete' || e.key === 'Backspace') {
+  if (e.key === 'Delete') {
     DrawingController.deleteSelection();
     e.preventDefault();
     return;
@@ -24,19 +28,6 @@ function _onKeyDown(e) {
     e.preventDefault();
     return;
   }
-
-  var key = e.key.toLowerCase();
-  if (e.shiftKey) key = 'shift+' + key;
-  TOOL_GROUPS.forEach(function (g) {
-    g.tools.forEach(function (t) {
-      if (t.shortcut && t.shortcut.toLowerCase() === key) {
-        if (t.type === 'delete') { DrawingController.deleteSelection(); }
-        else if (t.type === 'clear') { DrawingController.clearAll(); }
-        else { DrawingController.activateTool(t.type); }
-        e.preventDefault();
-      }
-    });
-  });
 }
 
 function init(chart, candleSeries, container) {
@@ -46,7 +37,8 @@ function init(chart, candleSeries, container) {
   if (_initialized) teardown();
 
   var toolbarReady = false;
-  DrawingEvents.on('controller:init', function () {
+  if (_controllerInitUnsub) _controllerInitUnsub();
+  _controllerInitUnsub = DrawingEvents.on('controller:init', function () {
     console.log('TFDraw: controller:init received, toolbarReady=' + toolbarReady);
     if (!toolbarReady) {
       DrawingToolbar.init();
@@ -65,6 +57,7 @@ function init(chart, candleSeries, container) {
 function teardown() {
   DrawingController.teardown();
   document.removeEventListener('keydown', _onKeyDown);
+  if (_controllerInitUnsub) { _controllerInitUnsub(); _controllerInitUnsub = null; }
   _initialized = false;
 }
 

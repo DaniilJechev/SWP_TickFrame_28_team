@@ -101,14 +101,16 @@ SWP_TickFrame_28_team/
 │   │   ├── css/
 │   │   │   ├── styles.css       # Theming, layout, sidebar, FNG
 │   │   │   ├── drawing-toolbar.css  # Modular drawing toolbar styles
-│   │   │   └── drawing-properties.css # Drawing properties panel styles
+│   │   │   ├── drawing-properties.css # Drawing properties panel styles
+│   │   │   └── indicators-panel.css   # Indicators panel styles
 │   │   ├── js/
 │   │   │   ├── app.js           # Init, theme toggle, settings load/save
 │   │   │   ├── charts.js        # Lightweight Charts v5, candle loading, pattern analysis, volume sub-chart
 │   │   │   ├── sidebar.js       # Coin list, icons, FNG, trend-colored prices
 │   │   │   ├── datafeed.js      # TradingView Charting Library adapter
 │   │   │   ├── websocket.js     # WebSocket connection manager
-│   │   │   └── drawing-*.js     # Modular drawing system (7 modules)
+│   │   │   ├── drawing-*.js     # Modular drawing system (7 modules)
+│   │   │   ├── indicators-*.js  # Indicators subsystem (registry, controller, state, panes, panel, chips) + bundled library
 │   │   └── eslint.config.js    # ESLint flat config
 │   ├── data/                    # SQLite DB (gitignored)
 │   ├── detection/               # Pattern detection logic
@@ -145,7 +147,7 @@ SWP_TickFrame_28_team/
 | Layer | Technology |
 |---|---|
 | **Backend** | Python 3.11, FastAPI, Uvicorn, httpx, websockets |
-| **Frontend** | Lightweight Charts v5, Canvas API, vanilla JS, lightweight-charts-drawing, Lucide icons, esbuild |
+| **Frontend** | Lightweight Charts v5, Canvas API, vanilla JS, lightweight-charts-drawing, lightweight-charts-indicators, oakscriptjs, Lucide icons, esbuild |
 | **Database** | SQLite (via aiosqlite) |
 | **ML** | XGBoost (Head & Shoulders detection), FastAPI microservice |
 | **Exchange** | Bybit v5 API (primary), Binance API (fallback) |
@@ -199,7 +201,7 @@ SWP_TickFrame_28_team/
 | MVP v1 | `v1.0.0` | 2026-06-21 | Sprint 2 |
 | Sprint 3 Increment | `v1.1.0` | 2026-06-26 | Sprint 3 |
 | MVP v2 | `v2.0.0` | 2026-07-06 | Sprint 4 (A5) |
-| **Week 6 Trial** | **TBD** | **Week 6** | **Sprint 5 (A6)** |
+| **Week 6 Trial** | `v2.2.0-trial` | **Week 6 (branch `2.2.0-trial`)** | **Sprint 5 (A6)** |
 | **MVP v3** | **TBD** | **Week 7** | **Sprint 6 (A6)** |
 
 ---
@@ -275,7 +277,7 @@ All documented in:
 | UAT-004 | Real-time sidebar | ✅ Pass | 10 pairs with live prices, coin icons, F&G index. |
 | UAT-005 | Theme toggle | ✅ Pass | Works across reloads. |
 | UAT-006 | WebSocket real-time candle updates | ✅ Pass | WebSocket live candles from Bybit/Binance. DB cache. |
-| UAT-007 | RSI and Volume sub-charts | ⏳ Partial | Volume sub-chart works. **RSI not working** — moved to Sprint 5. |
+| UAT-007 | RSI and Volume sub-charts | ✅ Pass | Volume sub-chart works via indicator panes subsystem. **RSI implemented** via `lightweight-charts-indicators` library (445+ indicators). Auto-applied on symbol switch. |
 
 **Documentation:** [`docs/user-acceptance-tests.md`](../../docs/user-acceptance-tests.md)
 
@@ -336,6 +338,72 @@ All contributions on the `6-repo-template` branch, organized by theme:
 
 ---
 
+## 12a. Completed Week 6 Contributions (Branch `2.2.0-trial`) — Indicators &amp; Trial Release
+
+All contributions on the `2.2.0-trial` branch (commit `5884717`), organized by theme:
+
+### Indicators Subsystem (445+ Technical Indicators)
+
+| Item | Detail | Status |
+|---|---|---|
+| `lightweight-charts-indicators` v0.4.2 | Integrated 445+ built-in technical indicators via npm + esbuild bundle | ✅ Done |
+| `oakscriptjs` v0.2.8 | Peer dependency for indicator calculation engine | ✅ Done |
+| `TFIndicators` registry | Indicator lookup, search (by name/id), group by category (Standard / Candlestick Patterns / Community) | ✅ Done |
+| `TFIndicatorController` | Apply, remove, recompute indicators on candle data; overlay (line series on main chart) and pane (separate sub-chart) modes; candlestick pattern markers | ✅ Done |
+| `TFIndicatorState` | Reactive state store for applied indicators, search query, group expansion, volume toggle | ✅ Done |
+| `TFIndicatorPanes` | Dynamic pane creation/destruction for non-overlay indicators; volume pane integration | ✅ Done |
+| `TFIndicatorPanel` | Side panel UI with search input, collapsible groups, pinned RSI row, volume toggle, indicator rows | ✅ Done |
+| `TFIndicatorChips` | Chips display for applied indicators; click to remove | ✅ Done |
+| RSI auto-apply | RSI (14) automatically applied when switching to a new symbol (if not already present) | ✅ Done |
+| **Closes [#112](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/112)** | PBI-117: Add RSI indicator sub-chart — **closed** | ✅ Done |
+| Theme sync for panes | `TFIndicatorPanes.applyThemeToAll()` called on theme toggle | ✅ Done |
+
+### Backend Indicator Persistence
+
+| Item | Detail | Status |
+|---|---|---|
+| `GET /api/indicators?symbol=` | REST endpoint to load indicator state for a symbol | ✅ Done |
+| `POST /api/indicators` | REST endpoint to save indicator state for a symbol | ✅ Done |
+| `indicators_blob` SQLite table | Schema with `symbol` (PK), `data` (JSON text), `updated` (timestamp) | ✅ Done |
+| `IndicatorsPayload` / `IndicatorsResponse` / `IndicatorConfig` | Pydantic models for indicator API | ✅ Done |
+
+### Drawing Toolbar Refinements
+
+| Item | Detail | Status |
+|---|---|---|
+| 3-column grid layout | Drawing toolbar grid from `1fr 1fr` → `1fr 1fr 1fr` | ✅ Done |
+| Smaller icons & buttons | Button 40→30px, icons 18→14px, border-radius 10→7px | ✅ Done |
+| Repositioned toolbar | Default top from 12px→40px, z-index 50→60 | ✅ Done |
+| Removed tools | Removed text-annotation, callout, brush, highlighter from toolbar | ✅ Done |
+| Keyboard shortcuts | Removed keyboard shortcuts that interfered with input fields; Escape/Delete still work | ✅ Done |
+| Drawing z-order fixes | All primitives set z-order to `"top"` (horizontal-line, vertical-line, cross-line, price-range, trend-line etc.) | ✅ Done |
+| Bitmap-aware full-width rendering | Use `bitmapSize` instead of `viewport.width` for proper rendering on HiDPI/retina | ✅ Done |
+| Adaptive price label precision | Price labels use dynamic decimal places based on magnitude (e.g., 0.000001 precision for small prices) | ✅ Done |
+| Human-readable timestamps | Unix timestamps formatted as `YYYY-MM-DD HH:mm` in cross-line/time labels | ✅ Done |
+| Price range label improvements | Formatting adapts to price magnitude; proper reordering of range/percentage display | ✅ Done |
+
+### Chart & WebSocket Fixes
+
+| Item | Detail | Status |
+|---|---|---|
+| WS race condition fix | `_wsSymbol`/`_wsInterval` guards prevent stale messages after symbol switch | ✅ Done |
+| Chart scale reset | `resetChartScale()` called on cached data load and same-symbol re-request | ✅ Done |
+| Cached data re-render | Series `setData([])` + `setData(data)` to force re-render on cache hit | ✅ Done |
+| Volume pane refactoring | Volume sub-chart moved into indicator panes subsystem (`initVolumePane`) | ✅ Done |
+| Sidebar async fix | `onCoinClick` now `async` and `await`s `loadCandles` before starting WS | ✅ Done |
+| Toolbar position DB default | `toolbar_position` default top changed from 12→40 in SQLite init | ✅ Done |
+| Drawing settings save fix | `DrawingSettings.save()` properly merges per-tool settings | ✅ Done |
+| Drawing properties singleton | Guard against duplicate `init()` calls | ✅ Done |
+
+### GitHub Issues Created
+
+| Issue | Title |
+|---|---|
+| [#198](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/198) | PBI-118: Add indicators subsystem with 445+ technical indicators and panel UI |
+| [#199](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/199) | IMPROVE: Drawing toolbar refinements, chart fixes, and WebSocket race condition fix |
+
+---
+
 ## 13. What Assignment 6 Requires (Gap Analysis)
 
 ### Part 1: Refine Product Backlog & Plan Sprint 5 and Sprint 6
@@ -350,8 +418,8 @@ All contributions on the `6-repo-template` branch, organized by theme:
 - [x] Update [`docs/backlog.md`](../../docs/backlog.md) with Sprint 5 and Sprint 6 sections
 
 ### Part 2: Deliver the Week 6 Trial Release
-- [ ] Implement selected Sprint 5 scope
-- [ ] Produce stable trial/handover-candidate release
+- [x] Implement selected Sprint 5 scope — _RSI + 445 indicators subsystem implemented on branch `2.2.0-trial` (PBI-117 closed, PBI-118 created #198)_
+- [ ] Produce stable trial/handover-candidate release — _branch `2.2.0-trial` ready, awaiting merge to `main` and SemVer tag_
 - [ ] Deploy/provide Week 6 trial increment for customer/TA access
 - [ ] Create SemVer release for Sprint 5 trial increment
 - [ ] Week 6 release must: SemVer tag, point to main, identify as Week 6 trial, link to Sprint 5 milestone, link to access instructions, link to `docs/customer-handover.md`, link to `reports/week6/README.md`
@@ -562,5 +630,5 @@ All contributions on the `192-entry-point-docs` branch, organized by theme:
 
 ---
 
-*Last updated: 2026-07-08 (updated with Week 6 branch `192-entry-point-docs` contributions)*
+*Last updated: 2026-07-10 (updated with `2.2.0-trial` branch contributions — indicators subsystem, drawing fixes, WS fixes)*
 *Generated by: OpenCode (deepseek-v4-flash-free)*
