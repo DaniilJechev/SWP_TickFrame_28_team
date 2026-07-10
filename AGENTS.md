@@ -58,18 +58,36 @@ reports/             — Weekly Sprint reports
 | `CHANGELOG.md` | Keep a Changelog format |
 | `docs/development-process.md` | Detailed workflow description |
 
+### Tech Stack
+
+| Layer | Technology |
+|---|---|
+| **Backend** | Python 3.11, FastAPI, Uvicorn, httpx, websockets, aiosqlite |
+| **Frontend** | Lightweight Charts v5, Canvas API, vanilla JS, lightweight-charts-drawing, Lucide icons, esbuild |
+| **Database** | SQLite (via aiosqlite) |
+| **ML** | XGBoost pattern detection microservice |
+| **Exchange APIs** | Bybit v5 (primary), Binance (fallback) |
+| **Deployment** | Docker + Docker Compose (2 containers: tickframe + ml-service) |
+| **CI** | GitHub Actions — ruff, mypy, pytest+cov, bandit, ESLint, Vitest, lychee |
+
+### Key Commands
+
+```bash
+ruff check .                          # Backend lint
+mypy tickframe/                       # Type check
+pytest --cov=tickframe tests/         # Run tests
+uvicorn tickframe.backend.main:app --host 0.0.0.0 --port 8000  # Dev server
+cd tickframe/frontend && npm run lint # Frontend lint
+cd tickframe/frontend && npm test     # Frontend tests
+docker compose up --build             # Full environment
+```
+
 ### Active Sprints
 
 - **Sprint 5** (Week 6, 2026-07-07 – 2026-07-13): Week 6 trial / handover-candidate release.
 - **Sprint 6** (Week 7, 2026-07-14 – 2026-07-20): MVP v3 — final course version.
 
 See `docs/roadmap.md` for details.
-
-### Current Technology Versions
-
-- Python 3.11+
-- Lightweight Charts v5
-- Node.js (for frontend build tooling)
 
 ### Branch Naming
 
@@ -78,6 +96,23 @@ See `docs/roadmap.md` for details.
 ### PR Workflow
 
 Branch → PR → review (one approval required) → merge commit → CI must pass before merge.
+
+### Architecture Decisions (ADRs)
+
+| ADR | Decision | Location |
+|---|---|---|
+| ADR-001 | WebSocket migration for real-time market data | docs/architecture/adr/ADR-001-websocket-migration.md |
+| ADR-002 | SQLite 3-tier cache for persistence | docs/architecture/adr/ADR-002-sqlite-persistence.md |
+| ADR-003 | ML detection as separate microservice | docs/architecture/adr/ADR-003-microservice-architecture.md |
+
+### Testing Strategy
+
+| Test Type | Tools | Location |
+|---|---|---|
+| Unit tests | pytest (pytest-asyncio) | `tests/unit/` |
+| Integration tests | pytest + httpx | `tests/integration/` |
+| QRTs (Quality Requirement Tests) | pytest | `tests/requirements/` |
+| Frontend tests | Vitest | `tickframe/frontend/js/tests/` |
 
 ## Assignments Reference
 
