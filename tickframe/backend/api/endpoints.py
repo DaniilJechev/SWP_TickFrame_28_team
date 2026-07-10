@@ -5,7 +5,7 @@ import logging
 from fastapi import APIRouter, Body, Depends, HTTPException, Query, Request
 from pydantic import BaseModel
 
-from ..models.schemas import AnalyzeResponse, CandleResponse, CoinSummary, PriceResponse
+from ..models.schemas import AnalyzeResponse, CandleResponse, CoinSummary, IndicatorsPayload, PriceResponse
 from ..services.cache import MemoryMarketCache
 from ..services.database import DatabaseService
 from ..services.coin_icons import coin_icons_client
@@ -182,6 +182,18 @@ async def save_drawings(payload: DrawingsPayload, db: DatabaseService = Depends(
         await db.save_drawings_blob(payload.symbol, payload.drawings_data)
     else:
         await db.save_drawings(payload.symbol, payload.drawings)
+    return {"status": "ok"}
+@router.get("/indicators")
+async def get_indicators(symbol: str = "", db: DatabaseService = Depends(get_database)) -> dict:
+    blob = await db.load_indicators(symbol)
+    if blob:
+        return {"indicators": blob}
+    return {"indicators": []}
+
+
+@router.post("/indicators")
+async def save_indicators(payload: IndicatorsPayload, db: DatabaseService = Depends(get_database)) -> dict:
+    await db.save_indicators(payload.symbol, payload.indicators)
     return {"status": "ok"}
 
 

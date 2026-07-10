@@ -44,13 +44,18 @@ class DatabaseService:
             CREATE TABLE IF NOT EXISTS toolbar_position (
                 id        INTEGER PRIMARY KEY DEFAULT 1 CHECK (id = 1),
                 pos_left  INTEGER NOT NULL DEFAULT 16,
-                pos_top   INTEGER NOT NULL DEFAULT 12
+                pos_top   INTEGER NOT NULL DEFAULT 40
             );
-            INSERT INTO toolbar_position (id, pos_left, pos_top) VALUES (1, 16, 12)
+            INSERT INTO toolbar_position (id, pos_left, pos_top) VALUES (1, 16, 40)
                 ON CONFLICT(id) DO NOTHING;
             CREATE TABLE IF NOT EXISTS coin_icons (
                 symbol  TEXT PRIMARY KEY,
                 url     TEXT NOT NULL
+            );
+            CREATE TABLE IF NOT EXISTS indicators_blob (
+                symbol  TEXT PRIMARY KEY,
+                data    TEXT NOT NULL,
+                updated TEXT NOT NULL DEFAULT (datetime('now'))
             );
             CREATE TABLE IF NOT EXISTS candles (
                 symbol    TEXT NOT NULL,
@@ -218,6 +223,34 @@ class DatabaseService:
     async def load_drawings_blob(self, symbol: str) -> list | dict | None:
         loop = asyncio.get_running_loop()
         return await loop.run_in_executor(None, self._load_drawings_blob, symbol)
+
+    # --- Indicators ---
+
+    def _save_indicators(self, symbol: str, data: list | dict | str) -> None:
+        serialized = json.dumps(data) if not isinstance(data, str) else data
+        with self._conn() as conn:
+            conn.execute(
+                "INSERT INTO indicators_blob (symbol, data, updated) VALUES (?, ?, datetime('now')) "
+                "ON CONFLICT(symbol) DO UPDATE SET data = excluded.data, updated = excluded.updated",
+                (symbol, serialized),
+            )
+
+    def _load_indicators(self, symbol: str) -> list | dict | None:
+        with self._conn() as conn:
+            row = conn.execute(
+                "SELECT data FROM indicators_blob WHERE symbol = ?", (symbol,)
+            ).fetchone()
+            if row:
+                return json.loads(row["data"])
+            return None
+
+    async def save_indicators(self, symbol: str, data: list | dict | str) -> None:
+        loop = asyncio.get_running_loop()
+        await loop.run_in_executor(None, self._save_indicators, symbol, data)
+
+    async def load_indicators(self, symbol: str) -> list | dict | None:
+        loop = asyncio.get_running_loop()
+        return await loop.run_in_executor(None, self._load_indicators, symbol)
 
     # --- Candles ---
 

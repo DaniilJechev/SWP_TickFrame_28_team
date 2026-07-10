@@ -2,10 +2,13 @@ var DrawingProperties = (function () {
   var _panel = null;
   var _visible = false;
   var _currentId = null;
+  var _initialized = false;
 
   var _COLORS = ['#ffffff', '#6b7280', '#3b82f6', '#22c55e', '#ef4444', '#f97316', '#eab308', '#a855f7'];
 
   function init() {
+    if (_initialized) return;
+    _initialized = true;
     _panel = document.getElementById('drawingProperties');
     if (!_panel) {
       _panel = document.createElement('div');

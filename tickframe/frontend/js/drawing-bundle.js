@@ -1002,7 +1002,7 @@ var DrawingLib = (() => {
       this._renderer = new Qn(i);
     }
     zOrder() {
-      return "normal";
+      return "top";
     }
     renderer() {
       return this._renderer;
@@ -1019,20 +1019,22 @@ var DrawingLib = (() => {
       });
     }
     drawImpl(i) {
-      const { context: t, horizontalPixelRatio: s } = i, e = s, n = this._drawing.getViewport();
+      const { context: t, horizontalPixelRatio: s, bitmapSize: m } = i, e = s, n = this._drawing.getViewport();
       if (!n || !this._drawing.options.visible || !this._drawing.isValid()) return;
       const o = this._drawing.anchors[0], r = n.priceScale.priceToCoordinate(o.price);
       if (r === null) return;
+      const fullW = (m.width / e);
       A(t, this._drawing.style, e);
-      const a = { x: 0, y: r }, c = { x: n.width, y: r };
-      b(t, a, c, e);
+      b(t, { x: 0, y: r }, { x: fullW, y: r }, e);
       const l = this._drawing.horizontalLineOptions;
       if (l.showPrice) {
-        const d = l.labelText || o.price.toFixed(2);
+        var _p = o.price, _a = Math.abs(_p);
+        var _d = _a >= 1000 ? 2 : _a >= 100 ? 3 : _a >= 10 ? 4 : _a >= 1 ? 5 : _a >= 0.01 ? 6 : 8;
+        const d = l.labelText || _p.toFixed(_d).replace(/\.?0+$/, '');
         F(
           t,
           d,
-          { x: n.width - 10, y: r },
+          { x: fullW - 10, y: r },
           {
             font: this._drawing.style.labelFont || "12px sans-serif",
             textColor: "#ffffff",
@@ -1149,7 +1151,7 @@ var DrawingLib = (() => {
       b(t, a, c, e);
       const l = this._drawing.verticalLineOptions;
       if (l.showTime) {
-        const d = l.labelText || String(o.time);
+        const d = l.labelText || (typeof o.time === 'number' ? new Date(o.time * 1000).toISOString().slice(0, 16).replace('T', ' ') : String(o.time));
         F(
           t,
           d,
@@ -1516,7 +1518,7 @@ var DrawingLib = (() => {
       this._renderer = new ss(i);
     }
     zOrder() {
-      return "normal";
+      return "top";
     }
     renderer() {
       return this._renderer;
@@ -1533,16 +1535,17 @@ var DrawingLib = (() => {
       });
     }
     drawImpl(i) {
-      const { context: t, horizontalPixelRatio: s } = i, e = s, n = this._drawing.getViewport();
+      const { context: t, horizontalPixelRatio: s, bitmapSize: m } = i, e = s, n = this._drawing.getViewport();
       if (!n || !this._drawing.options.visible || !this._drawing.isValid()) return;
       const o = this._drawing.anchors[0], r = n.timeScale.timeToCoordinate(o.time), a = n.priceScale.priceToCoordinate(o.price);
       if (r === null || a === null) return;
-      A(t, this._drawing.style, e), b(t, { x: 0, y: a }, { x: n.width, y: a }, e), b(t, { x: r, y: 0 }, { x: r, y: n.height }, e);
+      const fullW = (m.width / e);
+      A(t, this._drawing.style, e), b(t, { x: 0, y: a }, { x: fullW, y: a }, e), b(t, { x: r, y: 0 }, { x: r, y: n.height }, e);
       const c = this._drawing.crossLineOptions;
       c.showPrice && F(
         t,
-        o.price.toFixed(2),
-        { x: n.width - 10, y: a },
+        (function(_p){var _a=Math.abs(_p);return _p.toFixed(_a>=1000?2:_a>=100?3:_a>=10?4:_a>=1?5:_a>=0.01?6:8).replace(/\.?0+$/,'')})(o.price),
+        { x: fullW - 10, y: a },
         {
           font: this._drawing.style.labelFont || "12px sans-serif",
           textColor: "#ffffff",
@@ -1553,7 +1556,7 @@ var DrawingLib = (() => {
         e
       ), c.showTime && F(
         t,
-        String(o.time),
+        typeof o.time === 'number' ? new Date(o.time * 1000).toISOString().slice(0, 16).replace('T', ' ') : String(o.time),
         { x: r, y: n.height - 10 },
         {
           font: this._drawing.style.labelFont || "12px sans-serif",
@@ -2516,7 +2519,7 @@ var DrawingLib = (() => {
       this._renderer = new ws(i);
     }
     zOrder() {
-      return "bottom";
+      return "top";
     }
     renderer() {
       return this._renderer;
@@ -2533,33 +2536,17 @@ var DrawingLib = (() => {
       });
     }
     drawImpl(i) {
-      const { context: t, horizontalPixelRatio: s } = i, e = s, n = this._drawing.getViewport();
+      const { context: t, horizontalPixelRatio: s, bitmapSize: m } = i, e = s, n = this._drawing.getViewport();
       if (!n || !this._drawing.options.visible || !this._drawing.isValid()) return;
       const o = this._drawing.anchors, r = n.priceScale.priceToCoordinate(o[0].price), a = n.priceScale.priceToCoordinate(o[1].price);
       if (r === null || a === null) return;
-      const c = Math.min(r, a), l = Math.max(r, a), h = l - c;
-      A(t, this._drawing.style, e), this._drawing.style.fillColor && (t.fillStyle = this._drawing.style.fillColor, t.fillRect(0, c * e, n.width * e, h * e)), b(t, { x: 0, y: c }, { x: n.width, y: c }, e), b(t, { x: 0, y: l }, { x: n.width, y: l }, e);
+      const c = Math.min(r, a), l = Math.max(r, a), h = l - c, fullW = (m.width / e);
+      A(t, this._drawing.style, e), this._drawing.style.fillColor && (t.fillStyle = this._drawing.style.fillColor, t.fillRect(0, c * e, fullW * e, h * e)), b(t, { x: 0, y: c }, { x: fullW, y: c }, e), b(t, { x: 0, y: l }, { x: fullW, y: l }, e);
       const d = this._drawing.priceRangeOptions, f = this._drawing.getRangeInfo(), g = (c + l) / 2, _ = [];
-      if (d.showRange && _.push(`$${f.range.toFixed(2)}`), d.showPercentage) {
-        const x = f.percentage >= 0 ? "+" : "";
-        _.push(`${x}${f.percentage.toFixed(2)}%`);
-      }
-      _.length > 0 && F(
-        t,
-        _.join(" | "),
-        { x: n.width / 2, y: g },
-        {
-          font: this._drawing.style.labelFont || "12px sans-serif",
-          textColor: "#ffffff",
-          backgroundColor: this._drawing.style.lineColor + "CC",
-          padding: 6,
-          borderRadius: 4
-        },
-        e
-      ), d.showPrices && (F(
+      d.showPrices && (F(
         t,
         f.max.toFixed(2),
-        { x: n.width - 10, y: c },
+        { x: fullW - 10, y: c },
         {
           font: "11px sans-serif",
           textColor: "#ffffff",
@@ -2571,7 +2558,7 @@ var DrawingLib = (() => {
       ), F(
         t,
         f.min.toFixed(2),
-        { x: n.width - 10, y: l },
+        { x: fullW - 10, y: l },
         {
           font: "11px sans-serif",
           textColor: "#ffffff",
@@ -2581,6 +2568,30 @@ var DrawingLib = (() => {
         },
         e
       ));
+      if (d.showRange || d.showPercentage) {
+        var _pR = f.max, _pL = f.min, _rA = Math.abs(_pR), _lA = Math.abs(_pL);
+        var _rD = _rA >= 1000 ? 2 : _rA >= 100 ? 3 : _rA >= 10 ? 4 : _rA >= 1 ? 5 : _rA >= 0.01 ? 6 : 8;
+        var _lD = _lA >= 1000 ? 2 : _lA >= 100 ? 3 : _lA >= 10 ? 4 : _lA >= 1 ? 5 : _lA >= 0.01 ? 6 : 8;
+        var _parts = [];
+        if (d.showRange) _parts.push(f.range.toFixed(Math.min(_rD, _lD)));
+        if (d.showPercentage) {
+          var _sign = f.percentage >= 0 ? "+" : "";
+          _parts.push(_sign + f.percentage.toFixed(2) + "%");
+        }
+        _parts.length > 0 && F(
+          t,
+          _parts.join(" | "),
+          { x: fullW / 2, y: g },
+          {
+            font: this._drawing.style.labelFont || "12px sans-serif",
+            textColor: "#ffffff",
+            backgroundColor: this._drawing.style.lineColor + "CC",
+            padding: 6,
+            borderRadius: 4
+          },
+          e
+        );
+      }
       const y = this._drawing.state;
       if (y === "selected" || y === "editing") {
         const x = this._drawing.getControlPoints(n);

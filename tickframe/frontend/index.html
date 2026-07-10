@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="/css/styles.css?v=1">
     <link rel="stylesheet" href="/css/drawing-toolbar.css?v=1">
     <link rel="stylesheet" href="/css/drawing-properties.css?v=1">
+    <link rel="stylesheet" href="/css/indicators-panel.css?v=1">
   </head>
   <body>
     <div class="app">
@@ -28,20 +29,34 @@
               <button data-tf="1d">1d</button>
             </div>
             <button id="themeBtn">Theme</button>
+            <button id="indicatorsToggle">Indicators</button>
           </div>
         </header>
 
         <div class="chart-area">
           <section class="content">
+            <div class="indicator-chips" id="indicatorChips"></div>
             <div class="chart-container">
               <div id="chart"></div>
-              <div class="drawing-toolbar" id="drawingToolbar"></div>
               <div class="chart-loading-overlay" id="chartLoading">
                 <div class="chart-loading-spinner"></div>
               </div>
             </div>
-
+            <div class="drawing-toolbar" id="drawingToolbar"></div>
+            <div id="indicatorPanes"></div>
           </section>
+          <aside class="indicators-panel" id="indicatorsPanel">
+            <div class="indicators-panel-header">
+              <span>Indicators</span>
+              <button class="ind-close-btn" id="indicatorsClose" title="Close panel">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+              </button>
+            </div>
+            <div class="indicators-search-wrap">
+              <input id="indicatorsSearch" type="text" placeholder="Search indicators..." />
+            </div>
+            <div class="indicators-list" id="indicatorsList"></div>
+          </aside>
         </div>
 
         <div class="analysis-stack">
@@ -71,6 +86,13 @@
     <script src="/js/drawing-toolbar.js?v=1"></script>
     <script src="/js/drawing-properties.js?v=1"></script>
     <script src="/js/drawing-overlay.js?v=1"></script>
+    <script src="/js/indicators-bundle.js?v=1"></script>
+    <script src="/js/indicators-registry.js?v=1"></script>
+    <script src="/js/indicators-state.js?v=1"></script>
+    <script src="/js/indicators-panes.js?v=1"></script>
+    <script src="/js/indicators-controller.js?v=1"></script>
+    <script src="/js/indicators-panel.js?v=1"></script>
+    <script src="/js/indicators-chips.js?v=1"></script>
     <script src="/js/app.js?v=1"></script>
   </body>
 </html>

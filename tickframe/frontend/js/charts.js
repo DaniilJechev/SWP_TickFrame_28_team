@@ -8,7 +8,6 @@ let patternShapes = [];
 let patternMarkers = [];
 let patternDrawings = [];
 let chartInitMode = null;
-let _zoomSub = null;
 let _loadMoreTimer = null;
 let _currentAbort = null;
 let _currentLoadSymbol = '';
@@ -16,6 +15,8 @@ var _loadGen = 0;
 const _MAX_CANDLES = 55000;
 const _FUTURE_CANDLES = 500;
 var _candleCache = {};
+var _wsSymbol = '';
+var _wsInterval = '';
 
 let volumeSeries = null;
 let volumeSmaSeries = null;
@@ -190,7 +191,6 @@ function createLightweightChart(container) {
     priceFormat: { type: 'price', precision: 6, minMove: 0.000001 },
   });
 
-  // ---- Volume sub-chart (histogram + SMA) ----
   var _HS = window.LightweightCharts.HistogramSeries;
   var _LS = window.LightweightCharts.LineSeries;
 
@@ -214,7 +214,6 @@ function createLightweightChart(container) {
   chart = lwChart;
   applyChartTheme(true);
 
-  // Configure price scales AFTER chart is assigned
   chart.priceScale('volume').applyOptions({
     scaleMargins: { top: INDICATOR_TOP_VOLUME, bottom: INDICATOR_BOTTOM_VOLUME },
   });
@@ -223,22 +222,16 @@ function createLightweightChart(container) {
     scaleMargins: { top: INDICATOR_TOP_MAIN, bottom: INDICATOR_BOTTOM_MAIN },
   });
 
-
-
   window.addEventListener('resize', () => {
     const r = container.getBoundingClientRect();
     lwChart.resize(Math.max(300, r.width), Math.max(200, r.height));
   });
 
-  _zoomSub = chart.timeScale().subscribeVisibleTimeRangeChange(onVisibleRangeChanged);
+  chart.timeScale().subscribeVisibleTimeRangeChange(onVisibleRangeChanged);
 
   if (window.TFDraw && candleSeries) {
-    console.log('charts: calling TFDraw.init');
     window.TFDraw.init(lwChart, candleSeries, container);
     window.TFDraw.setSymbol(currentSymbol);
-    console.log('charts: TFDraw.init done');
-  } else {
-    console.warn('charts: TFDraw=' + !!window.TFDraw + ', candleSeries=' + !!candleSeries);
   }
 
   loadCandles(currentSymbol, currentInterval);
@@ -342,8 +335,19 @@ function applyChartTheme(darkMode) {
   chart.applyOptions(theme);
 }
 
+function resetChartScale() {
+  if (!chart || chartInitMode === 'advanced') return;
+  chart.timeScale().fitContent();
+  var ps = chart.priceScale('right');
+  ps.applyOptions({ autoScale: false });
+  ps.applyOptions({ autoScale: true });
+}
+
 async function loadCandles(symbol, interval) {
-  if (_currentLoadSymbol === symbol && currentInterval === interval) return;
+  if (_currentLoadSymbol === symbol && currentInterval === interval) {
+    resetChartScale();
+    return;
+  }
 
   var cacheKey = symbol + '|' + interval;
   var cached = _candleCache[cacheKey];
@@ -371,6 +375,9 @@ async function loadCandles(symbol, interval) {
 
   var gen = ++_loadGen;
 
+  _wsSymbol = '';
+  _wsInterval = '';
+
   if (!cached) {
     showLoading(true);
     if (candleSeries) candleSeries.setData([]);
@@ -387,10 +394,7 @@ async function loadCandles(symbol, interval) {
 
   window._hideChartLoading = null;
 
-  if (_zoomSub) {
-    try { chart.timeScale().unsubscribeVisibleTimeRangeChange(_zoomSub); } catch (_) {}
-    _zoomSub = null;
-  }
+  chart.timeScale().unsubscribeVisibleTimeRangeChange(onVisibleRangeChanged);
 
   if (_currentAbort) {
     _currentAbort.abort();
@@ -400,18 +404,16 @@ async function loadCandles(symbol, interval) {
   if (cached) {
     lastCandles = cached;
     var series = window.candleSeries;
-    if (series) series.setData(lastCandles);
+    if (series) {
+      series.setData([]);
+      series.setData(lastCandles);
+    }
     if (lastCandles.length) _updatePriceFormat(lastCandles[lastCandles.length - 1].close);
     updateIndicators(lastCandles);
-
-    if (lastCandles.length > 1) {
-      var intervalSec = _intervalToSeconds(currentInterval);
-      chart.timeScale().setVisibleRange({
-        from: lastCandles[Math.max(0, lastCandles.length - 10000)].time,
-        to: lastCandles[lastCandles.length - 1].time + intervalSec * 20,
-      });
-    }
-    _zoomSub = chart.timeScale().subscribeVisibleTimeRangeChange(onVisibleRangeChanged);
+    if (typeof window._onCandlesUpdated === 'function') window._onCandlesUpdated(symbol, interval);
+    resetChartScale();
+    chart.timeScale().subscribeVisibleTimeRangeChange(onVisibleRangeChanged);
+    return;
   }
 
   _currentAbort = new AbortController();
@@ -436,17 +438,9 @@ async function loadCandles(symbol, interval) {
     if (series) series.setData(lastCandles);
     if (lastCandles.length) _updatePriceFormat(lastCandles[lastCandles.length - 1].close);
     updateIndicators(lastCandles);
-
-    if (lastCandles.length > 1) {
-      var intervalSec = _intervalToSeconds(currentInterval);
-      chart.timeScale().setVisibleRange({
-        from: lastCandles[Math.max(0, lastCandles.length - 10000)].time,
-        to: lastCandles[lastCandles.length - 1].time + intervalSec * 20,
-      });
-    }
-    if (!cached) {
-      _zoomSub = chart.timeScale().subscribeVisibleTimeRangeChange(onVisibleRangeChanged);
-    }
+    if (typeof window._onCandlesUpdated === 'function') window._onCandlesUpdated(symbol, interval);
+    resetChartScale();
+    chart.timeScale().subscribeVisibleTimeRangeChange(onVisibleRangeChanged);
   } catch (err) {
     if (err.name === 'AbortError') return;
     console.error('loadCandles error', err);
@@ -461,25 +455,34 @@ async function loadCandles(symbol, interval) {
 }
 
 function startCandleWs(symbol, interval) {
-  stopCandleWs();
   if (chartInitMode === 'advanced') return;
+  _wsSymbol = '';
+  _wsInterval = '';
+  stopCandleWs();
+  _wsSymbol = symbol;
+  _wsInterval = interval;
   window._shouldReconnectWs = true;
   try {
     const proto = (location.protocol === 'https:') ? 'wss' : 'ws';
     const url = `${proto}://${location.host}/ws/candles/${symbol}?interval=${interval}`;
+    var wsSymbol = symbol;
+    var wsInterval = interval;
     window._candleWs = new WebSocket(url);
     window._candleWs.onopen = () => {
+      if (_wsSymbol !== wsSymbol || _wsInterval !== wsInterval) return;
       const s = document.getElementById('status');
       if (s) s.innerText = 'ONLINE';
     };
     window._candleWs.onclose = () => {
+      if (_wsSymbol !== wsSymbol || _wsInterval !== wsInterval) return;
       const s = document.getElementById('status');
       if (s) s.innerText = 'OFFLINE';
       if (window._shouldReconnectWs) {
-        setTimeout(() => startCandleWs(symbol, interval), 2000);
+        setTimeout(() => startCandleWs(wsSymbol, wsInterval), 2000);
       }
     };
     window._candleWs.onmessage = (ev) => {
+      if (_wsSymbol !== wsSymbol || _wsInterval !== wsInterval) return;
       try {
         const msg = JSON.parse(ev.data);
         if (msg.type === 'snapshot' && msg.candles) {
@@ -488,7 +491,7 @@ function startCandleWs(symbol, interval) {
           }));
           if (newCandles.length > lastCandles.length) {
             lastCandles = newCandles;
-            _candleCache[currentSymbol + '|' + currentInterval] = newCandles;
+            _candleCache[wsSymbol + '|' + wsInterval] = newCandles;
             var series = window.candleSeries;
             if (series) series.setData(newCandles);
             updateIndicators(lastCandles);
@@ -507,10 +510,9 @@ function startCandleWs(symbol, interval) {
               } else {
                 lastCandles.push(point);
               }
-              _candleCache[currentSymbol + '|' + currentInterval] = lastCandles;
+              _candleCache[wsSymbol + '|' + wsInterval] = lastCandles;
             }
             updateRealtime(point.time, point.close, point.volume, point.open);
-        
           }
           const s = document.getElementById('status');
           if (s) s.innerText = 'LIVE';
@@ -757,6 +759,24 @@ function renderDetectedPatterns(patterns) {
   }
 }
 
+function initVolumePane(paneChart) {
+  var _HS = window.LightweightCharts.HistogramSeries;
+  var _LS = window.LightweightCharts.LineSeries;
+
+  volumeSeries = paneChart.addSeries(_HS, {
+    priceFormat: { type: 'volume' },
+    lastValueVisible: false,
+    priceLineVisible: false,
+  });
+
+  volumeSmaSeries = paneChart.addSeries(_LS, {
+    color: '#FF9800',
+    lineWidth: 2,
+    lastValueVisible: false,
+    priceLineVisible: false,
+  });
+}
+
 function updateIndicators(candleData) {
   if (!volumeSeries || !volumeSmaSeries) return;
   if (!candleData || candleData.length < 20) return;
@@ -792,10 +812,20 @@ function updateRealtime(time, close, volume, open) {
 
 
 
+function getCurrentBars() {
+  return lastCandles;
+}
+
+function mainChart() {
+  return chart;
+}
+
 window.TFChart = {
   createChart, loadCandles, startCandleWs, stopCandleWs, applyChartTheme,
   analyzePatterns, renderPatterns, setActiveSymbol: (s) => { currentSymbol = s; },
-  updateIndicators, updateRealtime,
+  updateIndicators, updateRealtime, getCurrentBars, mainChart,
+  initVolumePane,
+  resetChartScale,
 };
 
 document.addEventListener('DOMContentLoaded', () => {
