@@ -151,7 +151,7 @@ var DrawingController = (function () {
           if (defaults.fillColor) style.fillColor = defaults.fillColor;
           if (defaults.fillOpacity != null) style.fillOpacity = defaults.fillOpacity;
         }
-        var drawing = registry.createDrawing(toolType, toolType + '-' + Date.now(), [anchor], style, {});
+        var drawing = registry.createDrawing(toolType, toolType + '-' + Date.now(), [anchor], style, { visible: true });
         if (drawing) {
           var multiClick = toolDef.requiredAnchors > 1;
           _pendingDrawing = multiClick ? drawing : null;
@@ -251,6 +251,8 @@ var DrawingController = (function () {
     _chart = null;
     _series = null;
     _container = null;
+    _symbol = '';
+    _pendingSymbol = null;
     DrawingState.reset();
   }
 

@@ -53,6 +53,17 @@ var DrawingSettings = (function () {
     save();
   }
 
+  function save(toolType, settings) {
+    var existing = _defaults[toolType] || {};
+    for (var key in settings) {
+      if (settings.hasOwnProperty(key)) {
+        existing[key] = settings[key];
+      }
+    }
+    _defaults[toolType] = existing;
+    _save();
+  }
+
   function getAll() {
     return _defaults;
   }
@@ -61,7 +72,7 @@ var DrawingSettings = (function () {
   return {
     getDefaults: getDefaults,
     setDefaults: setDefaults,
-    save: setDefaults,
+    save: save,
     getAll: getAll,
     load: load,
   };

@@ -3,10 +3,13 @@
   "type": "module",
   "scripts": {
     "build:drawings": "esbuild tickframe/frontend/js/drawing-overlay-src.js --bundle --format=iife --global-name=DrawingLib --outfile=tickframe/frontend/js/drawing-bundle.js",
-    "build": "npm run build:drawings"
+    "build:indicators": "esbuild tickframe/frontend/js/indicators-src.js --bundle --format=iife --global-name=LCIndicators --outfile=tickframe/frontend/js/indicators-bundle.js",
+    "build": "npm run build:drawings && npm run build:indicators"
   },
   "dependencies": {
-    "lightweight-charts-drawing": "^0.1.1"
+    "lightweight-charts-drawing": "^0.1.1",
+    "lightweight-charts-indicators": "^0.4.2",
+    "oakscriptjs": "^0.2.8"
   },
   "devDependencies": {
     "esbuild": "^0.24.0"

@@ -49,17 +49,8 @@ var TOOL_GROUPS = [
     id: 'annotations', label: 'Annotate',
     tools: [
       { id: 'arrow', type: 'arrow', icon: 'ArrowUpRight', title: 'Arrow', shortcut: 'A' },
-      { id: 'text-annotation', type: 'text-annotation', icon: 'Type', title: 'Text' },
-      { id: 'callout', type: 'callout', icon: 'MessageSquare', title: 'Callout' },
       { id: 'price-label', type: 'price-label', icon: 'Tag', title: 'Price Label' },
       { id: 'flag-mark', type: 'flag-mark', icon: 'Flag', title: 'Flag Mark' },
-    ],
-  },
-  {
-    id: 'draw', label: 'Draw',
-    tools: [
-      { id: 'brush', type: 'brush', icon: 'Brush', title: 'Brush', shortcut: 'B' },
-      { id: 'highlighter', type: 'highlighter', icon: 'Highlighter', title: 'Highlighter' },
     ],
   },
   {
@@ -145,7 +136,7 @@ var DrawingToolbar = (function () {
         var iconEl = document.createElement('i');
         iconEl.setAttribute('data-lucide', tool.icon);
         iconEl.setAttribute('data-tool-id', tool.id);
-        iconEl.style.cssText = 'width:18px;height:18px;stroke-width:1.75;';
+        iconEl.style.cssText = 'width:14px;height:14px;stroke-width:1.75;';
         btn.appendChild(iconEl);
         btn.addEventListener('click', function () { _click(tool); });
         btn.addEventListener('mouseenter', function (e) { _showTooltip(e, tool); });
@@ -210,8 +201,8 @@ var DrawingToolbar = (function () {
       _dragState = {
         startX: e.clientX,
         startY: e.clientY,
-        origLeft: parseInt(left, 10) || 16,
-        origTop: parseInt(top, 10) || 12,
+        origLeft: parseInt(left, 10) || 26,
+        origTop: parseInt(top, 10) || 40,
       };
       handle.classList.add('dragging');
       document.addEventListener('mousemove', _onDragMove);
@@ -309,11 +300,11 @@ var DrawingToolbar = (function () {
     var hasLineViz = ['trend-line','horizontal-line','vertical-line','ray','cross-line','info-line',
       'parallel-channel','regression-trend','fib-retracement','fib-extension','fib-channel',
       'gann-box','gann-fan','rectangle','circle','triangle','arrow',
-      'price-range','date-range','date-price-range','brush','highlighter'
+      'price-range','date-range','date-price-range'
     ].indexOf(toolType) >= 0;
 
     var hasFillViz = ['parallel-channel','fib-retracement','fib-extension','fib-channel',
-      'gann-box','rectangle','circle','triangle','callout'
+      'gann-box','rectangle','circle','triangle'
     ].indexOf(toolType) >= 0;
 
     var content = document.createElement('div');
