@@ -94,11 +94,11 @@ A PBI is **Done** when:
 | [#113](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/113) | PBI-118 | Volume sub-chart implementation | 3 | Done |
 | [#110](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/110) | PBI-115 | WebSocket subscription migration | 5 | Done |
 
-### Moved to Sprint 5
+### Completed in Sprint 5
 
-| # | PBI | Title | SP | Priority | Reason |
-|---|-----|-------|----|----------|--------|
-| [#112](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/112) | PBI-117 | RSI indicator sub-chart | 3 | High | Rendering complexity with current charting library |
+| # | PBI | Title | SP | Status |
+|---|-----|-------|----|--------|
+| [#112](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/112) | PBI-117 | RSI indicator sub-chart → delivered as 445+ indicators subsystem (PR #200) | 3 | Done |
 
 ### Superseded PBIs (folded into completed work above)
 
@@ -110,19 +110,21 @@ A PBI is **Done** when:
 
 ---
 
-## Sprint 5 — Week 6 Trial Release (Current)
+## Sprint 5 — Week 6 Trial Release (Previous)
 
 **Milestone:** [Sprint 5](https://github.com/Fedos113/SWP_TickFrame_28_team/milestone/6)
 
-**Goal:** Produce stable trial/handover-candidate release — RSI implementation, customer-facing documentation, handover prep, customer trial.
+**Release:** [v2.2.0](https://github.com/Fedos113/SWP_TickFrame_28_team/releases/tag/v2.2.0)
+
+**Goal:** Produce stable trial/handover-candidate release — indicators subsystem, customer-facing documentation, handover prep, customer trial.
 
 | # | PBI | Title | SP | Status |
 |---|-----|-------|----|--------|
-| [#112](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/112) | PBI-117 | RSI indicator sub-chart | 3 | To Do |
-| [#177](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/177) | PBI-129 | Customer-facing documentation review and update | — | To Do |
-| [#178](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/178) | — | Create/update CONTRIBUTING.md and AGENTS.md | — | To Do |
-| [#179](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/179) | — | Create/update docs/customer-handover.md | — | To Do |
-| [#180](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/180) | — | Week 6 trial release and deployment | — | To Do |
+| [#112](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/112) | PBI-117 | RSI indicator sub-chart → delivered as 445+ indicators subsystem (PR #200) | 3 | Done |
+| [#177](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/177) | PBI-129 | Customer-facing documentation review and update | — | Done |
+| [#178](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/178) | — | Create/update CONTRIBUTING.md and AGENTS.md | — | Done |
+| [#179](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/179) | — | Create/update docs/customer-handover.md | — | Done |
+| [#180](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/180) | — | Week 6 trial release and deployment (v2.2.0) | — | Done |
 
 ---
 
@@ -139,8 +141,6 @@ A PBI is **Done** when:
 | [#183](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/183) | — | Record public sanitized demo video for MVP v3 | — | To Do |
 | [#184](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/184) | — | Sprint 5 and Sprint 6 reports | — | To Do |
 | [#185](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/185) | — | Prepare presentation slides and rehearsal | — | To Do |
-| [#201](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/201) | PBI-130 | PostgreSQL infrastructure migration — SQLite to PostgreSQL 17 | 5 | To Do |
-| [#202](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/202) | PBI-131 | Pattern filtering and confidence threshold controls | 3 | To Do |
 
 ---
 
