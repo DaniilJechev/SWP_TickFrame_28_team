@@ -13,8 +13,9 @@ TickFrame is a cryptocurrency chart workstation with a **client-server architect
 | Layer | Technology |
 |---|---|
 | **Backend** | Python 3.11, FastAPI, Uvicorn, httpx, websockets |
-| **Frontend** | Lightweight Charts v4, Canvas API, vanilla JS |
+| **Frontend** | Lightweight Charts v5, Canvas API, vanilla JS, lightweight-charts-drawing, lightweight-charts-indicators |
 | **Database** | SQLite (via aiosqlite, run_in_executor) |
+| **Indicators** | 445+ technical indicators (lightweight-charts-indicators library, client-side computation) |
 | **ML** | XGBoost, FastAPI microservice |
 | **Exchange** | Bybit v5 API (primary), Binance API (fallback) |
 | **Deployment** | Docker + Docker Compose (2 containers) |
@@ -42,8 +43,8 @@ The static view decomposes TickFrame into four internal components and three ext
 
 **Internal components:**
 - **FastAPI Backend** (`tickframe/backend/`) — the central server that serves REST endpoints, manages WebSocket connections, caches market data in memory, persists data to SQLite, and coordinates exchange and ML service calls.
-- **Frontend** (`tickframe/frontend/`) — static HTML/CSS/JS served by the backend. Uses Lightweight Charts v4 for candlestick rendering and a canvas-based drawing toolbar.
-- **ML Service** (`ml_service/`) — a separate FastAPI microservice running XGBoost inference for Head & Shoulders pattern detection.
+- **Frontend** (`tickframe/frontend/`) — static HTML/CSS/JS served by the backend. Uses Lightweight Charts v5 for candlestick rendering, a modular drawing toolbar (lightweight-charts-drawing library), and the indicators subsystem (lightweight-charts-indicators library with 445+ indicators computed client-side).
+- **ML Service** (`ml_service/`) — a separate FastAPI microservice running XGBoost inference for 4 pattern types: Head & Shoulders, Double Top, Double Bottom, Flags.
 - **SQLite DB** (`data/tickframe.db`) — persistent storage for candles, drawings, and settings.
 
 **External systems:**
@@ -56,6 +57,7 @@ The static view decomposes TickFrame into four internal components and three ext
 - Backend → SQLite: **SQL** via aiosqlite (async, run_in_executor)
 - Backend → Bybit/Binance: **HTTPS REST**
 - Backend → ML Service: **HTTP POST** (Docker internal DNS)
+- Frontend ↔ Indicators Library: **client-side** — indicators compute locally from candle data, no external API calls
 
 ### Coupling & Cohesion
 

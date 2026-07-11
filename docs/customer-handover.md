@@ -6,7 +6,7 @@
 
 ## Project Overview
 
-TickFrame is a cryptocurrency chart workstation built with FastAPI. It provides real-time market data from Bybit (with Binance fallback), interactive candlestick charts via Lightweight Charts v5, a canvas-based drawing toolbar (13 tools), SQLite-persisted settings and drawings, and ML-based pattern analysis (head-and-shoulders detection via XGBoost microservice).
+TickFrame is a cryptocurrency chart workstation built with FastAPI. It provides real-time market data from Bybit (with Binance fallback), interactive candlestick charts via Lightweight Charts v5, a canvas-based drawing toolbar (13 tools), SQLite-persisted settings and drawings, a technical indicator library with 445+ indicators (including RSI, Volume, Fear & Greed), and ML-based pattern analysis (4 trading patterns via XGBoost microservice).
 
 ---
 
@@ -141,7 +141,7 @@ The application is deployed and accessible at:
 
 This is a university VM deployment used for development and trial access. Availability depends on the VM being powered on. If the VM is unreachable, use the Docker quick start above to run locally.
 
-**Week 6 status:** The VM deployment is the trial release access point for customer evaluation during Sprint 5.
+**Week 6 status:** The VM deployment was demonstrated during the Sprint 5 review (2026-07-10). A PostgreSQL migration and updated deployment are planned for Sprint 6 (Week 7).
 
 ---
 
@@ -150,14 +150,16 @@ This is a university VM deployment used for development and trial access. Availa
 | Feature | Description |
 |---|---|
 | **Real-time charts** | WebSocket-powered live candlestick charts via Lightweight Charts v5 |
-| **Drawing tools** | 13 tools: Trend Line, H-Line, V-Line, Ray, Cross Line, Fibonacci, Price Range %, Rectangle, Circle, Arrow, Text, Brush, Redact |
-| **ML pattern analysis** | Sliding-window pattern detection with configurable candle limit |
+| **Drawing toolbar** | 13 modular tools: Trend Line, H-Line, V-Line, Ray, Cross Line, Fibonacci, Price Range %, Rectangle, Circle, Arrow, Text, Brush, Redact |
+| **ML pattern analysis** | Sliding-window pattern detection (4 patterns: Head & Shoulders, Double Top, Double Bottom, Flags) with configurable candle limit and confidence scores |
+| **Technical indicators** | 445+ indicators (RSI, Moving Averages, Bollinger Bands, etc.) via integrated open-source library; searchable panel UI |
 | **Multi-interval** | 5m, 15m, 1h, 4h, 1d timeframes |
 | **Volume sub-chart** | Volume pane with SMA overlay below main chart |
-| **WebSocket live data** | Real-time market snapshots and candle updates from Bybit/Binance |
+| **Fear & Greed Index** | Sentiment indicator displayed in sidebar |
+| **WebSocket live data** | Real-time market snapshots and candle updates from Bybit/Binance (1s intervals) |
 | **Persistence** | Drawings, settings, and candle data survive restarts via SQLite |
 | **Dark/light theme** | Toggle persisted to database |
-| **Coin sidebar** | Live prices, ticker badges, 24h change, Fear & Greed Index |
+| **Coin sidebar** | Live prices, ticker badges, 24h change, crypto icons |
 | **Coin icons** | Auto-fetched from CoinGecko API |
 
 ---
@@ -176,7 +178,7 @@ FastAPI Backend (REST + WebSocket)
 Frontend (Lightweight Charts v5, Canvas drawing, JS)
 ```
 
-The ML pattern detection runs as a separate microservice (`ml_service/`) for isolation and independent scaling.
+The ML pattern detection runs as a separate microservice (`ml_service/`) for isolation and independent scaling. The technical indicator library runs client-side — it receives candle data from the backend and computes indicator values locally.
 
 Full architecture documentation: [docs/architecture/README.md](architecture/README.md)
 
@@ -205,11 +207,12 @@ The following documentation pages are the main entry points for normal use, oper
 
 ### Documentation Sufficiency Assessment
 
-**Current handover level:** `Ready for independent use` (Week 6 trial release)
+**Current handover level:** `Ready for independent use` (Sprint 5 review completed)
 
-**Sufficiency verdict:** The documentation set covers all areas needed for independent use — setup, deployment, configuration, operation, troubleshooting, architecture, testing, contribution, and handover. The following gaps remain and will be addressed in Week 7:
+**Sufficiency verdict:** The documentation set covers all areas needed for independent use — setup, deployment, configuration, operation, troubleshooting, architecture, testing, contribution, and handover. The following gaps remain and will be addressed in Sprint 6 (Week 7):
 
-- **Customer trial:** The documentation set has not yet been reviewed by the customer (Week 6 customer trial is pending). Feedback may require updates.
+- **Customer trial:** The Sprint 5 review (2026-07-10) covered progress and architecture, but the customer has not yet independently trialled the release or reviewed the documentation set. A formal Part 5 transition-readiness session is needed.
+- **PostgreSQL migration pending:** The architecture review identified that PostgreSQL is required instead of SQLite. Handover docs (env-var table, architecture diagram, deployment steps) will be updated after PBI-130 is completed.
 - **Final access details:** The university VM deployment URL may change or be decommissioned after grading. Final access instructions will be confirmed in Week 7.
 - **Transition confirmation:** The customer has not yet confirmed acceptance of this handover document (status: pending).
 
@@ -223,7 +226,8 @@ The following documentation pages are the main entry points for normal use, oper
 | **Single-user** | No authentication or multi-user support — all users share the same drawings and settings via SQLite. |
 | **No order execution** | TickFrame is a charting/analysis workstation only. Trade placement is not supported. |
 | **Historical depth** | Maximum 50 000 candles per request. Very long histories (years of 1m data) are not available. |
-| **ML scope** | Only one pattern (head-and-shoulders) is detected. The XGBoost model was trained on synthetic data and accuracy varies by market conditions. |
+| **ML scope** | 4 patterns (Head & Shoulders, Double Top, Double Bottom, Flags) are detected; 2 more in development. Models were trained on synthetic data and accuracy varies by market conditions. |
+| **ML timeframe** | Pattern detection is only available on the 5m timeframe. Chart switching to other intervals (15m, 1h, 4h, 1d) works, but pattern analysis does not run on them. |
 | **WebSocket resilience** | Reconnect is automatic but a brief gap (1–3 s) may occur on network interruption. |
 | **Browser support** | Developed and tested on Chromium-based browsers (Chrome, Edge). Other browsers may have minor rendering differences. |
 | **Mobile** | No responsive layout. The UI is designed for desktop screens ≥ 1280 px wide. |
@@ -239,7 +243,7 @@ The following documentation pages are the main entry points for normal use, oper
 | **Handover level reached** | `Ready for independent use` |
 | **Customer-confirmation status** | `Pending confirmation` |
 
-**Explanation:** The product is functionally complete for independent use — the customer can run it locally or deploy it via Docker. The Week 6 trial release has been deployed to the university VM for customer evaluation. The customer trial meeting and documentation review (Part 5 of Assignment 6) have not yet taken place. Transition readiness will be confirmed during the Week 6 customer meeting.
+**Explanation:** The product is functionally complete for independent use — the customer can run it locally or deploy it via Docker. The Sprint 5 review (2026-07-10) covered progress, the indicator library, ML pattern detection, and an architecture review. The customer requested a PostgreSQL migration (PBI-130) and pattern filtering (PBI-131) before final sign-off. The formal Part 5 transition-readiness meeting and independent customer trial have not yet taken place and are scheduled for Sprint 6 (Week 7).
 
 ### What Has Been Handed Over
 
@@ -260,7 +264,7 @@ The following documentation pages are the main entry points for normal use, oper
 - No API keys are required for basic operation — Bybit public endpoints work without authentication
 - For higher rate limits, create a `.env` file with Bybit API credentials (see [Configuration and Secrets](#configuration-and-secrets) above)
 - The ML microservice uses XGBoost and starts alongside the main app via Docker Compose
-- All data is stored locally in `data/tickframe.db` (SQLite) — no external database setup is needed
+- All data is stored locally in a SQLite database — no external database setup is needed. (PostgreSQL migration is planned for Sprint 6.)
 - The application is designed for desktop use on Chromium-based browsers
 - The GitHub repository itself, CI pipelines, and GitHub Pages site are managed by the team's university accounts; fork the repository to gain full administrative control
 
@@ -268,9 +272,9 @@ The following documentation pages are the main entry points for normal use, oper
 
 | Item | Status | Week 7 Plan |
 |---|---|---|
-| Customer trial and documentation review | Pending — Week 6 customer meeting not yet conducted | Conduct meeting, gather feedback, update docs |
-| Customer-confirmation of handover document | Pending | Ask customer to accept or identify changes |
-| Final access arrangement for MVP v3 | Pending — VM may be decommissioned post-grading | Confirm final deployment in Week 7 |
+| Customer trial and documentation review | Pending — Sprint 5 review completed (2026-07-10); formal Part 5 transition-readiness session still needed | Conduct Part 5 meeting, gather feedback, update docs |
+| Customer-confirmation of handover document | Pending — Sprint 5 review completed; formal acceptance pending Part 5 session | Schedule Part 5 meeting, ask customer to accept or identify changes |
+| Final access arrangement for MVP v3 | Pending — VM deployment outdated; PostgreSQL migration in progress | Complete PBI-130 (PostgreSQL), deploy updated version, confirm final access |
 | Any post-course issues or feature requests | Post-course | File as GitHub issues (no guaranteed response after course ends) |
 | CI pipeline and GitHub Pages admin | Retained by team — tied to university accounts | Customer can fork for independent CI/Pages control |
 

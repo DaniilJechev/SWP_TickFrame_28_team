@@ -139,6 +139,8 @@ A PBI is **Done** when:
 | [#183](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/183) | — | Record public sanitized demo video for MVP v3 | — | To Do |
 | [#184](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/184) | — | Sprint 5 and Sprint 6 reports | — | To Do |
 | [#185](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/185) | — | Prepare presentation slides and rehearsal | — | To Do |
+| [#201](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/201) | PBI-130 | PostgreSQL infrastructure migration — SQLite to PostgreSQL 17 | 5 | To Do |
+| [#202](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/202) | PBI-131 | Pattern filtering and confidence threshold controls | 3 | To Do |
 
 ---
 
