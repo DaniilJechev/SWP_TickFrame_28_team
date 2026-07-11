@@ -61,7 +61,7 @@ var DrawingSettings = (function () {
       }
     }
     _defaults[toolType] = existing;
-    _save();
+    save();
   }
 
   function getAll() {

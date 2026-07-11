@@ -1,6 +1,6 @@
 # SWP TickFrame — Team 28
 
-FastAPI-based cryptocurrency chart workstation with real-time Bybit market data, live price streaming via WebSockets, candlestick charts (Lightweight Charts v5), a canvas-based drawing toolbar (13 tools), SQLite persistence, and ML pattern analysis.
+FastAPI-based cryptocurrency chart workstation with real-time Bybit market data, live price streaming via WebSockets, candlestick charts (Lightweight Charts v5), a modular drawing toolbar, a technical indicator library with 445+ indicators, SQLite persistence, and ML pattern analysis.
 
 ![SWP TickFrame UI](docs/images/ui-screenshot.png)
 
@@ -18,7 +18,7 @@ FastAPI-based cryptocurrency chart workstation with real-time Bybit market data,
 
 ---
 
-**Latest Release:** [v2.0.0](https://github.com/Fedos113/SWP_TickFrame_28_team/releases/tag/v2.0.0) (MVP v2)
+**Latest Release:** [v2.2.0](https://github.com/Fedos113/SWP_TickFrame_28_team/releases/tag/v2.2.0) (Sprint 5 Week 6 Trial Release)
 
 ---
 
@@ -165,9 +165,11 @@ MemoryMarketCache (in-memory, 5s refresh)
     ↓  (merge + dedup)
 SQLite (data/tickframe.db) ← survives restarts
     ↓
-Frontend chart (Lightweight Charts v4, last 10k candles default zoom)
+Frontend chart (Lightweight Charts v5, last 10k candles default zoom)
     ↓  (sliding window, step 10)
 ML service → pattern detections rendered as vertical lines + text labels
+    ↓
+Indicators library (client-side) → 445+ indicators computed locally from candle data
 ```
 
 ---
@@ -176,33 +178,36 @@ ML service → pattern detections rendered as vertical lines + text labels
 
 | Feature | Detail |
 |---|---|
-| **Chart** | Lightweight Charts v4, up to 50k candles, candlestick/line/area modes |
-| **Drawing tools** | 13 tools: Trend Line, H-Line, V-Line, Ray, Cross Line, Fibonacci, Price Range %, Rectangle, Circle, Arrow, Text, Brush, Redact (select/move/edit) |
-| **Per-drawing settings** | Color, width (1–4), line style (solid/dashed/dotted), font size |
-| **Redact mode** | Freezes chart (no scroll/zoom), crosshair hidden, enables drag-to-move/reshape |
-| **Undo** | Full undo stack for add, modify (drag), and delete operations |
-| **Persistence** | All drawings saved per coin to SQLite; candle data cached in DB across restarts |
-| **Real-time updates** | WebSocket streams with heartbeat (5s), candle updates pushed to chart |
-| **Pattern analysis** | Sliding window (50 candles, step 10) sends to ML service; results rendered as red dashed vertical lines + labels |
+| **Chart** | Lightweight Charts v5, up to 50k candles, candlestick/line/area modes |
+| **Drawing toolbar** | Modular toolbar with pointer, lines (Trend Line, H-Line, V-Line, Ray, Cross Line, Info Line), channels, Fibonacci, Gann, and more — all with per-drawing settings |
+| **Technical indicators** | 445+ indicators (RSI, MACD, Bollinger Bands, Moving Averages, etc.) via integrated open-source library; searchable panel UI |
+| **ML pattern analysis** | 4 trained patterns (Head & Shoulders, Double Top, Double Bottom, Flags) via XGBoost microservice; configurable candle limit |
+| **Real-time updates** | WebSocket streams with heartbeat (5s), candle updates pushed to chart (1s intervals) |
+| **Persistence** | All drawings, indicators, and settings saved per coin to SQLite; candle data cached across restarts |
 | **Theme** | Dark/light toggle, persisted to DB |
-| **Coin sidebar** | Full ticker badges, trend-colored prices (5m candle direction), 5s auto-refresh |
-| **Price formatting** | Max 6 total digits, trailing zeros stripped |
+| **Coin sidebar** | Full ticker badges, coin icons (CoinGecko), 24h change, Fear & Greed Index |
+| **Price formatting** | Adaptive precision based on price magnitude |
+| **Multi-interval** | 5m, 15m, 1h, 4h, 1d timeframes with cached switching |
 
 ---
 
 ## API Endpoints
 
 | Method | Path | Description |
-|---|---|---|
+|---|---|---|---|
 | GET | `/api/health` | Health check |
 | GET | `/api/coins` | List coins with prices and trend |
 | GET | `/api/coins/{symbol}/price` | Current price |
 | GET | `/api/coins/{symbol}/candles?interval=5m&limit=200` | Candlestick data (max 50000) |
 | POST | `/api/analyze/{symbol}` | Pattern analysis (optional `{candles: [...]}` body) |
+| GET | `/api/indicators?symbol=` | Load persisted indicators per coin |
+| POST | `/api/indicators` | Save indicators per coin |
 | GET | `/api/drawings?symbol=` | Load persisted drawings per coin |
 | POST | `/api/drawings` | Save drawings per coin |
 | GET | `/api/settings` | Load settings from DB |
 | POST | `/api/settings` | Save settings to DB |
+| GET | `/api/fng` | Fear & Greed Index |
+| GET | `/api/coins/icons` | Coin icon URLs (CoinGecko) |
 | WS | `/ws/market` | Market snapshot stream (5s) |
 | WS | `/ws/candles/{symbol}?interval=5m` | Candle stream with heartbeat |
 
@@ -219,10 +224,14 @@ cp .env.example .env
 Key variables:
 
 | Variable | Default | Description |
-|---|---|---|
+|---|---|---|---|
 | `ML_API_URL` | `http://ml-service:8001/predict` | ML analysis endpoint |
 | `ML_CONFIDENCE_THRESHOLD` | `0.80` | Default confidence threshold |
 | `ML_REQUEST_TIMEOUT` | `30.0` | ML request timeout (seconds) |
+| `BYBIT_API_KEY` | — | Bybit API key for higher rate limits (optional) |
+| `BYBIT_API_SECRET` | — | Bybit API secret (optional) |
+| `DB_HOST` | `localhost` | Database host (reserved for PostgreSQL migration) |
+| `DB_PORT` | `5432` | Database port (reserved for PostgreSQL migration) |
 
 ---
 

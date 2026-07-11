@@ -404,6 +404,66 @@ All contributions on the `2.2.0-trial` branch (commit `5884717`), organized by t
 
 ---
 
+## 19. Completed Week 6 Contributions (Branch `week6-sprint-review-docs`) — Sprint Review Docs & Doc Polish
+
+All contributions on the `week6-sprint-review-docs` branch, organized by theme:
+
+### CHANGELOG & Release
+
+| Item | Detail | Status |
+|---|---|---|
+| Added `[2.0.0] — 2026-07-06` section | Moved old Unreleased items into Sprint 4 / MVP v2 release | ✅ Done |
+| Added `[2.2.0] — 2026-07-10` section | Sprint 5 release with indicators, drawing fixes, WS fix, ML pipeline, docs | ✅ Done |
+| Updated link refs | `[Unreleased]` compares from v2.2.0 | ✅ Done |
+| v2.2.0 release body updated | Added milestone link, highlights, customer-handover link, week6 report link | ✅ Done |
+
+### Backlog Update
+
+| Item | Detail | Status |
+|---|---|---|
+| PBI-130 (#201) | PostgreSQL migration, 5 SP, Sprint 6 | ✅ Documented |
+| PBI-131 (#202) | Pattern filtering, 3 SP, Sprint 6 | ✅ Documented |
+
+### Customer Handover
+
+| Item | Detail | Status |
+|---|---|---|
+| ML scope | 4 patterns, 5m limitation documented | ✅ Done |
+| Key Features | Indicators, F&G, drawing toolbar added | ✅ Done |
+| Handover Status | Sprint 5 review occurred noted | ✅ Done |
+| Known Limitations | Expanded with current state | ✅ Done |
+| Sufficiency Assessment | Updated for Week 6 | ✅ Done |
+
+### README.md Polish
+
+| Item | Detail | Status |
+|---|---|---|
+| Latest Release | v2.0.0 → v2.2.0 | ✅ Done |
+| Features table | Rewritten: drawing toolbar, 445+ indicators, ML patterns, F&G Index, multi-interval, 1s WS | ✅ Done |
+| API endpoints | Added `/api/indicators`, `/api/fng`, `/api/coins/icons` | ✅ Done |
+| Env vars | Added BYBIT_API_KEY, BYBIT_API_SECRET, DB_HOST, DB_PORT | ✅ Done |
+| Data flow diagram | Added indicators library step | ✅ Done |
+| Lightweight Charts | v4 → v5 throughout | ✅ Done |
+
+### Architecture Docs
+
+| Item | Detail | Status |
+|---|---|---|
+| `docs/architecture/README.md` | Added indicators library row to tech stack; updated frontend description | ✅ Done |
+| `.puml` sources | Fixed v4→v5, added indicators overlay label in dynamic view, expanded frontend artifact in deployment view | ✅ Done |
+| `.svg` diagrams | Updated v4→v5 text labels (deployment-view, dynamic-view) | ✅ Done |
+
+### Sprint 5 Review Documentation
+
+| Item | Detail | Status |
+|---|---|---|
+| `reports/week6/sprint-review-summary.md` | Written from transcript (10 sections) | ✅ Done |
+| `reports/week6/sprint-review-transcript.md` | Raw Sprint 5 review transcript | ✅ Done |
+| `reports/week6/README.md` | 31-section canonical Week 6 report | ✅ Done |
+| `reports/week6/images/` | Screenshots captured (milestone, release, PR) | ✅ Done |
+
+---
+
 ## 13. What Assignment 6 Requires (Gap Analysis)
 
 ### Part 1: Refine Product Backlog & Plan Sprint 5 and Sprint 6

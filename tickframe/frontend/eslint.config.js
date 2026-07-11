@@ -18,6 +18,12 @@ export default [
         DrawingProperties: "readonly",
         TOOL_GROUPS: "readonly",
         lucide: "readonly",
+        TFIndicators: "readonly",
+        TFIndicatorController: "readonly",
+        TFIndicatorState: "readonly",
+        TFIndicatorPanel: "readonly",
+        TFIndicatorChips: "readonly",
+        TFIndicatorPanes: "readonly",
       },
     },
     rules: {

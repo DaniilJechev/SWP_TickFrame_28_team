@@ -46,7 +46,7 @@ end
 Backend --> Browser : "JSON {candles: [...], source: '...'}"
 
 == Chart renders ==
-Browser -> Browser : "Lightweight Charts v4\nrender candlestick series"
+Browser -> Browser : "Lightweight Charts v5\nrender candlestick series\n+ indicators overlay"
 
 == Real-time updates (WebSocket) ==
 User -> Browser : "Observe live updates"
