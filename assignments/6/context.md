@@ -287,6 +287,11 @@ All documented in:
 
 All contributions on the `6-repo-template` branch, organized by theme:
 
+## Week 6: ML Contributions
+- **DT/DB Classification Model:** Developed and trained a secondary neural network (ML model) dedicated specifically to classifying Double Top (DT) and Double Bottom (DB) patterns. 
+- **Data Pipeline Integration:** Implemented a pipeline to ingest manually labeled datasets (exported from Label Studio/S3) and map the labels to raw candle data using index-based parsing.
+- **Model Training:** Configured feature extraction, target encoding (0=Noise, 1=DT, 2=DB), and utilized random train/test splitting (time-independent classification approach) to ensure a well-distributed dataset for pattern recognition.
+
 ### Part 1 — Product Backlog & Sprint Planning
 
 | Item | Detail | Status |
