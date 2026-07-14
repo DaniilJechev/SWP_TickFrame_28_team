@@ -94,11 +94,11 @@ A PBI is **Done** when:
 | [#113](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/113) | PBI-118 | Volume sub-chart implementation | 3 | Done |
 | [#110](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/110) | PBI-115 | WebSocket subscription migration | 5 | Done |
 
-### Moved to Sprint 5
+### Completed in Sprint 5
 
-| # | PBI | Title | SP | Priority | Reason |
-|---|-----|-------|----|----------|--------|
-| [#112](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/112) | PBI-117 | RSI indicator sub-chart | 3 | High | Rendering complexity with current charting library |
+| # | PBI | Title | SP | Status |
+|---|-----|-------|----|--------|
+| [#112](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/112) | PBI-117 | RSI indicator sub-chart → delivered as 445+ indicators subsystem (PR #200) | 3 | Done |
 
 ### Superseded PBIs (folded into completed work above)
 
@@ -114,7 +114,9 @@ A PBI is **Done** when:
 
 **Milestone:** [Sprint 5](https://github.com/Fedos113/SWP_TickFrame_28_team/milestone/6)
 
-**Goal:** Produce stable trial/handover-candidate release — RSI implementation, customer-facing documentation, handover prep, customer trial.
+**Release:** [v2.2.0](https://github.com/Fedos113/SWP_TickFrame_28_team/releases/tag/v2.2.0)
+
+**Goal:** Produce stable trial/handover-candidate release — indicators subsystem, customer-facing documentation, handover prep, customer trial.
 
 | # | PBI | Title | SP | Status |
 |---|-----|-------|----|--------|

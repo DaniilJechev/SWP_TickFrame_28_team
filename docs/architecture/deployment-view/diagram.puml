@@ -24,7 +24,7 @@ node "Docker Host\n<size:10>Single VM / Dev Machine</size>" as DockerHost {
 }
 
 node "Client Machine\n<size:10>Web Browser</size>" as Browser {
-  artifact "Lightweight Charts v4\n<size:10>JS frontend</size>" as FrontendJS
+  artifact "Lightweight Charts v5\n<size:10>JS frontend (charts + indicators + drawing)</size>" as FrontendJS
 }
 
 node "Internet" as Internet {

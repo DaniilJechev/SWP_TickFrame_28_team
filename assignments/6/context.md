@@ -287,6 +287,11 @@ All documented in:
 
 All contributions on the `6-repo-template` branch, organized by theme:
 
+## Week 6: ML Contributions
+- **DT/DB Classification Model:** Developed and trained a secondary neural network (ML model) dedicated specifically to classifying Double Top (DT) and Double Bottom (DB) patterns. 
+- **Data Pipeline Integration:** Implemented a pipeline to ingest manually labeled datasets (exported from Label Studio/S3) and map the labels to raw candle data using index-based parsing.
+- **Model Training:** Configured feature extraction, target encoding (0=Noise, 1=DT, 2=DB), and utilized random train/test splitting (time-independent classification approach) to ensure a well-distributed dataset for pattern recognition.
+
 ### Part 1 — Product Backlog & Sprint Planning
 
 | Item | Detail | Status |
@@ -404,6 +409,66 @@ All contributions on the `2.2.0-trial` branch (commit `5884717`), organized by t
 
 ---
 
+## 19. Completed Week 6 Contributions (Branch `week6-sprint-review-docs`) — Sprint Review Docs & Doc Polish
+
+All contributions on the `week6-sprint-review-docs` branch, organized by theme:
+
+### CHANGELOG & Release
+
+| Item | Detail | Status |
+|---|---|---|
+| Added `[2.0.0] — 2026-07-06` section | Moved old Unreleased items into Sprint 4 / MVP v2 release | ✅ Done |
+| Added `[2.2.0] — 2026-07-10` section | Sprint 5 release with indicators, drawing fixes, WS fix, ML pipeline, docs | ✅ Done |
+| Updated link refs | `[Unreleased]` compares from v2.2.0 | ✅ Done |
+| v2.2.0 release body updated | Added milestone link, highlights, customer-handover link, week6 report link | ✅ Done |
+
+### Backlog Update
+
+| Item | Detail | Status |
+|---|---|---|
+| PBI-130 (#201) | PostgreSQL migration, 5 SP, Sprint 6 | ✅ Documented |
+| PBI-131 (#202) | Pattern filtering, 3 SP, Sprint 6 | ✅ Documented |
+
+### Customer Handover
+
+| Item | Detail | Status |
+|---|---|---|
+| ML scope | 4 patterns, 5m limitation documented | ✅ Done |
+| Key Features | Indicators, F&G, drawing toolbar added | ✅ Done |
+| Handover Status | Sprint 5 review occurred noted | ✅ Done |
+| Known Limitations | Expanded with current state | ✅ Done |
+| Sufficiency Assessment | Updated for Week 6 | ✅ Done |
+
+### README.md Polish
+
+| Item | Detail | Status |
+|---|---|---|
+| Latest Release | v2.0.0 → v2.2.0 | ✅ Done |
+| Features table | Rewritten: drawing toolbar, 445+ indicators, ML patterns, F&G Index, multi-interval, 1s WS | ✅ Done |
+| API endpoints | Added `/api/indicators`, `/api/fng`, `/api/coins/icons` | ✅ Done |
+| Env vars | Added BYBIT_API_KEY, BYBIT_API_SECRET, DB_HOST, DB_PORT | ✅ Done |
+| Data flow diagram | Added indicators library step | ✅ Done |
+| Lightweight Charts | v4 → v5 throughout | ✅ Done |
+
+### Architecture Docs
+
+| Item | Detail | Status |
+|---|---|---|
+| `docs/architecture/README.md` | Added indicators library row to tech stack; updated frontend description | ✅ Done |
+| `.puml` sources | Fixed v4→v5, added indicators overlay label in dynamic view, expanded frontend artifact in deployment view | ✅ Done |
+| `.svg` diagrams | Updated v4→v5 text labels (deployment-view, dynamic-view) | ✅ Done |
+
+### Sprint 5 Review Documentation
+
+| Item | Detail | Status |
+|---|---|---|
+| `reports/week6/sprint-review-summary.md` | Written from transcript (10 sections) | ✅ Done |
+| `reports/week6/sprint-review-transcript.md` | Raw Sprint 5 review transcript | ✅ Done |
+| `reports/week6/README.md` | 31-section canonical Week 6 report | ✅ Done |
+| `reports/week6/images/` | Screenshots captured (milestone, release, PR) | ✅ Done |
+
+---
+
 ## 13. What Assignment 6 Requires (Gap Analysis)
 
 ### Part 1: Refine Product Backlog & Plan Sprint 5 and Sprint 6
@@ -435,9 +500,9 @@ All contributions on the `2.2.0-trial` branch (commit `5884717`), organized by t
 - [ ] Keep all three current during Week 6 and Week 7
 
 ### Part 4: Maintain Customer Handover Documentation
-- [x] Create/update `docs/customer-handover.md` according to Artifact Requirements — _template with Known Limitations added_
+- [x] Create/update `docs/customer-handover.md` according to Artifact Requirements — _enhanced with Transition Scope table, full env var documentation, structured setup/deployment sections, documentation sufficiency assessment, and Week 6 honest handover state_
 - [x] Must state: transferred/delegated/retained arrangements, env vars/config/secrets steps, setup/deployment/recovery/verification steps, main doc entry points, whether docs are sufficient for handover level — _all present; handover level: "Ready for independent use" (pending confirmation)_
-- [ ] Keep current during Week 6 and Week 7
+- [x] Keep current during Week 6 — _updated for Sprint 5; pending Week 7 final transition update_
 
 ### Part 5: Conduct Week 6 Transition-Readiness Meeting & Customer Trial
 - [ ] Meet customer in Week 6 to discuss transition readiness and trial
@@ -534,6 +599,34 @@ All contributions on the `192-entry-point-docs` branch, organized by theme:
 |---|---|---|
 | [#192](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/192) | DOC: Polish Public Repository Entry Point & Customer-Facing Docs (A6 Part 3) | A6 Part 3 entry-point docs |
 | [#194](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/194) | DOC: Fix A6 Part 3 audit gaps — SVG, troubleshooting, limitations, relative links, screenshot | A6 Part 3 audit gap fixes |
+
+---
+
+## 18. Completed Week 6 Contributions (Branch `18-customer-handover-update`)
+
+All contributions on the `18-customer-handover-update` branch, organized by theme:
+
+### A6 Part 4 — Maintain Customer Handover Documentation
+
+| Item | Detail | Status |
+|---|---|---|
+| Transition Scope table | Added explicit transferred/delegated/retained breakdown with ownership notes and fork guidance | ✅ Done |
+| Configuration and Secrets section | Full env var table (7 variables) from `.env.example` with Required/Default/Purpose columns + secrets handling rules (`.gitignore`, `chmod 600`, `cp .env.example .env`) | ✅ Done |
+| Setup and Deployment restructure | Consolidated from scattered sections into 7 sub-sections: Prerequisites, Docker Quick Start, Local Dev, Verification Steps (health endpoints with expected responses), Recovery/Clean Rebuild, Updating, Port Conflicts | ✅ Done |
+| Documentation Entry Points | 14-row table with Purpose column; explicit sufficiency assessment naming 3 Week 7 gaps (customer trial pending, final access TBD, confirmation pending) | ✅ Done |
+| Handover Status enhancement | Honest Week 6 state (Ready for independent use / Pending confirmation) with explanation, expanded handover checklist, and support needs table with Week 7 action plan | ✅ Done |
+
+### Commits
+
+| Commit | Description |
+|---|---|
+| `7d3363b` | DOC: Update docs/customer-handover.md for Week 6 handover state (A6 Part 4) — Transition Scope, Configuration/Secrets, Setup/Deployment, Doc Entry Points, sufficiency assessment |
+
+### GitHub Issues Link
+
+| Issue | Title | Branch Contribution |
+|---|---|---|
+| [#18](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/18) | DOC: Update docs/customer-handover.md for Week 6 handover state (A6 Part 4) | A6 Part 4 customer handover update |
 
 ---
 
