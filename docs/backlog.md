@@ -110,7 +110,7 @@ A PBI is **Done** when:
 
 ---
 
-## Sprint 5 — Week 6 Trial Release (Current)
+## Sprint 5 — Week 6 Trial Release (Previous)
 
 **Milestone:** [Sprint 5](https://github.com/Fedos113/SWP_TickFrame_28_team/milestone/6)
 
@@ -118,27 +118,53 @@ A PBI is **Done** when:
 
 | # | PBI | Title | SP | Status |
 |---|-----|-------|----|--------|
-| [#112](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/112) | PBI-117 | RSI indicator sub-chart | 3 | To Do |
-| [#177](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/177) | PBI-129 | Customer-facing documentation review and update | — | To Do |
-| [#178](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/178) | — | Create/update CONTRIBUTING.md and AGENTS.md | — | To Do |
-| [#179](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/179) | — | Create/update docs/customer-handover.md | — | To Do |
-| [#180](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/180) | — | Week 6 trial release and deployment | — | To Do |
+| [#112](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/112) | PBI-117 | RSI indicator sub-chart | 3 | Done |
+| [#177](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/177) | PBI-129 | Customer-facing documentation review and update | — | Done |
+| [#178](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/178) | — | Create/update CONTRIBUTING.md and AGENTS.md | — | Done |
+| [#179](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/179) | — | Create/update docs/customer-handover.md | — | Done |
+| [#180](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/180) | — | Week 6 trial release and deployment | — | Done |
+| [#186](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/186) | — | DOC: Update localhost port references from 8000 to 8080 | — | Done |
+| [#187](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/187) | — | DOC: Add Sprint 5 and Sprint 6 sections to backlog and roadmap | — | Done |
+| [#188](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/188) | — | DOC: Create A6 scaffolding and team planning files | — | Done |
+| [#189](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/189) | — | DOC: Create repo template files for A6 Part 3 and Part 4 | — | Done |
+| [#190](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/190) | — | Course Task: Complete A6 Part 1 — Sprint 5 and Sprint 6 planning | — | Done |
+| [#198](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/198) | PBI-118 | Add indicators subsystem with 445+ technical indicators | 5 | Done |
+| [#199](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/199) | — | Drawing toolbar refinements, chart fixes, and WS race condition fix | — | Done |
+| [#208](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/208) | PBI-135 | Train secondary Neural Network for DT & DB pattern classification | 5 | Done |
+| [#209](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/209) | — | Assignment 6: Moodle PDF Template — Week 6 Submission | — | Done |
+| [#212](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/212) | — | DOC: Update week 6 contributions.md | — | Done |
 
 ---
 
-## Sprint 6 — MVP v3 (Next)
+## Sprint 6 — MVP v3 (Current)
 
 **Milestone:** [Sprint 6 — MVP v3](https://github.com/Fedos113/SWP_TickFrame_28_team/milestone/7)
 
 **Goal:** Deliver final course version MVP v3 — follow-up maintenance, fixes from Week 6 trial, final transition, Demo Day preparation.
 
+### PBIs
+
 | # | PBI | Title | SP | Status |
 |---|-----|-------|----|--------|
-| [#181](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/181) | — | Follow-up maintenance from Week 6 trial feedback | — | To Do |
-| [#182](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/182) | — | Final transition and MVP v3 release | — | To Do |
-| [#183](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/183) | — | Record public sanitized demo video for MVP v3 | — | To Do |
-| [#184](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/184) | — | Sprint 5 and Sprint 6 reports | — | To Do |
-| [#185](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/185) | — | Prepare presentation slides and rehearsal | — | To Do |
+| [#201](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/201) | PBI-130 | PostgreSQL infrastructure migration — SQLite to PostgreSQL 17 | 5 | To Do |
+| [#202](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/202) | PBI-131 | Pattern filtering and confidence threshold controls | 3 | To Do |
+| [#216](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/216) | PBI-132 | Fix UI glitches on timeframe switch | 2 | To Do |
+| [#217](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/217) | PBI-133 | Implement scan results export | 3 | To Do |
+
+### Course Tasks & Documentation
+
+| # | Title | Status |
+|---|-------|--------|
+| [#181](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/181) | DOC: Follow-up maintenance from Week 6 trial feedback | To Do |
+| [#182](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/182) | DOC: Final transition and MVP v3 release | To Do |
+| [#183](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/183) | DOC: Record public sanitized demo video for MVP v3 | To Do |
+| [#184](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/184) | DOC: Sprint 5 and Sprint 6 reports | To Do |
+| [#185](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/185) | DOC: Prepare presentation slides and rehearsal | To Do |
+| [#218](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/218) | Course Task: Conduct Sprint 6 Review meeting | To Do |
+| [#219](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/219) | Course Task: Conduct Sprint 6 Retrospective | To Do |
+| [#220](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/220) | Course Task: Write Week 7 reflection and LLM report | To Do |
+| [#221](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/221) | Course Task: Complete customer transition confirmation and update handover | To Do |
+| [#222](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/222) | Course Task: Final documentation maintenance for Sprint 6 | To Do |
 
 ---
 
