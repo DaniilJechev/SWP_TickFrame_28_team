@@ -4,7 +4,44 @@ All notable user-visible changes to this project will be documented in this file
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-## [Unreleased]
+
+## [2.2.0] — 2026-07-10
+
+### Added
+- **Indicators subsystem — 445+ technical indicators**: Integrated `lightweight-charts-indicators` v0.4.2 with `oakscriptjs` v0.2.8, providing 445+ built-in indicators including RSI, MACD, Bollinger Bands, moving averages, candlestick patterns, and community indicators. ([#198](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/198))
+- **Indicator persistence API**: New `GET/POST /api/indicators` REST endpoints with SQLite `indicators_blob` table for per-symbol indicator state persistence across sessions.
+- **Indicator panel UI**: Slide-out side panel with search input, collapsible groups (Standard / Candlestick Patterns / Community), pinned RSI row, volume toggle, and indicator rows that apply on click.
+- **Indicator chips**: Chips bar below the top header showing all applied indicators; click a chip to remove the indicator.
+- **Indicator pane system**: Dynamic pane creation for non-overlay indicators (e.g., MACD, Stochastic); volume sub-chart refactored as a pane.
+- **RSI auto-apply**: RSI (14) automatically applied when switching to a new symbol if not already present. Closes [#112](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/112). ([#198](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/198))
+- **esbuild indicators bundle**: New `npm run build:indicators` script bundles `indicators-src.js` → `indicators-bundle.js`.
+
+### Changed
+- **Drawing toolbar layout**: Grid changed from 2-column to 3-column; button size reduced (40→30px), icons 18→14px, border-radius 10→7px. Repositioned from top:12 to top:40, z-index 50→60.
+- **Drawing z-order**: All drawing primitives (horizontal-line, vertical-line, cross-line, price-range, trend-line, etc.) set z-order to `"top"` to render above indicator overlays.
+- **Drawing label precision**: Price labels use adaptive decimal places based on magnitude (e.g., 6 decimal places for small prices, 2 for large).
+- **Drawing timestamp format**: Unix timestamps now display as human-readable `YYYY-MM-DD HH:mm`.
+- **Bitmap-aware rendering**: Drawing primitives use `bitmapSize` instead of `viewport.width` for correct HiDPI/retina rendering.
+- **Volume sub-chart refactored**: Volume pane integrated into indicator panes subsystem with toggle in the indicators panel.
+- **Drawing toolbar default position**: Database default top changed from 12 to 40 in SQLite init.
+
+### Fixed
+- **WebSocket race condition**: Stale candle updates after symbol switch prevented by `_wsSymbol`/`_wsInterval` guards. ([#199](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/199))
+- **Chart scale reset**: `resetChartScale()` called on cached data load and same-symbol re-request to maintain proper view.
+- **Cached data re-render**: Series now clears with `setData([])` before `setData(data)` to force re-render on cache hit.
+- **Sidebar async coin switching**: `onCoinClick` made async — properly awaits `loadCandles` before starting WebSocket.
+- **Keyboard shortcut interference**: Keyboard shortcuts skip when focus is on `INPUT`/`TEXTAREA` elements; Backspace removed (Delete only).
+- **Drawing settings merge**: `DrawingSettings.save()` properly deep-merges per-tool settings instead of full replace.
+- **Drawing properties singleton**: Guard against duplicate `init()` calls.
+- **Text annotation/callout removal**: Removed problematic tools (text-annotation, callout, brush, highlighter) from toolbar.
+
+### Removed
+- **Text annotation, Callout, Brush, Highlighter tools**: Removed from drawing toolbar due to rendering issues.
+- **Keyboard shortcuts for individual tools**: Removed to prevent interference with text input; Escape/Delete retained.
+
+---
+
+## [2.0.0] — 2026-07-05
 
 ### Added
 - (Sprint 6 items will be added here)
@@ -153,9 +190,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-[Unreleased]: https://github.com/Fedos113/SWP_TickFrame_28_team/compare/v2.2.0...HEAD
-[2.2.0]: https://github.com/Fedos113/SWP_TickFrame_28_team/releases/tag/v2.2.0
-[2.0.0]: https://github.com/Fedos113/SWP_TickFrame_28_team/releases/tag/v2.0.0
+[Unreleased]: https://github.com/Fedos113/SWP_TickFrame_28_team/compare/2.2.0...HEAD
+[2.2.0]: https://github.com/Fedos113/SWP_TickFrame_28_team/releases/tag/2.2.0
+[2.0.0]: https://github.com/Fedos113/SWP_TickFrame_28_team/releases/tag/2.0.0
 [1.1.0]: https://github.com/Fedos113/SWP_TickFrame_28_team/releases/tag/v1.1.0
 [1.0.0]: https://github.com/Fedos113/SWP_TickFrame_28_team/releases/tag/SemVer
 

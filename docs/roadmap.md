@@ -120,12 +120,23 @@
 | **Goal** | Deliver final course version MVP v3 — follow-up maintenance, fixes from Week 6 trial, final transition, Demo Day preparation. |
 | **Focus** | Customer trial feedback, final transition, MVP v3 release, Demo Day |
 
-**Planned items:**
+**PBIs:**
+- [#201 PBI-130](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/201) — PostgreSQL infrastructure migration — SQLite to PostgreSQL 17
+- [#202 PBI-131](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/202) — Pattern filtering and confidence threshold controls
+- [#216 PBI-132](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/216) — Fix UI glitches on timeframe switch
+- [#217 PBI-133](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/217) — Implement scan results export
+
+**Course Tasks & Documentation:**
 - [#181](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/181) — Follow-up maintenance from Week 6 trial feedback
 - [#182](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/182) — Final transition and MVP v3 release
 - [#183](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/183) — Record public sanitized demo video for MVP v3
-- [#184](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/184) — Sprint 5 and Sprint 6 reports (reviews, retros, reflections, LLM)
+- [#184](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/184) — Sprint 5 and Sprint 6 reports
 - [#185](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/185) — Prepare presentation slides and rehearsal for Demo Day
+- [#218](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/218) — Course Task: Conduct Sprint 6 Review meeting
+- [#219](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/219) — Course Task: Conduct Sprint 6 Retrospective
+- [#220](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/220) — Course Task: Write Week 7 reflection and LLM report
+- [#221](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/221) — Course Task: Complete customer transition confirmation and update handover
+- [#222](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/222) — Course Task: Final documentation maintenance for Sprint 6
 
 ---
 
