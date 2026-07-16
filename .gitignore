@@ -21,3 +21,5 @@ tickframe/frontend/node_modules/
 .DS_Store
 .idea/
 .vscode/
+.cursor/
+temporal_pipeline_files/

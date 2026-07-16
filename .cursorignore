@@ -1,0 +1,32 @@
+# ML model artifacts and serialized weights
+**/*.bin
+**/*.onnx
+**/*.pkl
+**/*.pickle
+**/*.joblib
+**/*.pt
+**/*.pth
+**/*.safetensors
+
+# Generated caches, environments, and dependencies
+**/__pycache__/
+**/.pytest_cache/
+**/.mypy_cache/
+**/.ruff_cache/
+**/.coverage
+**/htmlcov/
+**/.venv/
+**/venv/
+**/env/
+**/node_modules/
+**/dist/
+**/build/
+**/*.pyc
+
+# Runtime and temporary files
+**/*.log
+**/*.tmp
+**/*.temp
+**/*.swp
+**/*.swo
+**/.DS_Store

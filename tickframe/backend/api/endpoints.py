@@ -95,7 +95,7 @@ async def analyze_patterns(
     symbol: str,
     body: AnalyzeRequest | None = Body(None),
     interval: str = Query(default="5m", pattern="^(5m|15m|1h|4h|1d)$"),
-    limit: int = Query(default=200, ge=50, le=MAX_CANDLES_LIMIT),
+    limit: int = Query(default=200, ge=99, le=MAX_CANDLES_LIMIT),
     confidence_threshold: float = Query(default=0.80, ge=0.0, le=1.0),
     cache: MemoryMarketCache = Depends(get_cache),
     ml: MlClient = Depends(get_ml_client),
