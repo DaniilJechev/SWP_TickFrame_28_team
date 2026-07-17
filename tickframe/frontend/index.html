@@ -13,14 +13,46 @@
     <div class="app">
       <aside class="sidebar">
         <div class="logo">TickFrame</div>
+        <div class="coin-search-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input id="coinSearch" type="text" placeholder="Search coins..." autocomplete="off" spellcheck="false" />
+        </div>
         <div class="watchlist" id="watchlist"></div>
         <div class="fng-container" id="fng-container"></div>
       </aside>
 
+
       <main class="main">
         <header class="topbar">
-          <div class="title" id="marketTitle">Market charts - Bitcoin</div>
-          <div class="controls">
+          <div class="market-head">
+            <div class="market-id">
+              <div class="market-icon" id="marketIcon"></div>
+              <div class="market-id-text">
+                <div class="market-ticker" id="marketTicker">BTC<span class="market-quote">USDT</span></div>
+                <div class="market-name" id="marketTitle">Bitcoin</div>
+              </div>
+            </div>
+
+            <div class="market-stats" id="marketStats">
+              <div class="market-price-block">
+                <div class="market-price" id="marketPrice">--</div>
+                <div class="market-price-change" id="marketPriceChange">--</div>
+              </div>
+              <div class="market-changes" id="marketChanges">
+                <div class="mc-cell" data-tf="5m"><span class="mc-label">5m</span><span class="mc-val" id="mc5m">--</span></div>
+                <div class="mc-cell" data-tf="1h"><span class="mc-label">1h</span><span class="mc-val" id="mc1h">--</span></div>
+                <div class="mc-cell" data-tf="4h"><span class="mc-label">4h</span><span class="mc-val" id="mc4h">--</span></div>
+                <div class="mc-cell" data-tf="24h"><span class="mc-label">24h</span><span class="mc-val" id="mc24h">--</span></div>
+              </div>
+              <div class="market-metrics">
+                <div class="mm-cell"><span class="mm-label">Market Cap</span><span class="mm-val" id="mmMarketCap">--</span></div>
+                <div class="mm-cell"><span class="mm-label">Supply</span><span class="mm-val" id="mmSupply">--</span></div>
+                <div class="mm-cell"><span class="mm-label">24h Vol</span><span class="mm-val" id="mmVolume">--</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="topbar-right">
             <div class="timeframes" id="timeframes">
               <button data-tf="5m" class="active">5m</button>
               <button data-tf="15m">15m</button>
@@ -28,15 +60,21 @@
               <button data-tf="4h">4h</button>
               <button data-tf="1d">1d</button>
             </div>
-            <button id="themeBtn">Theme</button>
-            <button id="indicatorsToggle">Indicators</button>
+            <button id="themeBtn" class="theme-toggle-btn" title="Toggle theme" aria-label="Toggle theme">
+              <svg class="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+              <svg class="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+            </button>
           </div>
         </header>
 
         <div class="chart-area">
           <section class="content">
-            <div class="indicator-chips" id="indicatorChips"></div>
+            <div class="chart-toolbar-row">
+              <div class="indicator-chips" id="indicatorChips"></div>
+            </div>
+
             <div class="chart-container">
+
               <div id="chart"></div>
               <div class="chart-loading-overlay" id="chartLoading">
                 <div class="chart-loading-spinner"></div>
@@ -48,10 +86,8 @@
           <aside class="indicators-panel" id="indicatorsPanel">
             <div class="indicators-panel-header">
               <span>Indicators</span>
-              <button class="ind-close-btn" id="indicatorsClose" title="Close panel">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-              </button>
             </div>
+
             <div class="indicators-search-wrap">
               <input id="indicatorsSearch" type="text" placeholder="Search indicators..." />
             </div>
@@ -60,20 +96,50 @@
         </div>
 
         <div class="analysis-stack">
-          <div class="pattern-analysis">
-            <button class="analyze-btn">ANALYZE PATTERNS</button>
-            <div class="candle-limit-row">
-              <label class="candle-limit-label">Candles:</label>
-              <input class="candle-limit-input" type="number" value="10000" min="100" max="500000" step="100">
+          <div class="pattern-filter-modal hidden" id="patternFilterModal">
+            <div class="pattern-filter-header">
+              <span>Pattern Filter</span>
+              <button class="pattern-filter-close" id="patternFilterClose">&times;</button>
             </div>
-            <div class="result-text">Click to analyze chart for patterns.</div>
+            <div class="pattern-filter-actions">
+              <button type="button" id="patternFilterSelectAll">Select all</button>
+              <button type="button" id="patternFilterClearAll">Clear all</button>
+            </div>
+            <div class="pattern-filter-list">
+              <label class="pattern-filter-item">
+                <input type="checkbox" class="pattern-filter-cb" data-pattern="Classic H&S" checked>
+                <span class="pf-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+                <span class="pf-label">Classic H&amp;S</span>
+              </label>
+              <label class="pattern-filter-item">
+                <input type="checkbox" class="pattern-filter-cb" data-pattern="Inverse H&S" checked>
+                <span class="pf-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+                <span class="pf-label">Inverse H&amp;S</span>
+              </label>
+
+            </div>
+          </div>
+          <div class="pattern-analysis">
+            <div class="pa-title">Pattern Analysis</div>
+            <div class="pa-actions">
+              <button class="analyze-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"></path><path d="m19 9-5 5-4-4-3 3"></path></svg>
+                <span class="analyze-btn-label">ANALYZE</span>
+              </button>
+              <button class="filter-patterns-btn" title="Filter patterns">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
+                <span class="filter-count-badge" id="filterCountBadge">2</span>
+              </button>
+            </div>
+            <div class="result-text">Click <b>ANALYZE</b> to scan the chart for patterns.</div>
           </div>
         </div>
+
       </main>
     </div>
 
     <script src="/lib/charting_library/charting_library.min.js"></script>
-    <script src="https://unpkg.com/lightweight-charts@5.2.0/dist/lightweight-charts.standalone.development.js"></script>
+    <script src="/lib/lightweight-charts/lightweight-charts.standalone.production.js"></script>
     <script src="/js/datafeed.js?v=1"></script>
     <script src="/js/sidebar.js?v=1"></script>
     <script src="/js/charts.js?v=1"></script>
@@ -93,6 +159,8 @@
     <script src="/js/indicators-controller.js?v=1"></script>
     <script src="/js/indicators-panel.js?v=1"></script>
     <script src="/js/indicators-chips.js?v=1"></script>
+    <script src="/js/topbar.js?v=1"></script>
     <script src="/js/app.js?v=1"></script>
+
   </body>
 </html>

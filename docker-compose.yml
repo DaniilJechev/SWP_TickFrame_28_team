@@ -1,5 +1,24 @@
 services:
   # ==========================================
+  # 0. POSTGRESQL DATABASE
+  # ==========================================
+  postgres:
+    image: postgres:16-alpine
+    container_name: tickframe_postgres
+    environment:
+      POSTGRES_DB: tickframe
+      POSTGRES_USER: tickframe
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-tickframe}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tickframe -d tickframe"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: always
+
+  # ==========================================
   # 1. MAIN BACKEND (Your original code)
   # ==========================================
   tickframe:
@@ -8,6 +27,9 @@ services:
       - "8080:8080"
     env_file:
       - .env
+    depends_on:
+      postgres:
+        condition: service_healthy
     volumes:
       # Live-reload mounts — changes to source files are reflected immediately,
       # no rebuild needed for frontend/backend code (only rebuild for new pip deps).
@@ -25,3 +47,6 @@ services:
     volumes:
       - ./ml_service/logs:/code/logs
     restart: always
+
+volumes:
+  pgdata:

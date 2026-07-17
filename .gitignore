@@ -17,6 +17,9 @@ tickframe/data/tickframe.db
 node_modules/
 tickframe/frontend/node_modules/
 
+# Generated assets (copied from node_modules by postinstall / Docker build)
+tickframe/frontend/lib/lightweight-charts/
+
 # OS and IDE files
 .DS_Store
 .idea/

@@ -41,8 +41,9 @@ The following environment variables are used:
 | `ML_API_URL` | No | `http://ml-service:8001/predict` | URL of the ML prediction endpoint. Change if running ML service on a different host/port. |
 | `ML_CONFIDENCE_THRESHOLD` | No | `0.80` | Minimum confidence score (0.0–1.0) for pattern detection results to be shown. |
 | `ML_REQUEST_TIMEOUT` | No | `30.0` | Timeout in seconds for ML service HTTP requests. |
-| `DB_HOST` | No | `localhost` | Reserved for future database migration (not currently used — SQLite is the active storage backend). |
-| `DB_PORT` | No | `5432` | Reserved for future database migration (not currently used). |
+| `DATABASE_URL` | No | `postgresql://tickframe:tickframe@postgres:5432/tickframe` | PostgreSQL connection string used by the backend. In Docker Compose it points to the bundled `postgres` service. |
+| `DB_PASSWORD` | No | `tickframe` | Password for the PostgreSQL `tickframe` role, referenced by `DATABASE_URL` and the `postgres` container. |
+
 
 ### Secrets Handling Rules
 
@@ -74,7 +75,28 @@ Open **http://localhost:8080** in your browser.
 
 For a remote VM, replace `localhost` with the VM's IP address.
 
-> The first load may take 10–30 seconds while historical candle data is fetched from the exchange. Once cached in SQLite, subsequent loads are instant.
+> The first load may take 10–30 seconds while historical candle data is fetched from the exchange. Once cached in PostgreSQL, subsequent loads are instant.
+
+### PostgreSQL Setup
+
+Docker Compose bundles a `postgres:16-alpine` service, so no manual database setup is required for containerised deployments. The backend connects using `DATABASE_URL` (see the environment variable table above) and creates its schema on startup. Data is stored in the named volume `pgdata` and survives container restarts.
+
+To run the backend against an external PostgreSQL instance (for example, when developing without Docker):
+
+```bash
+export DATABASE_URL=postgresql://tickframe:tickframe@localhost:5432/tickframe
+docker run --name tickframe-pg -e POSTGRES_DB=tickframe -e POSTGRES_USER=tickframe -e POSTGRES_PASSWORD=tickframe -p 5432:5432 -d postgres:16-alpine
+uvicorn tickframe.backend.main:app --host 0.0.0.0 --port 8000
+```
+
+To migrate existing data from a legacy SQLite database (`tickframe/data/tickframe.db`) into PostgreSQL, run:
+
+```bash
+python scripts/migrate_sqlite_to_pg.py
+```
+
+The script reads every table (settings, drawings, drawings_blob, toolbar_position, coin_icons, indicators_blob, candles) from SQLite and transfers the rows into the configured `DATABASE_URL`.
+
 
 ### Local Development (No Docker)
 
@@ -157,7 +179,8 @@ This is a university VM deployment used for development and trial access. Availa
 | **Volume sub-chart** | Volume pane with SMA overlay below main chart |
 | **Fear & Greed Index** | Sentiment indicator displayed in sidebar |
 | **WebSocket live data** | Real-time market snapshots and candle updates from Bybit/Binance (1s intervals) |
-| **Persistence** | Drawings, settings, and candle data survive restarts via SQLite |
+| **Persistence** | Drawings, settings, and candle data survive restarts via PostgreSQL |
+
 | **Dark/light theme** | Toggle persisted to database |
 | **Coin sidebar** | Live prices, ticker badges, 24h change, crypto icons |
 | **Coin icons** | Auto-fetched from CoinGecko API |
@@ -171,8 +194,9 @@ Exchange (Bybit/Binance)
     ↓
 MemoryMarketCache (in-memory, 5s refresh)
     ↓
-SQLite (data persistence — candles, drawings, settings)
+PostgreSQL (data persistence — candles, drawings, settings)
     ↓
+
 FastAPI Backend (REST + WebSocket)
     ↓
 Frontend (Lightweight Charts v5, Canvas drawing, JS)
@@ -264,7 +288,8 @@ The following documentation pages are the main entry points for normal use, oper
 - No API keys are required for basic operation — Bybit public endpoints work without authentication
 - For higher rate limits, create a `.env` file with Bybit API credentials (see [Configuration and Secrets](#configuration-and-secrets) above)
 - The ML microservice uses XGBoost and starts alongside the main app via Docker Compose
-- All data is stored locally in a SQLite database — no external database setup is needed. (PostgreSQL migration is planned for Sprint 6.)
+- Data is stored in a PostgreSQL database that runs as a bundled Docker Compose service (`postgres:16-alpine`) — no manual database setup is needed. Persistence is backed by the `pgdata` named volume.
+
 - The application is designed for desktop use on Chromium-based browsers
 - The GitHub repository itself, CI pipelines, and GitHub Pages site are managed by the team's university accounts; fork the repository to gain full administrative control
 

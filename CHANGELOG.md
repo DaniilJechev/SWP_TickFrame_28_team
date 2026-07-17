@@ -5,7 +5,39 @@ All notable user-visible changes to this project will be documented in this file
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+- **Charts render in Docker environments without internet**: `lightweight-charts` is now installed via npm (`^5.2.0`) and served as a local static file at `/lib/lightweight-charts/lightweight-charts.standalone.production.js`, replacing the `unpkg.com` CDN reference that was unreachable in isolated Docker containers.
+- **CoinGecko API calls on cold boot eliminated**: Default coin icons for all 10 tracked coins are now hardcoded in `coin_icons.py`. On first boot with an empty database, the defaults are returned immediately and persisted to the DB — the external API is only called in the background and is never needed for the UI to work.
+- **Safe fallback when LightweightCharts is missing**: `createChart` now guards against `typeof LightweightCharts === 'undefined'` and exits gracefully instead of throwing a ReferenceError.
+- **`createChart()` is now actually called on DOMContentLoaded**: The `document.addEventListener('DOMContentLoaded', createChart)` line was accidentally dropped during the rewrite, meaning `createChart()` was defined but never invoked. The chart never initialized at all — this was the root cause of the blank screen.
+- **Single-chart architecture replaces stacked per-coin instances**: The per-coin `CoinChartInstance`/`CoinChartManager` stacking approach introduced complexity, broke the drawing toolbar, and caused indicators to not initialize. Reverted to a single `Lightweight Charts` instance with per-coin data stored in a flat `_coinData` cache. On coin switch, the active coin's candles are swapped via `candleSeries.setData()`. Each coin maintains its own WebSocket connection and state independently.
+- **Background preload reduced from 10 parallel API calls to 1**: `preloadAll()` (which fetched 10 000 candles from the REST API for all 10 coins simultaneously) is replaced by `preloadDefault()` which only preloads the first coin. Other coins load on-demand when the user clicks them, including their WebSocket connection.
+- **WebSocket connected after initial candle load**: The promise chain that connects the WebSocket (`connectWs()`) after `loadCandles()` was restored. Without it, no real-time snapshot ever merged into the chart, causing stale candles and gaps.
+- **Indicator subsystem now actually initializes**: `initIndicatorSubsystem()` was defined but never called. Now called from the `DOMContentLoaded` handler in `app.js`, which properly sets up `TFIndicatorController.init()` (with `getCurrentBarsFn`), `TFIndicatorPanes`, `TFIndicatorPanel`, `TFIndicatorChips`, and the `_onCandlesUpdated` callback that re-applies indicators on data changes.
+
+### Changed
+- **Unified "Matrix" design system**: The entire UI now shares one visual style — a black background with phosphor-green accents and monospace/code fonts for the dark theme, and a clean white background with muted-green accents for the light theme. Drawing toolbar, drawing properties, and the indicators panel now inherit the shared theme variables.
+- **Redesigned indicators panel**: More user-friendly layout with a search field, collapsible groups with item counts, clearer applied-state indicators (`+`/`✓`), and consistent monospace styling.
+- **Default drawing colors**: New drawings now default to the project's matrix-green palette, and the color swatches lead with the theme greens.
+- **Refined Analyze / Pattern Filter UI**: The Analyze button and pattern filter popover were restyled for clarity; the filter now shows a live count badge, highlights when filtering is active, and offers "Select all" / "Clear all" bulk actions.
+
+- **Themed chart & indicator panes**: The candlestick chart, volume bars, volume SMA, and pattern overlays now recolor to match the active theme (matrix-green on black, or muted green on white).
+- **Unified chart & indicator grid (single-chart panes)**: Volume and oscillator indicators (RSI, MACD, …) now render as native panes *inside the main chart* instead of as separate chart widgets. All panes share one grid, one time axis and one crosshair, so columns and gridlines line up perfectly. The boundary between the price chart and each indicator is now a single thin separator line (draggable to resize) — the previous per-pane colored header bars, opaque backgrounds and box borders are gone.
+
+
+### Added
+- **Coin search bar**: The coins sidebar now has a search field and a scrollable watchlist, making it easier to find and (in future) add coins. The active coin is highlighted.
+- **Market header**: The top bar now shows the selected coin's icon, ticker and name, live price with 24h change, multi-timeframe change readouts (5m / 1h / 4h / 24h), and market cap / circulating supply / 24h volume — all grouped on the left next to the coin identity. Timeframe buttons and the theme toggle sit on the right.
+
+### Removed
+- **Top bar clutter**: Removed the LIVE status indicator, the "Indicators" toggle button, and the indicators-panel close (X) button. The indicators panel is now permanently docked on the right of the chart. The theme toggle is now an icon-only button that shows a moon in dark mode and a sun in light mode.
+
+
+
 ## [2.2.0] — 2026-07-10
+
 
 ### Added
 - **Indicators subsystem — 445+ technical indicators**: Integrated `lightweight-charts-indicators` v0.4.2 with `oakscriptjs` v0.2.8, providing 445+ built-in indicators including RSI, MACD, Bollinger Bands, moving averages, candlestick patterns, and community indicators. ([#198](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/198))

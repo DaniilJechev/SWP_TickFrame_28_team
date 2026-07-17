@@ -12,16 +12,35 @@ const COINS = [
 ];
 
 var _coinIcons = {};
+var _coinFilter = '';
+window._coinIcons = _coinIcons;
+window._coinList = COINS;
+
 
 function renderWatchlist() {
   const el = document.getElementById('watchlist');
   if (!el) return;
   el.innerHTML = '';
-  COINS.forEach(c => {
+  const q = _coinFilter.trim().toLowerCase();
+  const filtered = COINS.filter(c =>
+    !q ||
+    c.symbol.toLowerCase().indexOf(q) !== -1 ||
+    c.name.toLowerCase().indexOf(q) !== -1 ||
+    c.symbol.replace('USDT', '').toLowerCase().indexOf(q) !== -1
+  );
+  if (!filtered.length) {
+    const empty = document.createElement('div');
+    empty.className = 'watchlist-empty';
+    empty.textContent = 'No coins match "' + _coinFilter + '"';
+    el.appendChild(empty);
+    return;
+  }
+  const activeSymbol = window.currentSymbol;
+  filtered.forEach(c => {
     const ticker = c.symbol.replace('USDT', '');
     const iconUrl = _coinIcons[c.symbol];
     const row = document.createElement('div');
-    row.className = 'coin';
+    row.className = 'coin' + (c.symbol === activeSymbol ? ' active' : '');
     row.dataset.symbol = c.symbol;
     row.innerHTML =
       '<div class="badge">' + (iconUrl ? '<img src="' + iconUrl + '" alt="' + ticker + '" />' : ticker) + '</div>' +
@@ -36,7 +55,19 @@ function renderWatchlist() {
     row.addEventListener('click', () => { onCoinClick(c.symbol); });
     el.appendChild(row);
   });
+  // Refresh prices for the newly rendered rows without waiting for the interval.
+  updatePrices();
 }
+
+function initCoinSearch() {
+  const input = document.getElementById('coinSearch');
+  if (!input) return;
+  input.addEventListener('input', () => {
+    _coinFilter = input.value || '';
+    renderWatchlist();
+  });
+}
+
 
 function formatPrice(price) {
   if (price == null || isNaN(price)) return '--';
@@ -57,39 +88,92 @@ async function updatePrices() {
     const res = await fetch('/api/coins');
     if (!res.ok) return;
     const list = await res.json();
-    const map = {};
-    list.forEach(i => { map[i.pair] = i; });
-    document.querySelectorAll('.watchlist .coin').forEach(node => {
-      const sym = node.dataset.symbol;
-      const info = map[sym];
-      if (!info) return;
-      const priceEl = node.querySelector('.price');
-      const changeEl = node.querySelector('.change');
-      if (priceEl) {
-        priceEl.innerText = '$' + formatPrice(info.price);
-        priceEl.style.color = '';
-      }
-      if (changeEl && info.change_24h != null) {
-        var change = info.change_24h;
-        var sign = change >= 0 ? '+' : '';
-        changeEl.innerText = sign + change.toFixed(2) + '%';
-        changeEl.style.color = change >= 0 ? '#22c55e' : '#ef5350';
-      }
-    });
+    _applyCoinPrices(list);
   } catch (e) { console.error('updatePrices', e); }
 }
 
-async function onCoinClick(symbol) {
+function _applyCoinPrices(list) {
+  const map = {};
+  list.forEach(i => { map[i.pair] = i; });
+  document.querySelectorAll('.watchlist .coin').forEach(node => {
+    const sym = node.dataset.symbol;
+    const info = map[sym];
+    if (!info) return;
+    const priceEl = node.querySelector('.price');
+    const changeEl = node.querySelector('.change');
+    if (priceEl) {
+      priceEl.innerText = '$' + formatPrice(info.price);
+      priceEl.style.color = '';
+    }
+    if (changeEl && info.change_24h != null) {
+      var change = info.change_24h;
+      var sign = change >= 0 ? '+' : '';
+      changeEl.innerText = sign + change.toFixed(2) + '%';
+      changeEl.style.color = change >= 0 ? 'var(--up)' : 'var(--down)';
+
+    }
+  });
+  // Push ticker price into chart's latest candle (single source of truth)
+  if (window.TFChart?.updateLatestPrice && map[window.currentSymbol]?.price != null) {
+    window.TFChart.updateLatestPrice(Number(map[window.currentSymbol].price));
+  }
+}
+
+var _marketWs = null;
+
+function _startMarketWs() {
+  if (_marketWs) { try { _marketWs.close(); } catch (e) {} }
+  const proto = (location.protocol === 'https:') ? 'wss' : 'ws';
+  _marketWs = new WebSocket(proto + '://' + location.host + '/ws/market');
+  _marketWs.onopen = function () {};
+  _marketWs.onclose = function () {
+    _marketWs = null;
+    setTimeout(_startMarketWs, 3000);
+  };
+  _marketWs.onmessage = function (ev) {
+    try {
+      var msg = JSON.parse(ev.data);
+      if (msg.type === 'market_snapshot' || msg.type === 'snapshot') {
+        if (msg.coins && msg.coins.length) {
+          _applyCoinPrices(msg.coins);
+          // Also push to topbar
+          var current = msg.coins.find(function (c) { return c.pair === window.currentSymbol; });
+          if (current && window.TFTopbar?.updateFromSnapshot) {
+            window.TFTopbar.updateFromSnapshot(
+              current.price,
+              current.change_24h,
+              current.volume_24h
+            );
+          }
+        }
+      }
+    } catch (e) { /* ignore parse errors */ }
+  };
+}
+
+function onCoinClick(symbol) {
   if (window.TFChart) {
-    const interval = document.querySelector('.timeframes button.active')?.dataset.tf || '5m';
-    window.TFChart.stopCandleWs();
-    window.TFChart.setActiveSymbol?.(symbol);
-    await window.TFChart.loadCandles(symbol, interval);
-    window.TFChart.startCandleWs(symbol, interval);
+    if (window.currentSymbol) {
+      var activeInterval = document.querySelector('.timeframes button.active')?.dataset.tf || '5m';
+      window.TFChart.saveCoinState(window.currentSymbol, activeInterval);
+    }
+
+    var saved = window.TFChart.getCoinState(symbol);
+    var targetInterval = (saved && saved.interval) || document.querySelector('.timeframes button.active')?.dataset.tf || '5m';
+
+    document.querySelectorAll('.timeframes button').forEach(function (b) {
+      b.classList.toggle('active', b.dataset.tf === targetInterval);
+    });
+
+    window.TFChart.setActiveSymbol(symbol);
+    window.TFChart.switchCoin(symbol, targetInterval);
+    window.TFChart.restoreCoinState(symbol, targetInterval);
   }
   const resultEl = document.querySelector('.result-text');
   if (resultEl) resultEl.innerText = 'Click to analyze chart for patterns.';
-  document.querySelectorAll('.watchlist .coin').forEach(n => n.classList.toggle('active', n.dataset.symbol === symbol));
+  document.querySelectorAll('.watchlist .coin').forEach(function (n) {
+    n.classList.toggle('active', n.dataset.symbol === symbol);
+  });
 }
 
 // ── Fear & Greed Speedometer ───────────────────────────────────────────
@@ -224,12 +308,18 @@ async function loadCoinIcons() {
   try {
     var resp = await fetch('/api/coins/icons');
     if (!resp.ok) return;
-    _coinIcons = await resp.json();
+    var icons = await resp.json();
+    Object.keys(icons).forEach(function (k) { _coinIcons[k] = icons[k]; });
     // Re-render with icons
     renderWatchlist();
+    if (window.TFTopbar && typeof window.TFTopbar.refreshIdentity === 'function') {
+      window.TFTopbar.refreshIdentity();
+    }
+
   } catch (_) {}
 }
 
-document.addEventListener('DOMContentLoaded', () => { renderWatchlist(); updatePrices(); setInterval(updatePrices, 5000); loadFearAndGreed(); loadCoinIcons(); });
+document.addEventListener('DOMContentLoaded', () => { renderWatchlist(); initCoinSearch(); updatePrices(); _startMarketWs(); loadFearAndGreed(); loadCoinIcons(); });
 
 window.Sidebar = { renderWatchlist, updatePrices, onCoinClick };
+

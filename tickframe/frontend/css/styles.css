@@ -1,114 +1,291 @@
+/* ============================================================
+   TickFrame — Unified Design System
+   Dark theme  : "Matrix" — black background, phosphor green,
+                 monospace / code fonts.
+   Light theme : clean white background, muted green accents.
+   ============================================================ */
+
 :root{
-  --bg:#05060a;
-  --panel:#0f1724;
-  --muted:#8b93a3;
-  --accent:#26a69a;
-  --danger:#ef5350;
+  /* --- Core palette (dark / matrix) --- */
+  --bg:#02050a;
+  --bg-elev:#050b08;
+  --panel:#060d0a;
+  --panel-2:#08130d;
+  --border:#123322;
+  --border-soft:rgba(0,255,120,.14);
+  --muted:#5f8f72;
+  --text:#c8f7d6;
+  --text-dim:#7fbf97;
+
+  /* --- Accent (phosphor green) --- */
+  --accent:#00ff88;
+  --accent-dim:#00c46a;
+  --accent-glow:rgba(0,255,136,.35);
+  --accent-soft:rgba(0,255,136,.12);
+  --danger:#ff4d5e;
+  --up:#00ff88;
+  --down:#ff4d5e;
+
+  /* --- Typography --- */
+  --font-ui:"JetBrains Mono","Fira Code","SF Mono","Cascadia Code",Consolas,"Liberation Mono",Menlo,monospace;
+  --font-mono:"JetBrains Mono","Fira Code","SF Mono",Consolas,Menlo,monospace;
+
+  /* --- Radius & shadow --- */
+  --radius:8px;
+  --radius-lg:12px;
+  --shadow:0 8px 30px rgba(0,0,0,.55);
+  --glow:0 0 12px var(--accent-glow);
+}
+
+body.light{
+  --bg:#f4f7f5;
+  --bg-elev:#ffffff;
+  --panel:#ffffff;
+  --panel-2:#f0f5f2;
+  --border:#dbe6df;
+  --border-soft:rgba(15,80,50,.12);
+  --muted:#5d766b;
+  --text:#0f231a;
+  --text-dim:#3d6552;
+
+  --accent:#0aa55f;
+  --accent-dim:#0c8a52;
+  --accent-glow:rgba(10,165,95,.25);
+  --accent-soft:rgba(10,165,95,.10);
+  --danger:#e24d4d;
+  --up:#0aa55f;
+  --down:#e24d4d;
+
+  --shadow:0 8px 24px rgba(15,40,30,.10);
+  --glow:none;
 }
 
 *{box-sizing:border-box}
 html,body{height:100%;margin:0}
 body{
   background:var(--bg);
-  color:#d1d4dc;
-  font-family:Inter,Segoe UI,Roboto,Arial;}
-
-body.light{
-  --bg:#eef2f7;
-  --panel:#ffffff;
-  --muted:#5b6575;
-  --accent:#1f9d8f;
-  --danger:#e24d4d;
-  background:var(--bg);
-  color:#0f172a;
+  color:var(--text);
+  font-family:var(--font-ui);
+  font-size:13px;
+  letter-spacing:.2px;
 }
 
-body.light .sidebar,
-body.light .topbar,
-body.light .pattern-analysis{
-  box-shadow:0 8px 20px rgba(15,23,42,.08);
+/* subtle scanline / grid texture in dark matrix theme */
+body:not(.light)::before{
+  content:"";
+  position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    linear-gradient(rgba(0,255,136,.02) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,255,136,.02) 1px,transparent 1px);
+  background-size:40px 40px;
 }
 
-body.light .topbar,
-body.light .sidebar{
-  border-color:#dbe2ea;
+.app{display:flex;height:100vh;position:relative;z-index:1}
+
+/* ---------- Shared scrollbars ---------- */
+*::-webkit-scrollbar{width:8px;height:8px}
+*::-webkit-scrollbar-track{background:transparent}
+*::-webkit-scrollbar-thumb{
+  background:var(--border);
+  border-radius:4px;
 }
-
-body.light .timeframes button.active,
-body.light #themeBtn,
-body.light .watchlist .coin:hover{
-  background:#dff5f2;
-}
-
-body.light .search input{
-  background:#f8fafc;
-  border-color:#d8e0ea;
-  color:#0f172a;
-}
-
-body.light .fng-container{border-color:#dbe2ea}
-
-body.light .chart-container{background:#fff}
-body.light .analysis-stack .pattern-analysis{
-  background:rgba(255,255,255,.92);
-}
-
-.app{display:flex;height:100vh;}
+*::-webkit-scrollbar-thumb:hover{background:var(--accent-dim)}
+*{scrollbar-width:thin;scrollbar-color:var(--border) transparent}
 
 /* ---------- Sidebar ---------- */
 .sidebar{
-  width:250px;min-width:150px;max-width:400px;padding:18px;background:var(--panel);border-right:1px solid #202632;position:relative;flex-shrink:0}
-.logo{font-weight:700;margin-bottom:12px}
-.search input{width:100%;padding:8px;border-radius:6px;border:1px solid #222;background:#07101a;color:inherit}
+  width:270px;min-width:170px;max-width:400px;
+  padding:16px 14px;
+  background:var(--panel);
+  border-right:1px solid var(--border);
+  position:relative;flex-shrink:0;
+  display:flex;flex-direction:column;
+  overflow:hidden;
+}
+.logo{
+  font-weight:700;
+  font-family:var(--font-mono);
+  font-size:16px;
+  letter-spacing:1.5px;
+  color:var(--accent);
+  text-shadow:var(--glow);
+  margin-bottom:14px;
+  display:flex;align-items:center;gap:8px;
+}
+.logo::before{content:"❯";opacity:.8}
+
+/* ---------- Coin search ---------- */
+.coin-search-wrap{position:relative;margin-bottom:10px;flex-shrink:0}
+.coin-search-wrap svg{
+  position:absolute;left:10px;top:50%;transform:translateY(-50%);
+  width:15px;height:15px;color:var(--muted);pointer-events:none;
+}
+#coinSearch{
+  width:100%;
+  padding:9px 10px 9px 32px;
+  border-radius:var(--radius);
+  border:1px solid var(--border);
+  background:var(--panel-2);
+  color:var(--text);
+  font-family:var(--font-mono);
+  font-size:12px;
+  outline:none;
+  transition:border-color .15s,box-shadow .15s;
+}
+#coinSearch::placeholder{color:var(--muted)}
+#coinSearch:focus{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
+
 .status{margin-top:10px;font-size:13px;color:var(--muted)}
-.watchlist{margin-top:14px}
-.watchlist .coin{display:flex;align-items:center;gap:8px;padding:8px 6px;border-radius:8px;margin-bottom:8px;cursor:pointer}
-.watchlist .coin:hover{background:#0b1117}
-body.light .watchlist .coin:hover{background:#eef2f7}
-.coin .badge{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;overflow:hidden}
-.coin .badge img{width:28px;height:28px;border-radius:50%;display:block}
+
+/* ---------- Watchlist (scrollable) ---------- */
+.watchlist{
+  margin-top:2px;
+  flex:1 1 auto;
+  overflow-y:auto;
+  overflow-x:hidden;
+  min-height:80px;
+  padding-right:4px;
+}
+.watchlist .coin{
+  display:flex;align-items:center;gap:10px;
+  padding:8px 8px;border-radius:var(--radius);
+  margin-bottom:6px;cursor:pointer;
+  border:1px solid transparent;
+  transition:background .12s,border-color .12s;
+}
+.watchlist .coin:hover{background:var(--panel-2);border-color:var(--border)}
+.watchlist .coin.active{
+  background:var(--accent-soft);
+  border-color:var(--accent-dim);
+}
+.watchlist-empty{
+  padding:14px 8px;color:var(--muted);font-size:12px;text-align:center;
+  font-family:var(--font-mono);
+}
+.coin .badge{
+  width:34px;height:34px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:700;flex-shrink:0;overflow:hidden;
+  background:var(--panel-2);border:1px solid var(--border);
+  font-size:11px;color:var(--accent);
+  font-family:var(--font-mono);
+}
+.coin .badge img{width:26px;height:26px;border-radius:50%;display:block}
 .coin .meta{flex:1;min-width:0}
-.coin .meta .ticker{font-size:12px;font-weight:600}
+.coin .meta .ticker{font-size:12px;font-weight:600;font-family:var(--font-mono)}
 .coin .meta .name{font-size:10px;color:var(--muted);margin-top:1px}
 .coin .stats{text-align:right;flex-shrink:0}
-.coin .stats .price{font-size:13px;font-weight:600}
-.coin .stats .change{font-size:11px;margin-top:1px}
+.coin .stats .price{font-size:13px;font-weight:600;font-family:var(--font-mono)}
+.coin .stats .change{font-size:11px;margin-top:1px;font-family:var(--font-mono)}
 
 /* ---------- Fear & Greed Index ---------- */
-.fng-container{margin-top:14px;padding:6px 4px 2px;border-radius:8px;background:var(--panel);border:1px solid #202632}
+.fng-container{
+  margin-top:14px;flex-shrink:0;
+  padding:8px 6px 4px;border-radius:var(--radius-lg);
+  background:var(--panel-2);border:1px solid var(--border);
+}
 .fng-container svg{display:block;width:100%;height:auto}
 
 /* ---------- Main area ---------- */
 .main{flex:1;display:flex;flex-direction:column;position:relative;min-width:0}
-.topbar{height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 18px;border-bottom:1px solid #101520}
-.topbar .title{font-weight:600}
-.controls{display:flex;align-items:center;gap:12px}
-.timeframes button{border:0;background:transparent;color:var(--muted);padding:8px 10px;border-radius:6px;cursor:pointer}
-.timeframes button.active{background:#0b1220;color:#d1d4dc}
-#themeBtn{background:#0b1220;color:#d1d4dc;border:1px solid #101426;padding:8px 10px;border-radius:6px;cursor:pointer}
 
-/* ---------- Chart area ---------- */
-.chart-area{
-  flex:1;
-  display:flex;
-  overflow:hidden;
+/* ---------- Topbar: market header ---------- */
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  padding:10px 18px;border-bottom:1px solid var(--border);
+  background:var(--panel);flex-wrap:wrap;
 }
 
-/* ---------- Content (chart container) ---------- */
-.content{flex:1;display:flex;flex-direction:column;overflow:hidden;padding:10px;position:relative}
-.chart-container{position:relative;width:100%;flex:1;background:#000;overflow:hidden;min-height:80px}
-#chart{width:100%;height:100%}
+/* left cluster: coin identity + all market metrics inline */
+.market-head{display:flex;align-items:center;gap:22px;min-width:0;flex-wrap:wrap}
+.market-id{display:flex;align-items:center;gap:11px;min-width:0;flex-shrink:0}
 
-/* ---------- Analysis stack ---------- */
-.analysis-stack{position:absolute;right:16px;bottom:18px;display:flex;flex-direction:column;gap:10px;z-index:5}
-.pattern-analysis{background:rgba(10,14,22,.92);backdrop-filter:blur(8px);border:1px solid #243041;padding:12px;border-radius:10px;color:#d1d4dc;min-width:220px;box-shadow:0 8px 24px rgba(0,0,0,.35)}
-.pattern-analysis{border-style:dashed;border-color:var(--accent)}
-.analyze-btn{background:var(--accent);color:#fff;padding:10px 16px;border:0;border-radius:6px;cursor:pointer;font-weight:600}
-.candle-limit-row{display:flex;align-items:center;gap:6px;margin-top:6px}
-.candle-limit-label{color:var(--muted);font-size:11px}
-.candle-limit-input{width:80px;padding:4px 6px;border:1px solid #243041;border-radius:4px;background:#131518;color:#d1d4dc;font-size:12px;outline:none}
-.candle-limit-input:focus{border-color:var(--accent)}
-.result-text{margin-top:8px;color:var(--muted);font-size:13px}
+.market-icon{
+  width:38px;height:38px;border-radius:10px;flex-shrink:0;
+  background:var(--panel-2);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;overflow:hidden;
+  color:var(--accent);font-family:var(--font-mono);font-weight:700;font-size:13px;
+}
+.market-icon img{width:30px;height:30px;border-radius:50%;display:block}
+.market-id-text{display:flex;flex-direction:column;min-width:0}
+.market-ticker{
+  font-family:var(--font-mono);font-weight:700;font-size:17px;
+  color:var(--text);letter-spacing:.5px;line-height:1.1;
+}
+.market-ticker .market-quote{color:var(--muted);font-size:12px;margin-left:2px}
+.market-name{font-size:11px;color:var(--muted);font-family:var(--font-mono);margin-top:1px}
+
+.timeframes{display:flex;gap:2px;background:var(--panel-2);padding:3px;border-radius:var(--radius);border:1px solid var(--border);width:fit-content}
+.timeframes button{
+  border:0;background:transparent;color:var(--muted);
+  padding:5px 11px;border-radius:6px;cursor:pointer;
+  font-family:var(--font-mono);font-size:12px;
+  transition:background .12s,color .12s;
+}
+.timeframes button:hover{color:var(--text)}
+.timeframes button.active{background:var(--accent-soft);color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent-dim)}
+
+/* right cluster: price, multi-tf change, metrics, tools */
+.market-stats{
+  display:flex;align-items:center;gap:22px;flex-wrap:wrap;
+  font-family:var(--font-mono);
+}
+.market-price-block{display:flex;flex-direction:column;align-items:flex-end;line-height:1.2}
+.market-price{font-size:20px;font-weight:700;color:var(--text)}
+.market-price-change{font-size:12px;font-weight:600}
+
+.market-changes{display:flex;gap:14px}
+.mc-cell{display:flex;flex-direction:column;align-items:center;gap:2px}
+.mc-label{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.mc-val{font-size:12px;font-weight:600;color:var(--muted)}
+
+.market-metrics{display:flex;gap:16px}
+.mm-cell{display:flex;flex-direction:column;gap:2px}
+.mm-label{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.mm-val{font-size:12px;font-weight:600;color:var(--text)}
+
+/* right cluster: timeframe buttons + theme toggle */
+.topbar-right{display:flex;align-items:center;gap:12px;flex-shrink:0}
+
+/* positive / negative coloring shared across topbar */
+.tf-up{color:var(--up) !important}
+.tf-down{color:var(--down) !important}
+
+/* icon-only theme toggle (moon in dark, sun in light) */
+.theme-toggle-btn{
+  width:34px;height:34px;flex-shrink:0;
+  background:var(--panel-2);color:var(--text);
+  border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;
+  display:inline-flex;align-items:center;justify-content:center;
+  transition:border-color .12s,color .12s,background .12s;
+}
+.theme-toggle-btn:hover{border-color:var(--accent-dim);color:var(--accent)}
+.theme-toggle-btn svg{width:17px;height:17px}
+/* Dark theme shows the moon; light theme shows the sun. */
+.theme-toggle-btn .theme-icon-sun{display:none}
+body.light .theme-toggle-btn .theme-icon-moon{display:none}
+body.light .theme-toggle-btn .theme-icon-sun{display:block}
+
+/* chart toolbar row (indicator chips) */
+.chart-toolbar-row{display:flex;align-items:center;gap:10px;margin-bottom:6px;flex-wrap:wrap;min-height:0}
+.chart-toolbar-row .indicator-chips{flex:1;min-width:0}
+.chart-toolbar-row:empty{display:none}
+
+
+@media(max-width:1100px){
+  .market-metrics{display:none}
+}
+@media(max-width:820px){
+  .market-changes{display:none}
+}
+
+
+/* ---------- Chart area ---------- */
+.chart-area{flex:1;display:flex;overflow:hidden}
+.content{flex:1;display:flex;flex-direction:column;overflow:hidden;padding:10px;position:relative}
+.chart-container{position:relative;width:100%;flex:1;background:var(--bg-elev);overflow:hidden;min-height:80px;border-radius:var(--radius)}
+body.light .chart-container{background:#fff}
+#chart{width:100%;height:100%;min-height:200px}
 
 .title{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:60vw}
 
@@ -116,28 +293,139 @@ body.light .watchlist .coin:hover{background:#eef2f7}
 
 /* ---------- Loading overlay ---------- */
 .chart-loading-overlay{
-  position:absolute;
-  top:0;left:0;right:0;bottom:0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:rgba(5,6,10,0.75);
-  z-index:20;
-  opacity:0;
-  pointer-events:none;
-  transition:opacity 0.2s;
+  position:absolute;top:0;left:0;right:0;bottom:0;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(2,5,10,.75);z-index:20;
+  opacity:0;pointer-events:none;
+  transition:opacity .2s;
 }
-.chart-loading-overlay.visible{
-  opacity:1;
-  pointer-events:auto;
-}
+.chart-loading-overlay.visible{opacity:1;pointer-events:auto}
 .chart-loading-spinner{
-  width:36px;
-  height:36px;
-  border:3px solid #243041;
+  width:36px;height:36px;
+  border:3px solid var(--border);
   border-top-color:var(--accent);
-  border-radius:50%;
-  animation:spin .7s linear infinite;
+  border-radius:50%;animation:spin .7s linear infinite;
 }
 @keyframes spin{to{transform:rotate(360deg)}}
-body.light .chart-loading-overlay{background:rgba(238,242,247,0.8)}
+body.light .chart-loading-overlay{background:rgba(244,247,245,.8)}
+
+/* ============================================================
+   Pattern Analysis panel + Analyze / Filter controls
+   ============================================================ */
+.analysis-stack{
+  position:absolute;right:16px;bottom:18px;
+  display:flex;flex-direction:column;gap:10px;z-index:5;align-items:flex-end;
+}
+.pattern-analysis{
+  background:color-mix(in srgb,var(--panel) 92%,transparent);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  border:1px solid var(--border);
+  border-radius:var(--radius-lg);
+  padding:14px;color:var(--text);
+  min-width:240px;box-shadow:var(--shadow);
+}
+.pattern-analysis .pa-title{
+  display:flex;align-items:center;gap:8px;
+  font-family:var(--font-mono);font-size:11px;
+  text-transform:uppercase;letter-spacing:1px;
+  color:var(--muted);margin-bottom:10px;
+}
+.pattern-analysis .pa-title::before{content:"◈";color:var(--accent)}
+
+.pa-actions{display:flex;gap:8px}
+.analyze-btn{
+  flex:1;
+  background:var(--accent);color:#00160c;
+  padding:11px 16px;border:0;border-radius:var(--radius);
+  cursor:pointer;font-weight:700;
+  font-family:var(--font-mono);font-size:12px;
+  letter-spacing:.5px;
+  display:flex;align-items:center;justify-content:center;gap:7px;
+  transition:transform .1s,box-shadow .15s,background .15s;
+  box-shadow:0 0 0 0 var(--accent-glow);
+}
+.analyze-btn:hover{box-shadow:var(--glow);background:var(--accent-dim)}
+.analyze-btn:active{transform:scale(.97)}
+.analyze-btn svg{width:15px;height:15px}
+.analyze-btn.analyzing{opacity:.7;pointer-events:none}
+.analyze-btn.analyzing svg{animation:spin .8s linear infinite}
+
+.filter-patterns-btn{
+  background:var(--panel-2);color:var(--muted);
+  padding:11px 12px;border:1px solid var(--border);
+  border-radius:var(--radius);cursor:pointer;font-weight:600;
+  font-family:var(--font-mono);font-size:12px;
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  transition:border-color .12s,color .12s;
+}
+.filter-patterns-btn:hover{border-color:var(--accent-dim);color:var(--accent)}
+.filter-patterns-btn.filtered{border-color:var(--accent-dim);color:var(--accent)}
+.filter-patterns-btn svg{width:15px;height:15px}
+
+.filter-count-badge{
+  min-width:16px;height:16px;padding:0 4px;border-radius:8px;
+  background:var(--accent);color:#00160c;
+  font-size:10px;font-weight:700;
+  display:inline-flex;align-items:center;justify-content:center;
+}
+
+.result-text{
+  margin-top:10px;color:var(--text-dim);font-size:12px;
+  font-family:var(--font-mono);line-height:1.5;
+  border-top:1px dashed var(--border);padding-top:9px;
+}
+.result-text .pa-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:2px 8px;border-radius:6px;margin:2px 4px 2px 0;
+  font-size:11px;background:var(--accent-soft);
+  color:var(--accent);border:1px solid var(--border-soft);
+}
+
+/* ---------- Pattern filter popover ---------- */
+.pattern-filter-modal{
+  background:color-mix(in srgb,var(--panel) 96%,transparent);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border:1px solid var(--border);border-radius:var(--radius-lg);
+  padding:12px;color:var(--text);min-width:230px;box-shadow:var(--shadow);
+}
+.pattern-filter-modal.hidden{display:none}
+.pattern-filter-header{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:10px;font-weight:600;font-size:12px;
+  font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.8px;
+  color:var(--muted);
+}
+.pattern-filter-close{
+  background:none;border:none;color:var(--muted);cursor:pointer;
+  font-size:20px;padding:0;line-height:1;transition:color .12s;
+}
+.pattern-filter-close:hover{color:var(--accent)}
+.pattern-filter-actions{
+  display:flex;gap:6px;margin-bottom:10px;
+}
+.pattern-filter-actions button{
+  flex:1;background:var(--panel-2);border:1px solid var(--border);
+  color:var(--muted);border-radius:6px;padding:5px;cursor:pointer;
+  font-family:var(--font-mono);font-size:10px;text-transform:uppercase;
+  letter-spacing:.5px;transition:color .12s,border-color .12s;
+}
+.pattern-filter-actions button:hover{color:var(--accent);border-color:var(--accent-dim)}
+.pattern-filter-list{display:flex;flex-direction:column;gap:2px}
+.pattern-filter-item{
+  display:flex;align-items:center;gap:10px;font-size:12px;
+  cursor:pointer;padding:8px 8px;border-radius:6px;
+  transition:background .12s;user-select:none;
+}
+.pattern-filter-item:hover{background:var(--panel-2)}
+.pattern-filter-item input[type="checkbox"]{position:absolute;opacity:0;width:0;height:0}
+.pattern-filter-item .pf-box{
+  width:16px;height:16px;border-radius:4px;flex-shrink:0;
+  border:1px solid var(--muted);
+  display:flex;align-items:center;justify-content:center;
+  color:transparent;transition:all .12s;
+}
+.pattern-filter-item input:checked + .pf-box{
+  background:var(--accent);border-color:var(--accent);color:#00160c;
+}
+.pattern-filter-item .pf-box svg{width:11px;height:11px}
+.pattern-filter-item .pf-label{flex:1;font-family:var(--font-mono)}

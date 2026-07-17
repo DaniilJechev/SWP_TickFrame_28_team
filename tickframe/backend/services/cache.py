@@ -16,6 +16,11 @@ LOGGER = logging.getLogger("tickframe.cache")
 MAX_CANDLES = 55000
 """Maximum number of candles stored per (coin, interval) pair."""
 
+INTERVAL_SECONDS: dict[str, int] = {
+    "5m": 300, "15m": 900, "1h": 3600, "4h": 14400, "1d": 86400,
+}
+"""Candle interval in seconds, used for staleness detection."""
+
 
 class MemoryMarketCache:
     def __init__(self, client: BybitClient, db: DatabaseService | None = None, refresh_interval: int = 1):
@@ -27,6 +32,7 @@ class MemoryMarketCache:
         self._prices: dict[str, Snapshot] = {}
         self._candles: dict[tuple[str, str], tuple[float, CandlePayload]] = {}
         self._last_market_refresh = 0.0
+        self._last_exchange_fetch: dict[tuple[str, str], float] = {}
         self._warmup_done = False
 
     # ------------------------------------------------------------------
@@ -39,11 +45,12 @@ class MemoryMarketCache:
         LOGGER.info("Starting warmup — phase 1: loading DB candles for all coins/intervals")
         await self._load_db_candles_for_all()
 
-        LOGGER.info("Starting warmup — phase 2: sequential fill to %d candles per coin/interval", MAX_CANDLES)
-        for meta in DEFAULT_COIN_METADATA:
-            pair = meta["pair"]
-            for iv in ("5m", "15m", "1h", "4h", "1d"):
-                await self._fill_to_max(pair, iv)
+        LOGGER.info("Starting warmup — phase 2: sequential fill for default coin only")
+        # Only fill the default coin (BTCUSDT) on startup. Other coins fill
+        # on-demand when the user clicks them, avoiding Bybit rate-limit storms.
+        default_pair = DEFAULT_COIN_METADATA[0]["pair"]
+        for iv in ("5m", "15m", "1h", "4h", "1d"):
+            await self._fill_to_max(default_pair, iv)
 
         self._warmup_done = True
         LOGGER.info("Warmup complete")
@@ -76,7 +83,8 @@ class MemoryMarketCache:
 
     async def _fill_to_max(self, pair: str, interval: str) -> None:
         """Ensure at least MAX_CANDLES candles exist for pair+interval.
-        Only fetches missing older candles from the exchange."""
+        Detects gaps in existing DB data and discards gapped data in favour
+        of a full exchange fetch, ensuring contiguous candles."""
         key = (pair, interval)
 
         with self._lock:
@@ -84,20 +92,34 @@ class MemoryMarketCache:
             current = len(cached[1].candles) if cached else 0
 
         if current >= MAX_CANDLES:
-            return
+            # Already at max — verify contiguity; if gapped, discard and refetch
+            if cached and self._has_gaps(cached[1].candles, interval):
+                LOGGER.warning("Gaps detected in %s/%s at MAX_CANDLES — refetching", pair, interval)
+                with self._lock:
+                    del self._candles[key]
+                current = 0
+            else:
+                return
 
         if current > 0:
-            # We have some candles — fetch only the older ones we're missing.
+            # Check existing data for gaps
             with self._lock:
                 cached = self._candles.get(key)
-                earliest_ts = cached[1].candles[0]["time"] if cached else None
+                existing = cached[1].candles if cached else []
+                if self._has_gaps(existing, interval):
+                    LOGGER.warning("Gaps detected in %s/%s (%d candles) — refetching from exchange", pair, interval, len(existing))
+                    # Discard gapped data, fall through to full exchange fetch
+                    del self._candles[key]
+                    current = 0
+                else:
+                    earliest_ts = existing[0]["time"] if existing else None
 
-            if earliest_ts is not None:
-                need = min(MAX_CANDLES - current, MAX_CANDLES)
+            if current > 0 and earliest_ts is not None:
+                need = MAX_CANDLES - current
                 LOGGER.info("Filling %s/%s: have %d, fetching %d older candles before ts=%d", pair, interval, current, need, earliest_ts)
                 try:
-                    # Fetch candles older than earliest_ts (in ms)
                     candle_payload = await self.client.fetch_candles(pair, interval, need, end_ms=int(earliest_ts * 1000))
+
                     if candle_payload.candles:
                         with self._lock:
                             cached = self._candles.get(key)
@@ -116,7 +138,7 @@ class MemoryMarketCache:
                 except Exception:
                     LOGGER.warning("Failed to fill older candles for %s/%s, falling back to full fetch", pair, interval)
 
-        # No existing candles or fallback — fetch full MAX_CANDLES from exchange
+        # No existing candles, gapped data discarded, or fallback — fetch full MAX_CANDLES from exchange
         LOGGER.info("Fetching full %d candles for %s/%s", MAX_CANDLES, pair, interval)
         try:
             candle_payload = await self.client.fetch_candles(pair, interval, MAX_CANDLES)
@@ -223,12 +245,26 @@ class MemoryMarketCache:
         # -- normal flow: most recent candles ---------------------------------
         with self._lock:
             cached = self._candles.get(key)
+            cached_payload = cached[1] if cached else None
             is_fresh = cached is not None and (now - cached[0]) < self.refresh_interval
-            cached_count = len(cached[1].candles) if cached else 0
+            cached_count = len(cached_payload.candles) if cached_payload else 0
 
-        if cached is not None and is_fresh and cached_count >= limit:
-            candle_payload = cached[1]
+        # Tighten freshness for forming candles (still within the current interval window)
+        # so real-time price updates propagate to the WS and chart without delay.
+        if cached_payload is not None and is_fresh and cached_count >= limit and cached_payload.candles:
+            latest_ts = cached_payload.candles[-1]["time"]
+            expected_step = INTERVAL_SECONDS.get(interval, 300)
+            if time.time() - latest_ts < expected_step:
+                forming_ttl = 0.5
+                with self._lock:
+                    entry = self._candles.get(key)
+                    if entry is not None:
+                        is_fresh = (time.monotonic() - entry[0]) < forming_ttl
+
+        if cached_payload is not None and is_fresh and cached_count >= limit:
+            candle_payload = cached_payload
             candles = candle_payload.candles[-limit:]
+
             return {
                 "symbol": pair, "interval": interval,
                 "source": candle_payload.source, "updated_at": candle_payload.updated_at,
@@ -243,7 +279,41 @@ class MemoryMarketCache:
             except Exception:
                 pass
 
+        # If DB data has gaps, discard it and fetch fresh from exchange
+        if len(db_candles) >= limit and self._has_gaps(db_candles, interval):
+            LOGGER.warning("Gaps detected in DB candles for %s/%s — refetching from exchange", pair, interval)
+            db_candles = []
+
         if len(db_candles) >= limit:
+            latest_ts = db_candles[-1]["time"]
+            wall_now = time.time()
+
+            # Demand-driven refresh: check if the latest candle could have
+            # changed (any candle older than 1 second is considered stale)
+            staleness_threshold = 1
+            # Cooldown: don't fetch from exchange more than once per 2 seconds
+            fetch_cooldown = 2
+
+            if wall_now - latest_ts > staleness_threshold:
+                last_fetch = self._last_exchange_fetch.get(key, 0.0)
+                if wall_now - last_fetch > fetch_cooldown:
+                    try:
+                        exchange_payload = await self.client.fetch_candles(pair, interval, 2)
+                        if exchange_payload.candles:
+                            # Merge exchange candles as source of truth.
+                            # Overwrite existing entries (same timestamp) so the
+                            # forming candle's O/H/L/C/V is always current.
+                            candle_map = {c["time"]: c for c in db_candles}
+                            for c in exchange_payload.candles:
+                                candle_map[c["time"]] = c
+                            db_candles = sorted(candle_map.values(), key=lambda c: c["time"])
+                            db_candles = db_candles[-MAX_CANDLES:]
+                            self._last_exchange_fetch[key] = wall_now
+                            if self.db:
+                                await self.db.save_candles(pair, interval, db_candles)
+                    except Exception:
+                        pass
+
             db_candles = db_candles[-limit:]
             payload = CandlePayload(symbol=pair, interval=interval, candles=db_candles, source="db", updated_at=utc_now())
             with self._lock:
@@ -318,6 +388,13 @@ class MemoryMarketCache:
         payload = await self.get_candles(symbol, interval, 2)
         return payload["candles"][-1]
 
+    def clear_cache(self) -> None:
+        """Clear all cached candle data so next request re-fetches from exchange."""
+        with self._lock:
+            self._candles.clear()
+            self._last_exchange_fetch.clear()
+            self._warmup_done = False
+
     # ------------------------------------------------------------------
     # Internal helpers
     # ------------------------------------------------------------------
@@ -332,3 +409,17 @@ class MemoryMarketCache:
                 seen.add(t)
                 out.append(c)
         return out
+
+    @staticmethod
+    def _has_gaps(candles: list[dict], interval: str) -> bool:
+        """Return True if any consecutive candles have a time gap larger than
+        the expected interval (allowing a small tolerance of 10%)."""
+        if len(candles) < 3:
+            return False
+        expected_step = INTERVAL_SECONDS.get(interval, 300)
+        tolerance = int(expected_step * 1.10)  # 10% tolerance
+        for i in range(len(candles) - 1):
+            gap = candles[i + 1]["time"] - candles[i]["time"]
+            if gap > tolerance:
+                return True
+        return False

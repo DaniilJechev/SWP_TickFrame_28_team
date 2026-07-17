@@ -6,7 +6,8 @@ This document provides context and safety rules for AI coding assistants (e.g., 
 
 SWP TickFrame is a FastAPI-based cryptocurrency chart workstation with real-time Bybit market data, WebSocket streaming, Lightweight Charts v5 candlestick charts, a modular drawing toolbar, and ML pattern analysis.
 
-- **Backend:** Python 3.11, FastAPI, httpx, websockets, SQLite
+- **Backend:** Python 3.11, FastAPI, httpx, websockets, asyncpg (PostgreSQL)
+
 - **Frontend:** Lightweight Charts v5, vanilla JS, Canvas API, esbuild
 - **CI:** GitHub Actions (ruff, mypy, pytest+cov, bandit, ESLint, Vitest, Lychee)
 - **ML:** XGBoost head-and-shoulders detection microservice
@@ -62,9 +63,10 @@ reports/             — Weekly Sprint reports
 
 | Layer | Technology |
 |---|---|
-| **Backend** | Python 3.11, FastAPI, Uvicorn, httpx, websockets, aiosqlite |
+| **Backend** | Python 3.11, FastAPI, Uvicorn, httpx, websockets, asyncpg |
 | **Frontend** | Lightweight Charts v5, Canvas API, vanilla JS, lightweight-charts-drawing, Lucide icons, esbuild |
-| **Database** | SQLite (via aiosqlite) |
+| **Database** | PostgreSQL 16 (via asyncpg); SQLite fallback for unit tests |
+
 | **ML** | XGBoost pattern detection microservice |
 | **Exchange APIs** | Bybit v5 (primary), Binance (fallback) |
 | **Deployment** | Docker + Docker Compose (2 containers: tickframe + ml-service) |
@@ -79,8 +81,12 @@ pytest --cov=tickframe tests/         # Run tests
 uvicorn tickframe.backend.main:app --host 0.0.0.0 --port 8000  # Dev server
 cd tickframe/frontend && npm run lint # Frontend lint
 cd tickframe/frontend && npm test     # Frontend tests
-docker compose up --build             # Full environment
+docker compose up --build             # Full environment (includes postgres:16-alpine)
+python scripts/migrate_sqlite_to_pg.py  # Migrate legacy SQLite data to PostgreSQL
 ```
+
+The backend uses `asyncpg` and connects via `DATABASE_URL` (default `postgresql://tickframe:tickframe@postgres:5432/tickframe`). Unit tests fall back to SQLite via `DatabaseService(use_sqlite=True, db_path=...)`.
+
 
 ### Active Sprints
 

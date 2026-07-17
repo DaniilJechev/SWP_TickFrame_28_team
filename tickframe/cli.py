@@ -113,6 +113,139 @@ def run_serve(args):
     return 0
 
 
+# ---------------------------------------------------------------------------
+# DB Toolkit CLI commands
+# ---------------------------------------------------------------------------
+
+def run_db_candle_range(args):
+    import asyncio
+    from .backend.services.db_toolkit import get_db, get_candle_range, count_candles
+
+    async def _run():
+        db = await get_db(use_sqlite=args.sqlite)
+        try:
+            rng = await get_candle_range(db, args.symbol, args.interval)
+            cnt = await count_candles(db, args.symbol, args.interval)
+            if rng:
+                print(f"Candle range for {args.symbol} / {args.interval}:")
+                print(f"  Earliest: {rng[0]}  ({datetime.utcfromtimestamp(rng[0]).isoformat()}Z)")
+                print(f"  Latest:   {rng[1]}  ({datetime.utcfromtimestamp(rng[1]).isoformat()}Z)")
+                print(f"  Count:    {cnt}")
+            else:
+                print(f"No candles found for {args.symbol} / {args.interval}")
+        finally:
+            await db.close()
+
+    return asyncio.run(_run())
+
+
+def run_db_export(args):
+    import asyncio
+    from .backend.services.db_toolkit import get_db, export_candles
+
+    async def _run():
+        db = await get_db(use_sqlite=args.sqlite)
+        try:
+            count = await export_candles(db, args.symbol, args.interval, args.out, fmt=args.format)
+            print(f"Exported {count} candles to {args.out}")
+        finally:
+            await db.close()
+
+    return asyncio.run(_run())
+
+
+def run_db_import(args):
+    import asyncio
+    from .backend.services.db_toolkit import get_db, import_candles
+
+    async def _run():
+        db = await get_db(use_sqlite=args.sqlite)
+        try:
+            result = await import_candles(db, args.symbol, args.interval, args.infile, fmt=args.format)
+            print(f"Import complete: {result['rows_read']} rows read, {result['rows_upserted']} upserted")
+        finally:
+            await db.close()
+
+    return asyncio.run(_run())
+
+
+def run_db_patterns(args):
+    import asyncio
+    from .backend.services.db_toolkit import get_db, get_patterns, list_all_scanned_symbols
+
+    async def _run():
+        db = await get_db(use_sqlite=args.sqlite)
+        try:
+            if args.symbol == "*":
+                symbols = await list_all_scanned_symbols(db)
+                if not symbols:
+                    print("No scanned symbols found.")
+                    return 0
+                for sym in symbols:
+                    scan = await get_patterns(db, sym, pretty=args.pretty)
+                    if scan:
+                        print(f"\n=== {sym} ===")
+                        _print_patterns(scan, args.pretty)
+                return 0
+            scan = await get_patterns(db, args.symbol, pretty=args.pretty)
+            if scan:
+                _print_patterns(scan, args.pretty)
+            else:
+                print(f"No ML scan results for {args.symbol}")
+        finally:
+            await db.close()
+
+    return asyncio.run(_run())
+
+
+def _print_patterns(scan: dict, pretty: bool) -> None:
+    print(f"Interval:      {scan.get('interval', '?')}")
+    print(f"Last scanned:  {scan.get('last_scanned_time', 0)}")
+    print(f"Updated:       {scan.get('updated', '?')}")
+    patterns = scan.get("patterns", [])
+    if not patterns:
+        print("Patterns:      (none)")
+        return
+    print(f"Patterns ({len(patterns)}):")
+    for p in patterns:
+        ts = p.get("timestamp", "?")
+        label = p.get("datetime", ts) if pretty else ts
+        print(f"  - {p.get('pattern_type', '?')}  confidence={p.get('confidence', 0):.3f}  timestamp={label}")
+
+
+def run_db_query(args):
+    import asyncio
+    from .backend.services.db_toolkit import get_db, run_readonly_query
+
+    async def _run():
+        db = await get_db(use_sqlite=args.sqlite)
+        try:
+            results = await run_readonly_query(db, args.sql)
+            if not results:
+                print("(no rows)")
+                return 0
+            headers = list(results[0].keys())
+            col_widths = {h: len(h) for h in headers}
+            for row in results:
+                for h in headers:
+                    val = str(row.get(h, ""))
+                    col_widths[h] = max(col_widths[h], len(val))
+            sep = "+".join("-" * (col_widths[h] + 2) for h in headers)
+            header_row = "| " + " | ".join(h.ljust(col_widths[h]) for h in headers) + " |"
+            print(sep)
+            print(header_row)
+            print(sep)
+            for row in results:
+                vals = " | ".join(str(row.get(h, "")).ljust(col_widths[h]) for h in headers)
+                print(f"| {vals} |")
+            print(sep)
+            print(f"({len(results)} rows)")
+        finally:
+            await db.close()
+
+    return asyncio.run(_run())
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="TickFrame CLI — scan cryptocurrency charts using Bybit data"
@@ -146,6 +279,36 @@ def main():
     serve.add_argument("--port", type=int, default=5000, help="Port to listen on")
     serve.add_argument("--symbol", default="BTCUSDT", help="Cryptocurrency symbol")
 
+    # --- db subcommand ---
+    db_parser = subparsers.add_parser("db", help="Database toolkit commands")
+    db_sub = db_parser.add_subparsers(dest="db_command")
+
+    db_candle_range = db_sub.add_parser("candle-range", help="Print candle time range and count")
+    db_candle_range.add_argument("symbol", help="Symbol (e.g. BTCUSDT)")
+    db_candle_range.add_argument("interval", help="Interval (e.g. 5m)")
+    db_candle_range.add_argument("--sqlite", action="store_true", help="Use SQLite fallback instead of PostgreSQL")
+
+    db_export = db_sub.add_parser("export-candles", help="Export candles to file")
+    db_export.add_argument("symbol", help="Symbol (e.g. BTCUSDT)")
+    db_export.add_argument("interval", help="Interval (e.g. 5m)")
+    db_export.add_argument("--out", required=True, help="Output file path")
+    db_export.add_argument("--format", choices=["csv", "json"], default="csv", help="Output format")
+
+    db_import = db_sub.add_parser("import-candles", help="Import candles from file")
+    db_import.add_argument("symbol", help="Symbol (e.g. BTCUSDT)")
+    db_import.add_argument("interval", help="Interval (e.g. 5m)")
+    db_import.add_argument("--infile", required=True, help="Input file path")
+    db_import.add_argument("--format", choices=["csv", "json"], default="csv", help="Input format")
+
+    db_patterns = db_sub.add_parser("patterns", help="Show ML scan patterns for a symbol")
+    db_patterns.add_argument("symbol", help="Symbol (e.g. BTCUSDT) or * for all")
+    db_patterns.add_argument("--pretty", action="store_true", help="Pretty-print with human-readable timestamps")
+    db_patterns.add_argument("--sqlite", action="store_true", help="Use SQLite fallback instead of PostgreSQL")
+
+    db_query = db_sub.add_parser("query", help="Run a read-only SQL query")
+    db_query.add_argument("sql", help="SELECT SQL statement")
+    db_query.add_argument("--sqlite", action="store_true", help="Use SQLite fallback instead of PostgreSQL")
+
     args = parser.parse_args()
     if args.command == "scan":
         return run_scan(args)
@@ -155,6 +318,19 @@ def main():
         return run_analyze(args)
     if args.command == "serve":
         return run_serve(args)
+    if args.command == "db":
+        if args.db_command == "candle-range":
+            return run_db_candle_range(args)
+        if args.db_command == "export-candles":
+            return run_db_export(args)
+        if args.db_command == "import-candles":
+            return run_db_import(args)
+        if args.db_command == "patterns":
+            return run_db_patterns(args)
+        if args.db_command == "query":
+            return run_db_query(args)
+        db_parser.print_help()
+        return 1
 
     parser.print_help()
     return 1

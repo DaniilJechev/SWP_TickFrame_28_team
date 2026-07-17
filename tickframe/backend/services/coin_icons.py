@@ -24,6 +24,21 @@ SYMBOL_TO_ID: dict[str, str] = {
     "BNBUSDT": "binancecoin",
 }
 
+# Hardcoded default icons to avoid CoinGecko API calls on cold boot.
+# These are standard CoinGecko icon URLs that are stable.
+DEFAULT_ICONS: dict[str, str] = {
+    "BTCUSDT": "https://coin-images.coingecko.com/coins/images/1/large/bitcoin.png",
+    "ETHUSDT": "https://coin-images.coingecko.com/coins/images/279/large/ethereum.png",
+    "SOLUSDT": "https://coin-images.coingecko.com/coins/images/4128/large/solana.png",
+    "XRPUSDT": "https://coin-images.coingecko.com/coins/images/44/large/xrp-symbol-white-01.png",
+    "DOGEUSDT": "https://coin-images.coingecko.com/coins/images/5/large/dogecoin.png",
+    "ADAUSDT": "https://coin-images.coingecko.com/coins/images/975/large/cardano.png",
+    "AVAXUSDT": "https://coin-images.coingecko.com/coins/images/12559/large/Avalanche_Circle_RedWhite_Trans.png",
+    "DOTUSDT": "https://coin-images.coingecko.com/coins/images/12171/large/polkadot.png",
+    "LINKUSDT": "https://coin-images.coingecko.com/coins/images/877/large/chainlink-new-logo.png",
+    "BNBUSDT": "https://coin-images.coingecko.com/coins/images/825/large/bnb-icon2_2x.png",
+}
+
 
 class CoinIconsClient:
     def __init__(self) -> None:
@@ -42,9 +57,17 @@ class CoinIconsClient:
                 self._cache_expiry = time.time() + CACHE_TTL
                 return db_icons
 
-        coin_ids = list(SYMBOL_TO_ID.values())
-        result: dict[str, str] = {}
+        # Use hardcoded defaults to avoid API call on cold boot
+        result = dict(DEFAULT_ICONS)
+        self._cache = result
+        self._cache_expiry = time.time() + CACHE_TTL
 
+        # Persist defaults to DB so future boots use DB
+        if db is not None:
+            await db.save_coin_icons(result)
+
+        # Refresh from CoinGecko in the background (best-effort)
+        coin_ids = list(SYMBOL_TO_ID.values())
         try:
             async with httpx.AsyncClient(timeout=10.0) as client:
                 resp = await client.get(
@@ -57,16 +80,11 @@ class CoinIconsClient:
                     img = coin.get("image", "")
                     if img:
                         result[sym] = img
+                self._cache = result
+                if db is not None:
+                    await db.save_coin_icons(result)
         except Exception:
-            if self._cache is not None:
-                return self._cache
-            return {}
-
-        if result:
-            self._cache = result
-            self._cache_expiry = time.time() + CACHE_TTL
-            if db is not None:
-                await db.save_coin_icons(result)
+            pass  # default icons already set, no need to fail
 
         return result
 

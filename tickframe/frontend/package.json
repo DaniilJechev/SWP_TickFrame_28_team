@@ -4,11 +4,15 @@
   "type": "module",
   "scripts": {
     "test": "vitest run",
-    "lint": "eslint js/"
+    "lint": "eslint js/",
+    "postinstall": "node -e \"var fs=require('fs'),path=require('path');var nm=path.resolve(__dirname,'node_modules','lightweight-charts','dist');var files=['lightweight-charts.standalone.production.js','lightweight-charts.standalone.development.js'];var lib=path.join(__dirname,'lib','lightweight-charts');fs.mkdirSync(lib,{recursive:true});for(var f of files){var src=path.join(nm,f);if(fs.existsSync(src)){fs.copyFileSync(src,path.join(lib,f));console.log('Copied '+f+' to lib/');break;}} \""
   },
   "devDependencies": {
     "eslint": "^9.0.0",
     "globals": "^16.0.0",
     "vitest": "^3.0.0"
+  },
+  "dependencies": {
+    "lightweight-charts": "^5.2.0"
   }
 }

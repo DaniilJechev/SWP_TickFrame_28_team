@@ -77,7 +77,8 @@ var TOOL_GROUPS = [
   },
 ];
 
-var _COLORS = ['#26a69a', '#2962FF', '#ef5350', '#f97316', '#eab308', '#22c55e', '#a855f7', '#ec4899', '#6b7280', '#ffffff'];
+var _COLORS = ['#00ff88', '#00c46a', '#2962FF', '#ff4d5e', '#f97316', '#eab308', '#a855f7', '#ec4899', '#5f8f72', '#ffffff'];
+
 var _LINE_STYLES = [
   { dash: [], label: 'Solid' },
   { dash: [6, 4], label: 'Dashed' },
@@ -311,7 +312,8 @@ var DrawingToolbar = (function () {
     content.className = 'dt-settings-content';
 
     if (hasLineViz) {
-      content.appendChild(_buildSwatchRow('lineColor', 'Line', settings.lineColor || '#26a69a', function (val) {
+      content.appendChild(_buildSwatchRow('lineColor', 'Line', settings.lineColor || '#00ff88', function (val) {
+
         settings.lineColor = val;
         DrawingSettings.save(toolType, settings);
       }));
@@ -323,7 +325,8 @@ var DrawingToolbar = (function () {
     }
 
     if (hasFillViz) {
-      content.appendChild(_buildSwatchRow('fillColor', 'Fill', settings.fillColor || 'rgba(38,166,154,0.2)', function (val) {
+      content.appendChild(_buildSwatchRow('fillColor', 'Fill', settings.fillColor || 'rgba(0,255,136,0.2)', function (val) {
+
         settings.fillColor = val;
         DrawingSettings.save(toolType, settings);
       }));
