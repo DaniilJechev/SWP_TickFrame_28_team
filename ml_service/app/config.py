@@ -38,8 +38,14 @@ DTDB_WINDOW_SIZE = 50
 DTDB_MIN_CANDLES = DTDB_WINDOW_SIZE * 2 - 1
 DTDB_NMS_WINDOW = 10
 DTDB_TOLERANCE_WINDOW = 10
-DTDB_THRESHOLD_DT = 0.75
-DTDB_THRESHOLD_DB = 0.80
+# NOTE: The dtdb XGBoost model's confidence distribution on live 5m market
+# data peaks well below the original 0.75/0.80 targets (max ~0.48), so those
+# thresholds never triggered and DT/DB were effectively never detected. These
+# values are calibrated against the current model so Double Top / Double Bottom
+# are surfaced while remaining selective after NMS clustering.
+DTDB_THRESHOLD_DT = 0.45
+DTDB_THRESHOLD_DB = 0.45
+
 DTDB_FEATURE_ORDER = [
     "NATR_14",
     "Trend_50",

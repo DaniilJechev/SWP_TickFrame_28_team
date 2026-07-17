@@ -8,6 +8,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed
+- **Double Top / Double Bottom patterns are now actually detected**: The `dtdb` detector's confidence on live 5m market data peaks around ~0.48, but the ML service required `0.75`/`0.80`, so no Double Top or Double Bottom was ever emitted. The `dtdb` thresholds are now calibrated to the current model so all four pattern types (Classic H&S, Inverse H&S, Double Top, Double Bottom) are detected, saved to the database on startup, and returned by `POST /api/analyze/{symbol}`.
+- **Backend confidence filter no longer discards valid DT/DB detections**: The backend re-applied a single `confidence_threshold` (default `0.60`) to every pattern, silently dropping all Double Top / Double Bottom results (whose confidences are inherently lower than H&S). The filter now only applies to H&S patterns and trusts the ML model's own per-detector threshold for `dtdb`.
+- **Pattern labels now include the confidence score**: The merged on-chart pattern label used the bare `pattern_type`; it now shows `pattern_type + confidence%` (e.g. `Double Top 47%`) consistently with the per-pattern markers.
+
+- **Pattern filter checkboxes now actually filter the chart**: The pattern-filter toolbar wrote to `window._patternFilter`, but `charts.js` kept its filter state in a separate module-local object, so `renderPatterns()` never saw the checkbox state and all four pattern types were always shown. The module now exposes its filter on `window._patternFilter`, giving the toolbar and renderer a single shared source of truth.
+- **ML `processing_ms` timings preserved**: `MlClient` discarded the ML service's `processing_ms` block (total / H&S / DT-DB timings). It is now kept and surfaced in the `POST /api/analyze/{symbol}` response.
+- **Per-pattern `detector` field preserved**: The additive `detector` (`hs` / `dtdb`) field on each detected pattern is now carried through the backend and stored in the database, instead of being inferred from `pattern_type`.
+- **Unsupported ML timeframes no longer look like "no patterns"**: The ML service only supports `5m`. `POST /api/analyze/{symbol}` is now restricted to `5m` and other timeframes raise an explicit HTTP 400 instead of silently returning an empty pattern list.
+
 - **Charts render in Docker environments without internet**: `lightweight-charts` is now installed via npm (`^5.2.0`) and served as a local static file at `/lib/lightweight-charts/lightweight-charts.standalone.production.js`, replacing the `unpkg.com` CDN reference that was unreachable in isolated Docker containers.
 - **CoinGecko API calls on cold boot eliminated**: Default coin icons for all 10 tracked coins are now hardcoded in `coin_icons.py`. On first boot with an empty database, the defaults are returned immediately and persisted to the DB — the external API is only called in the background and is never needed for the UI to work.
 - **Safe fallback when LightweightCharts is missing**: `createChart` now guards against `typeof LightweightCharts === 'undefined'` and exits gracefully instead of throwing a ReferenceError.

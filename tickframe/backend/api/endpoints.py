@@ -11,7 +11,8 @@ from ..services.cache import MemoryMarketCache
 from ..services.database import DatabaseService
 from ..services.coin_icons import coin_icons_client
 from ..services.fng_client import fng_client
-from ..services.ml_client import MlClient
+from ..services.ml_client import MlClient, MlUnsupportedTimeframe
+
 
 router = APIRouter(prefix="/api", tags=["market"])
 LOGGER = logging.getLogger("tickframe.api")
@@ -90,12 +91,13 @@ async def get_candles(
 @router.post("/analyze/{symbol}")
 async def analyze_patterns(
     symbol: str,
-    interval: str = Query(default="5m", pattern="^(5m|15m|1h|4h|1d)$"),
+    interval: str = Query(default="5m", pattern="^(5m)$"),
     confidence_threshold: float = Query(default=0.60, ge=0.0, le=1.0),
     cache: MemoryMarketCache = Depends(get_cache),
     ml: MlClient = Depends(get_ml_client),
     db: DatabaseService = Depends(get_database),
 ) -> dict:
+
     existing = await db.load_ml_scan(symbol, interval)
     if existing and existing["patterns"]:
         LOGGER.info(
@@ -136,7 +138,13 @@ async def analyze_patterns(
         for c in candles
     ]
 
-    new_patterns = await ml.analyze_candles(symbol, interval, ml_candles, confidence_threshold)
+    try:
+        result = await ml.analyze(symbol, interval, ml_candles, confidence_threshold)
+    except MlUnsupportedTimeframe as exc:
+        raise HTTPException(status_code=400, detail=str(exc))
+
+    new_patterns = result["patterns"]
+    processing_ms = result["processing_ms"]
 
     for p in new_patterns:
         ts = p.get("timestamp")
@@ -145,17 +153,25 @@ async def analyze_patterns(
             existing_times.add(ts)
 
     last_time = candles[-1]["time"]
-    await db.save_ml_scan(symbol, interval, last_time, existing_patterns)
+    try:
+        await db.save_ml_scan(symbol, interval, last_time, existing_patterns)
+    except Exception as exc:
+        # Persistence failure should not crash the request with a non-JSON 500.
+        LOGGER.error("Failed to persist ML scan for %s: %s", symbol, exc)
+        raise HTTPException(status_code=500, detail="Failed to persist analysis results")
 
     LOGGER.info(
         "Analyze complete symbol=%s new=%d total=%d",
         symbol, len(new_patterns), len(existing_patterns),
     )
 
+
     return {
         "symbol": symbol, "interval": interval,
         "patterns": existing_patterns,
+        "processing_ms": processing_ms,
     }
+
 
 
 @router.get("/patterns/{symbol}")
