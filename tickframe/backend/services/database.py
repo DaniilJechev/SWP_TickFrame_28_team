@@ -136,10 +136,59 @@ class DatabaseService:
         self._pool = await asyncpg.create_pool(self._database_url)
         async with self._pool.acquire() as conn:
             await conn.execute(SCHEMA_PG)
+            await self._migrate_pg(conn)
             await conn.execute(
                 "INSERT INTO toolbar_position (id, pos_left, pos_top) VALUES (1, 16, 40) "
                 "ON CONFLICT (id) DO NOTHING"
             )
+
+    @staticmethod
+    async def _migrate_pg(conn: asyncpg.Connection) -> None:
+        """Idempotent migrations for databases created from an older schema.
+
+        `CREATE TABLE IF NOT EXISTS` does not add a missing PRIMARY KEY to an
+        already-existing table. Older `ml_scans` tables were created without the
+        `(symbol, interval)` primary key, which makes the `ON CONFLICT
+        (symbol, interval)` upsert in `save_ml_scan` fail. Ensure the constraint
+        exists (de-duplicating any pre-existing rows first).
+        """
+        await conn.execute(
+            """
+            DO $$
+            DECLARE
+                pk_cols text;
+            BEGIN
+                SELECT string_agg(a.attname, ',' ORDER BY array_position(c.conkey, a.attnum))
+                INTO pk_cols
+                FROM pg_constraint c
+                JOIN pg_attribute a
+                     ON a.attrelid = c.conrelid AND a.attnum = ANY(c.conkey)
+                WHERE c.conrelid = 'ml_scans'::regclass AND c.contype = 'p';
+
+                -- Older schemas created the primary key on `symbol` only (or with
+                -- some other shape), which breaks `ON CONFLICT (symbol, interval)`.
+                -- Rebuild the PK on (symbol, interval) whenever it is not already so.
+                IF pk_cols IS DISTINCT FROM 'symbol,interval' THEN
+                    -- Drop the existing primary key (if any).
+                    IF pk_cols IS NOT NULL THEN
+                        EXECUTE 'ALTER TABLE ml_scans DROP CONSTRAINT '
+                                || (SELECT conname FROM pg_constraint
+                                    WHERE conrelid = 'ml_scans'::regclass AND contype = 'p');
+                    END IF;
+                    -- Remove duplicate (symbol, interval) rows, keeping the newest.
+                    DELETE FROM ml_scans a USING ml_scans b
+                    WHERE a.ctid < b.ctid
+                      AND a.symbol = b.symbol
+                      AND a.interval = b.interval;
+                    ALTER TABLE ml_scans
+                        ADD CONSTRAINT ml_scans_pkey PRIMARY KEY (symbol, interval);
+                END IF;
+            END
+            $$;
+            """
+        )
+
+
 
     async def close(self) -> None:
         if self._pool is not None:

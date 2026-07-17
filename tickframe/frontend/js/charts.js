@@ -4,6 +4,12 @@ var _patternFilter = {
   'Classic H&S': true, 'Inverse H&S': true,
   'Double Top': true, 'Double Bottom': true,
 };
+// Expose the filter on window so the pattern-filter checkboxes (app.js) and
+// renderPatterns() share a single source of truth. Without this, the toolbar
+// checkboxes wrote to a separate window._patternFilter object and the render
+// filter (which reads window._patternFilter) never took effect.
+window._patternFilter = _patternFilter;
+
 var _allCoinPatterns = {};
 
 /* ── Per-coin data store ─────────────────────────────────── */
@@ -537,11 +543,13 @@ function renderPatterns(patterns) {
             lineWidth: 1,
             fillColor: 'rgba(0,255,136,0.1)',
           },
-          { visible: true, locked: false, _patternLabel: topPattern.pattern_type }
+          { visible: true, locked: false, _patternLabel: _formatPatternLabel(topPattern) }
         );
+
         if (drawing) {
           drawing.setDateRangeOptions({
-            labelText: topPattern.pattern_type,
+            labelText: _formatPatternLabel(topPattern),
+
             showBars: false,
             showDays: false,
             showDates: true,
@@ -917,9 +925,15 @@ function mlScan(symbol, btn, resultEl) {
   var threshold = parseFloat(window._analysisThreshold || '0.60');
   fetch('/api/analyze/' + encodeURIComponent(symbol) + '?interval=' + mlInterval + '&confidence_threshold=' + threshold, { method: 'POST' })
     .then(function (resp) {
-      if (!resp.ok) return resp.json().then(function (data) { throw new Error(data.detail || 'Analysis failed'); });
-      return resp.json();
+      return resp.text().then(function (text) {
+        var data;
+        try { data = text ? JSON.parse(text) : {}; }
+        catch (e) { data = { detail: text || ('HTTP ' + resp.status) }; }
+        if (!resp.ok) throw new Error(data.detail || ('Analysis failed (HTTP ' + resp.status + ')'));
+        return data;
+      });
     }).then(function (mlData) {
+
       var patterns = mlData.patterns || [];
       resultEl.innerText = patterns.length ? 'Found ' + patterns.length + ' pattern(s) on 5m.' : 'No patterns detected on 5m.';
       window.TFChart.renderPatterns(patterns);
