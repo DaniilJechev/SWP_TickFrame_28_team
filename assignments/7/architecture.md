@@ -6,11 +6,11 @@
 
 ## 1. Overview
 
-TickFrame is a **cryptocurrency chart workstation** with a client-server architecture. A **FastAPI backend** serves a static **vanilla JS frontend** (Lightweight Charts v5), interfaces with cryptocurrency exchanges (Bybit primary, Binance fallback), and delegates ML pattern detection (Head & Shoulders via XGBoost) to a separate **microservice**.
+TickFrame is a **cryptocurrency chart workstation** with a client-server architecture. A **FastAPI backend** serves a static **vanilla JS frontend** (Lightweight Charts v5), interfaces with cryptocurrency exchanges (Bybit primary, Binance fallback), and delegates ML pattern detection to a separate **dual-model microservice**.
 
 - **Frontend:** Static HTML/CSS/JS served by the backend; single-page application.
 - **Backend:** FastAPI (Python 3.11+) with async REST + WebSocket endpoints, SQLite persistence, 3-tier cache.
-- **ML Service:** Separate FastAPI microservice running XGBoost inference for H&S pattern detection.
+- **ML Service:** Separate FastAPI microservice running H&S and DT/DB XGBoost detectors.
 - **Deployment:** Docker Compose (2 containers: `tickframe` + `ml-service`).
 
 ### Technology Stack
@@ -20,7 +20,7 @@ TickFrame is a **cryptocurrency chart workstation** with a client-server archite
 | **Backend** | Python 3.11, FastAPI, Uvicorn, httpx, websockets, Pydantic v2 |
 | **Frontend** | Lightweight Charts v5.2.0, Canvas API, vanilla JS, `lightweight-charts-drawing` (esbuild bundle), `lightweight-charts-indicators` (esbuild bundle), Lucide icons |
 | **Database** | SQLite (via sync `sqlite3`, `run_in_executor`) |
-| **ML** | XGBoost (XGBClassifier), pandas, numpy, FastAPI microservice |
+| **ML** | XGBoost, Numba, pandas, numpy, FastAPI microservice |
 | **Exchange** | Bybit v5 API (HTTPS REST, primary), Binance API (HTTPS REST, fallback) |
 | **External APIs** | CoinGecko (coin icons), alternative.me (Fear & Greed Index) |
 | **CI** | GitHub Actions (ruff, mypy, pytest+cov, bandit, ESLint, Vitest, Lychee) |
@@ -86,11 +86,11 @@ tickframe/
 ```
 ml_service/
 ├── Dockerfile
-├── requirements.txt            # xgboost, pandas, numpy, fastapi, uvicorn
+├── requirements.txt            # xgboost, pandas, numpy, numba, fastapi, uvicorn
 └── app/
     ├── __init__.py
     ├── main.py                 # FastAPI ML API: /health, /predict
-    ├── config.py               # MODEL_PATH, WINDOW_SIZE=101, FEATURE_ORDER
+    ├── config.py               # H&S/DTDB model paths, WINDOW_SIZE=50, feature contracts
     ├── schemas.py              # CandleData, PredictRequest, PredictResponse, DetectedPattern
     └── services/
         ├── __init__.py
@@ -117,9 +117,10 @@ ml_service/
 
 | Library | Version | Usage |
 |---|---|---|
-| `xgboost` | — | XGBClassifier for H&S detection |
+| `xgboost` | — | XGBClassifier for H&S and DT/DB detection |
 | `pandas` | — | DataFrame-based feature engineering |
-| `numpy` | — | Sliding window extremum search, vectorized ops |
+| `numpy` | — | Vectorized feature calculations and model input arrays |
+| `numba` | >=0.60.0 | Native-code acceleration for rolling extrema search |
 | `fastapi` | — | ML inference API |
 | `uvicorn` | — | ASGI server |
 
@@ -259,9 +260,10 @@ Commands: `scan`, `report`, `analyze`, `serve`. Invoked via `python -m tickframe
 
 ### 4.4 ML Microservice (`ml_service/`)
 
-- `GET /health` — model loaded status
-- `POST /predict` — OHLCV → features → XGBoost → NMS → detected patterns
-- XGBoost classifier, WINDOW_SIZE = 101, Classic + Inverse H&S
+- `GET /health` — H&S and DT/DB model loaded status
+- `POST /predict` — OHLCV → shared features → parallel XGBoost detectors → NMS → detected patterns
+- H&S and DT/DB classifiers, 99-candle minimum, detector-specific thresholds
+- Numba warmup runs during startup; a NumPy/Python fallback remains available
 
 ---
 

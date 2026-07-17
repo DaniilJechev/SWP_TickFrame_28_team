@@ -33,8 +33,8 @@ class MlClient:
         candles: list[dict[str, Any]],
         threshold: float | None = None,
     ) -> list[dict[str, Any]]:
-        if len(candles) < 50:
-            LOGGER.warning("Not enough candles for ML analysis: %s (min 50)", len(candles))
+        if len(candles) < 99:
+            LOGGER.warning("Not enough candles for ML analysis: %s (min 99)", len(candles))
             return []
 
         threshold = threshold if threshold is not None else ML_CONFIDENCE_THRESHOLD

@@ -16,7 +16,7 @@ TickFrame is a cryptocurrency chart workstation with a **client-server architect
 | **Frontend** | Lightweight Charts v5, Canvas API, vanilla JS, lightweight-charts-drawing, lightweight-charts-indicators |
 | **Database** | SQLite (via aiosqlite, run_in_executor) |
 | **Indicators** | 445+ technical indicators (lightweight-charts-indicators library, client-side computation) |
-| **ML** | XGBoost, FastAPI microservice |
+| **ML** | XGBoost, Numba, FastAPI microservice |
 | **Exchange** | Bybit v5 API (primary), Binance API (fallback) |
 | **Deployment** | Docker + Docker Compose (2 containers) |
 | **Caching** | 3-tier: Memory → SQLite → Exchange |
@@ -28,6 +28,13 @@ TickFrame is a cryptocurrency chart workstation with a **client-server architect
 | Static | [`diagram.puml`](static-view/diagram.puml) | [`diagram.svg`](static-view/diagram.svg) | Component diagram — system structure, components, and relations |
 | Dynamic | [`diagram.puml`](dynamic-view/diagram.puml) | [`diagram.svg`](dynamic-view/diagram.svg) | Sequence diagram — chart loading flow and user interactions |
 | Deployment | [`diagram.puml`](deployment-view/diagram.puml) | [`diagram.svg`](deployment-view/diagram.svg) | Deployment diagram — nodes, containers, and network boundaries |
+
+### Supporting ML Architecture
+
+The ML microservice now runs independent H&S and DT/DB XGBoost detectors in
+one `/predict` request. Their feature contracts, thresholds, NMS behavior,
+timing metrics, Numba warmup, fallback path, and verification evidence are
+documented in [`dtdb-integration-decisions.md`](dtdb-integration-decisions.md).
 
 ---
 

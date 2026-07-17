@@ -1,5 +1,6 @@
 # Model path config
 MODEL_PATH = "models/xgb_hs_detector_MVP1.json"
+DTDB_MODEL_PATH = "models/xgb_dtdb_detector.json"
 
 # Sliding window size used during model training
 WINDOW_SIZE = 50
@@ -30,4 +31,32 @@ FEATURE_ORDER = [
     "Head_Dom_Inv",
     "Shoulder_Sym_Inv",
     "Neck_Slope_Inv"
+]
+
+# DT/DB model contract from temporal_pipeline_files pipeline.
+DTDB_WINDOW_SIZE = 50
+DTDB_MIN_CANDLES = DTDB_WINDOW_SIZE * 2 - 1
+DTDB_NMS_WINDOW = 10
+DTDB_TOLERANCE_WINDOW = 10
+DTDB_THRESHOLD_DT = 0.75
+DTDB_THRESHOLD_DB = 0.80
+DTDB_FEATURE_ORDER = [
+    "NATR_14",
+    "Trend_50",
+    "Range_Position",
+    "H_Idx_1",
+    "L_Idx_1",
+    "H_Prc_1",
+    "L_Prc_1",
+    "H_Idx_2",
+    "L_Idx_2",
+    "H_Prc_2",
+    "L_Prc_2",
+    "DT_Width",
+    "DB_Width",
+    "DT_Symmetry_Prc",
+    "DB_Symmetry_Prc",
+    "DT_Peak_Dominance",
+    "DB_Valley_Dominance",
+    "Window_Range_ATR_Pct",
 ]
