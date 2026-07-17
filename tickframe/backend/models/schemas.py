@@ -55,6 +55,7 @@ class Pattern(BaseModel):
     timestamp: int
     pattern_type: str
     confidence: float
+    detector: str = "hs"
 
 
 class AnalyzeResponse(BaseModel):

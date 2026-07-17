@@ -24,3 +24,5 @@ tickframe/frontend/lib/lightweight-charts/
 .DS_Store
 .idea/
 .vscode/
+.cursor/
+temporal_pipeline_files/

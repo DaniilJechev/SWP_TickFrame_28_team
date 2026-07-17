@@ -6,7 +6,7 @@
 
 ## 1. Overview
 
-TickFrame is a **cryptocurrency chart workstation** with a client-server architecture. A **FastAPI backend** serves a static **vanilla JS frontend** (Lightweight Charts v5), interfaces with cryptocurrency exchanges (Bybit primary, Binance fallback), and delegates ML pattern detection (Head & Shoulders via XGBoost) to a separate **microservice**.
+TickFrame is a **cryptocurrency chart workstation** with a client-server architecture. A **FastAPI backend** serves a static **vanilla JS frontend** (Lightweight Charts v5), interfaces with cryptocurrency exchanges (Bybit primary, Binance fallback), and delegates ML pattern detection to a separate **dual-model microservice**.
 
 - **Frontend:** Static HTML/CSS/JS served by the backend; single-page application with dual chart engine (Lightweight Charts v5 / TradingView Charting Library).
 - **Backend:** FastAPI (Python 3.11+) with async REST + WebSocket endpoints, PostgreSQL persistence through asyncpg, 3-tier cache (memory → PostgreSQL → exchange).
@@ -118,9 +118,10 @@ ml_service/
 
 | Library | Version | Usage |
 |---|---|---|
-| `xgboost` | — | XGBClassifier for H&S detection |
+| `xgboost` | — | XGBClassifier for H&S and DT/DB detection |
 | `pandas` | — | DataFrame-based feature engineering |
-| `numpy` | — | Sliding window extremum search, vectorized ops |
+| `numpy` | — | Vectorized feature calculations and model input arrays |
+| `numba` | >=0.60.0 | Native-code acceleration for rolling extrema search |
 | `fastapi` | — | ML inference API |
 | `uvicorn` | — | ASGI server |
 
