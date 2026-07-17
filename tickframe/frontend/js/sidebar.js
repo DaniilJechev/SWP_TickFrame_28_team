@@ -159,7 +159,9 @@ function onCoinClick(symbol) {
     }
 
     var saved = window.TFChart.getCoinState(symbol);
-    var targetInterval = (saved && saved.interval) || document.querySelector('.timeframes button.active')?.dataset.tf || '5m';
+    var activeTf = document.querySelector('.timeframes button.active')?.dataset.tf || '5m';
+    var hasLoadedData = saved && saved.candles && saved.candles.length > 0;
+    var targetInterval = hasLoadedData ? saved.interval : activeTf;
 
     document.querySelectorAll('.timeframes button').forEach(function (b) {
       b.classList.toggle('active', b.dataset.tf === targetInterval);
@@ -300,8 +302,19 @@ async function loadFearAndGreed() {
     var data = await resp.json();
     var el = document.getElementById('fng-container');
     if (!el) return;
-    el.innerHTML = _fngBuildSVG(data.value, data.classification, data.timestamp);
-  } catch (_) {}
+    var value = typeof data.value === 'number' ? Math.max(0, Math.min(100, data.value)) : 50;
+    el.innerHTML = _fngBuildSVG(value, data.classification || 'Neutral', data.timestamp || 0);
+  } catch (e) {
+    console.warn('Fear & Greed fetch failed:', e);
+  }
+}
+
+var _fngTimer = null;
+
+function startFearAndGreedPolling() {
+  loadFearAndGreed();
+  if (_fngTimer) clearInterval(_fngTimer);
+  _fngTimer = setInterval(loadFearAndGreed, 300000);
 }
 
 async function loadCoinIcons() {

@@ -2,6 +2,7 @@
 var chartInitMode = null;
 var _patternFilter = {
   'Classic H&S': true, 'Inverse H&S': true,
+  'Double Top': true, 'Double Bottom': true,
 };
 var _allCoinPatterns = {};
 
@@ -15,15 +16,15 @@ var _volumeSeries = null;
 var _volumeSmaSeries = null;
 var _lastCandles = [];   // alias for active coin's candles
 var _patterns = [];
-var _patternShapes = [];
 var _patternMarkers = [];
-var _patternBandSeries = [];
+var _patternListenerRegistered = false;
 var _volumeSmaBuffer = [];
 var _volumeSmaSum = 0;
 var _latestSeenTime = 0;
 var _isSettingRange = false;
 var _loadMoreTimer = null;
 var _wsReconnect = false;
+var _wsConnId = 0;
 
 /* ── Utility functions ───────────────────────────────────── */
 
@@ -195,6 +196,7 @@ function updateLatestPrice(price) {
   var last = _lastCandles[_lastCandles.length - 1];
   if (!last) return;
   var updated = { time: last.time, open: last.open, high: last.high, low: last.low, close: price, volume: last.volume };
+  if (!updated.time || !Number.isFinite(updated.open) || !Number.isFinite(updated.high) || !Number.isFinite(updated.low)) return;
   _lastCandles[_lastCandles.length - 1] = updated;
   if (_activeSymbol && _coinData[_activeSymbol]) {
     _coinData[_activeSymbol].candles = _lastCandles;
@@ -339,6 +341,7 @@ function _connectWs(symbol, interval) {
     try { existing.ws.close(); } catch (e) {}
     existing.ws = null;
   }
+  var connId = ++_wsConnId;
   _wsReconnect = true;
   var proto = (location.protocol === 'https:') ? 'wss' : 'ws';
   var url = proto + '://' + location.host + '/ws/candles/' + symbol + '?interval=' + (interval || _activeInterval || '5m');
@@ -353,7 +356,7 @@ function _connectWs(symbol, interval) {
     } catch (e) {}
   };
   ws.onclose = function () {
-    if (_wsReconnect) {
+    if (connId === _wsConnId && _wsReconnect) {
       setTimeout(function () { _connectWs(symbol, interval); }, 2000);
     }
   };
@@ -362,6 +365,7 @@ function _connectWs(symbol, interval) {
 function _disconnectWs(symbol) {
   var entry = _coinData[symbol];
   if (entry && entry.ws) {
+    _wsConnId++;
     try { entry.ws.close(); } catch (e) {}
     entry.ws = null;
   }
@@ -433,7 +437,32 @@ function _applyUpdate(symbol, candle) {
 
 /* ── Pattern rendering ───────────────────────────────────── */
 
+function _patternColor(type, dark) {
+  var map = {
+    'Classic H&S': dark ? '#ff6b6b' : '#e03131',
+    'Inverse H&S': dark ? '#ffd43b' : '#f08c00',
+    'Double Top': dark ? '#748ffc' : '#4263eb',
+    'Double Bottom': dark ? '#69db7c' : '#2f9e44',
+  };
+  return map[type] || (dark ? '#00ff88' : '#0aa55f');
+}
+
+function _formatPatternLabel(pat) {
+  var pct = (pat.confidence * 100).toFixed(0);
+  return pat.pattern_type + ' ' + pct + '%';
+}
+
 function renderPatterns(patterns) {
+  if (!_patternListenerRegistered && window.DrawingEvents) {
+    _patternListenerRegistered = true;
+    DrawingEvents.on('drawings:loaded', function (event) {
+      var sym = event && event.symbol;
+      if (sym && sym === _activeSymbol) {
+        var cached = _allCoinPatterns[sym] || [];
+        if (cached.length) renderPatterns(cached);
+      }
+    });
+  }
   _clearPatterns();
   if (!_chart || !patterns || !patterns.length) return;
   var filtered = [];
@@ -446,13 +475,22 @@ function renderPatterns(patterns) {
   var segments = [];
   for (var j = 0; j < filtered.length; j++) {
     var p2 = filtered[j];
-    if (p2.startTime !== undefined && p2.endTime !== undefined) { segments.push({ start: p2.startTime, end: p2.endTime, patterns: [p2] }); continue; }
-    var ts = p2.timestamp;
-    var idx = -1;
-    for (var d = 0; d < data.length; d++) { if (data[d].time === ts) { idx = d; break; } }
-    if (idx === -1) { segments.push({ start: ts, end: ts, patterns: [p2] }); continue; }
-    var startIdx = Math.max(0, idx - 49);
-    segments.push({ start: data[startIdx].time, end: ts, patterns: [p2] });
+    var startT, endT;
+    if (p2.startTime !== undefined && p2.endTime !== undefined) {
+      startT = p2.startTime;
+      endT = p2.endTime;
+    } else {
+      var ts = p2.timestamp;
+      var idx = -1;
+      for (var d = 0; d < data.length; d++) { if (data[d].time === ts) { idx = d; break; } }
+      if (idx === -1) { startT = ts; endT = ts; }
+      else {
+        var startIdx = Math.max(0, idx - 49);
+        startT = data[startIdx].time;
+        endT = ts;
+      }
+    }
+    segments.push({ start: startT, end: endT, patterns: [p2] });
   }
   segments.sort(function (a, b) { return a.start - b.start; });
   var merged = [];
@@ -463,19 +501,10 @@ function renderPatterns(patterns) {
     if (seg.start <= last.end) { last.end = Math.max(last.end, seg.end); last.patterns = last.patterns.concat(seg.patterns); }
     else { merged.push(seg); }
   }
-  var t2 = _themeColors(document.body.classList.contains('light') ? false : true);
-  var patColor = t2.pattern;
+  var dark = !document.body.classList.contains('light');
   var markers = [];
   for (var m = 0; m < merged.length; m++) {
     var seg2 = merged[m];
-    var topPattern = null;
-    for (var pm = 0; pm < seg2.patterns.length; pm++) {
-      if (!topPattern || seg2.patterns[pm].confidence > topPattern.confidence) topPattern = seg2.patterns[pm];
-    }
-    if (!topPattern) continue;
-
-    markers.push({ time: seg2.start, position: 'aboveBar', color: patColor, shape: 'arrowDown', text: topPattern.pattern_type + ' - ' + (topPattern.confidence * 100).toFixed(0) + '%' });
-
     var segMaxPrice = -Infinity;
     var segMinPrice = Infinity;
     for (var di = 0; di < data.length; di++) {
@@ -485,26 +514,52 @@ function renderPatterns(patterns) {
       }
     }
     if (!isFinite(segMaxPrice)) continue;
-    var bandValue = segMaxPrice + (segMaxPrice - segMinPrice) * 0.05;
-    if (!isFinite(bandValue)) continue;
+    var topPattern = null;
+    for (var pm = 0; pm < seg2.patterns.length; pm++) {
+      if (!topPattern || seg2.patterns[pm].confidence > topPattern.confidence) topPattern = seg2.patterns[pm];
+    }
+    if (!topPattern) continue;
+    var pad = (segMaxPrice - segMinPrice) * 0.15;
+    var linePrice = segMaxPrice + pad;
     try {
-      var AreaSeries = window.LightweightCharts.AreaSeries || 'Area';
-      var bandSeries = _chart.addSeries(AreaSeries, {
-        lineColor: patColor,
-        lineWidth: 1,
-        lineStyle: 2,
-        topColor: patColor.replace(')', ',0.2)').replace('rgb', 'rgba'),
-        bottomColor: patColor.replace(')', ',0.02)').replace('rgb', 'rgba'),
-        priceLineVisible: false,
-        lastValueVisible: false,
-        crosshairMarkerVisible: false,
-      });
-      bandSeries.setData([
-        { time: seg2.start, value: bandValue },
-        { time: seg2.end, value: bandValue },
-      ]);
-      _patternBandSeries.push(bandSeries);
+      if (window.DrawingLib && window.DrawingController) {
+        var registry = DrawingLib.getToolRegistry();
+        var drawingId = 'pattern-' + Date.now() + '-' + m;
+        var drawing = registry.createDrawing(
+          'pattern-date-range',
+          drawingId,
+          [
+            { time: seg2.start, price: linePrice },
+            { time: seg2.end, price: linePrice },
+          ],
+          {
+            lineColor: '#00ff88',
+            lineWidth: 1,
+            fillColor: 'rgba(0,255,136,0.1)',
+          },
+          { visible: true, locked: false, _patternLabel: topPattern.pattern_type }
+        );
+        if (drawing) {
+          drawing.setDateRangeOptions({
+            labelText: topPattern.pattern_type,
+            showBars: false,
+            showDays: false,
+            showDates: true,
+            filled: false,
+          });
+          var manager = DrawingController.getManager();
+          if (manager) manager.addDrawing(drawing);
+        }
+      }
     } catch (e) {}
+    var markersForSeg = [];
+    for (var pn = 0; pn < seg2.patterns.length; pn++) {
+      var pp = seg2.patterns[pn];
+      var pColor = _patternColor(pp.pattern_type, dark);
+      var pLabel = _formatPatternLabel(pp);
+      markersForSeg.push({ time: seg2.start, position: 'aboveBar', color: pColor, shape: 'arrowDown', text: pLabel });
+    }
+    Array.prototype.push.apply(markers, markersForSeg);
   }
   if (_candleSeries && typeof _candleSeries.setMarkers === 'function') {
     _candleSeries.setMarkers(markers);
@@ -514,12 +569,19 @@ function renderPatterns(patterns) {
 }
 
 function _clearPatterns() {
-  for (var i = 0; i < _patternShapes.length; i++) { try { _patternShapes[i].remove(); } catch (e) {} }
-  _patternShapes = [];
-  for (var i = 0; i < _patternBandSeries.length; i++) {
-    try { if (_chart && typeof _chart.removeSeries === 'function') _chart.removeSeries(_patternBandSeries[i]); } catch (e) {}
+  if (window.DrawingController) {
+    var manager = DrawingController.getManager();
+    if (manager) {
+      var all = manager.getAllDrawings();
+      if (all) {
+        for (var i = 0; i < all.length; i++) {
+          if (all[i].type === 'pattern-date-range' && all[i].id && all[i].id.indexOf('pattern-') === 0) {
+            try { manager.removeDrawing(all[i].id); } catch (e) {}
+          }
+        }
+      }
+    }
   }
-  _patternBandSeries = [];
   if (_candleSeries && typeof _candleSeries.setMarkers === 'function') _candleSeries.setMarkers([]);
   _patternMarkers = [];
   _patterns = [];
@@ -829,11 +891,12 @@ function loadExistingPatterns(btn, resultEl) {
   var symbol = window.currentSymbol || 'BTCUSDT';
   var label = btn.querySelector('.analyze-btn-label');
   if (label) label.textContent = 'LOADING...';
-  fetch('/api/patterns/' + encodeURIComponent(symbol)).then(function (resp) {
+  fetch('/api/patterns/' + encodeURIComponent(symbol) + '?interval=5m').then(function (resp) {
     if (!resp.ok) return [];
     return resp.json().then(function (data) { return data.patterns || []; });
   }).then(function (existing) {
-    resultEl.innerText = existing.length ? existing.length + ' existing pattern(s) loaded. Checking for new ones...' : 'No existing patterns. Scanning...';
+    var msg = '5m timeframe. ';
+    resultEl.innerText = existing.length ? msg + existing.length + ' existing pattern(s) loaded. Checking for new ones...' : msg + 'No existing patterns. Scanning...';
     return mlScan(symbol, btn, resultEl);
   }).catch(function (err) {
     resultEl.innerText = 'Analysis failed: ' + err.message;
@@ -846,14 +909,19 @@ function loadExistingPatterns(btn, resultEl) {
 function mlScan(symbol, btn, resultEl) {
   var label = btn.querySelector('.analyze-btn-label');
   if (label) label.textContent = 'SCANNING...';
-  var threshold = parseFloat(window._analysisThreshold || '0.80');
-  fetch('/api/analyze/' + encodeURIComponent(symbol) + '?interval=' + (window._currentInterval || '5m') + '&confidence_threshold=' + threshold, { method: 'POST' })
+  var currentTf = window._currentInterval || '5m';
+  var mlInterval = '5m';
+  if (currentTf !== mlInterval) {
+    resultEl.innerText = 'Note: ML analysis uses 5m data regardless of selected timeframe.';
+  }
+  var threshold = parseFloat(window._analysisThreshold || '0.60');
+  fetch('/api/analyze/' + encodeURIComponent(symbol) + '?interval=' + mlInterval + '&confidence_threshold=' + threshold, { method: 'POST' })
     .then(function (resp) {
-      if (!resp.ok) throw new Error('Analysis failed');
+      if (!resp.ok) return resp.json().then(function (data) { throw new Error(data.detail || 'Analysis failed'); });
       return resp.json();
     }).then(function (mlData) {
       var patterns = mlData.patterns || [];
-      resultEl.innerText = patterns.length ? 'Found ' + patterns.length + ' pattern(s).' : 'No patterns detected.';
+      resultEl.innerText = patterns.length ? 'Found ' + patterns.length + ' pattern(s) on 5m.' : 'No patterns detected on 5m.';
       window.TFChart.renderPatterns(patterns);
       btn.disabled = false;
       btn.classList.remove('analyzing');

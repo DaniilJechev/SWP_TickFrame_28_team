@@ -56,7 +56,7 @@ async def background_ml_scan(app: FastAPI) -> None:
         pair = meta["pair"]
         interval = "5m"
         try:
-            existing = await db.load_ml_scan(pair)
+            existing = await db.load_ml_scan(pair, interval)
             if existing and existing["patterns"]:
                 latest_db = await db.get_candle_range(pair, interval)
                 if latest_db and existing["last_scanned_time"] >= latest_db[1]:

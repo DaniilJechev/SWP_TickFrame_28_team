@@ -9,6 +9,7 @@ export default [
         TradingView: "readonly",
         TickFrameDatafeed: "readonly",
         loadFearAndGreed: "readonly",
+        startFearAndGreedPolling: "readonly",
         DrawingController: "readonly",
         DrawingLib: "readonly",
         DrawingState: "readonly",

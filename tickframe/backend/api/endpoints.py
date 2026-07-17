@@ -91,12 +91,12 @@ async def get_candles(
 async def analyze_patterns(
     symbol: str,
     interval: str = Query(default="5m", pattern="^(5m|15m|1h|4h|1d)$"),
-    confidence_threshold: float = Query(default=0.80, ge=0.0, le=1.0),
+    confidence_threshold: float = Query(default=0.60, ge=0.0, le=1.0),
     cache: MemoryMarketCache = Depends(get_cache),
     ml: MlClient = Depends(get_ml_client),
     db: DatabaseService = Depends(get_database),
 ) -> dict:
-    existing = await db.load_ml_scan(symbol)
+    existing = await db.load_ml_scan(symbol, interval)
     if existing and existing["patterns"]:
         LOGGER.info(
             "Incremental analyze symbol=%s interval=%s last_scanned=%s",
@@ -161,11 +161,13 @@ async def analyze_patterns(
 @router.get("/patterns/{symbol}")
 async def get_patterns(
     symbol: str,
+    interval: str = Query(default="5m", pattern="^(5m|15m|1h|4h|1d)$"),
     db: DatabaseService = Depends(get_database),
 ) -> dict:
-    scan = await db.load_ml_scan(symbol)
+    scan = await db.load_ml_scan(symbol, interval)
     return {
         "symbol": symbol,
+        "interval": interval,
         "patterns": scan["patterns"] if scan else [],
     }
 
@@ -316,9 +318,10 @@ if _os.environ.get("ENABLE_DB_ADMIN_API", "").lower() in ("1", "true", "yes"):
     @router.get("/admin/db/patterns/{symbol}")
     async def admin_db_patterns(
         symbol: str,
+        interval: str = Query(default="5m"),
         db: DatabaseService = Depends(get_database),
     ) -> dict:
-        scan = await db.load_ml_scan(symbol)
+        scan = await db.load_ml_scan(symbol, interval)
         if scan:
             return scan
-        return {"symbol": symbol, "interval": "", "last_scanned_time": 0, "patterns": []}
+        return {"symbol": symbol, "interval": interval, "last_scanned_time": 0, "patterns": []}
