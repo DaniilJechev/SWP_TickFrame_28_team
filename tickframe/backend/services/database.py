@@ -50,11 +50,12 @@ CREATE TABLE IF NOT EXISTS candles (
     PRIMARY KEY (symbol, interval, time)
 );
 CREATE TABLE IF NOT EXISTS ml_scans (
-    symbol   TEXT PRIMARY KEY,
+    symbol   TEXT NOT NULL,
     interval TEXT NOT NULL,
     last_scanned_time BIGINT NOT NULL DEFAULT 0,
     patterns TEXT NOT NULL DEFAULT '[]',
-    updated  TEXT NOT NULL DEFAULT NOW()::TEXT
+    updated  TEXT NOT NULL DEFAULT NOW()::TEXT,
+    PRIMARY KEY (symbol, interval)
 );
 """
 
@@ -106,11 +107,12 @@ CREATE TABLE IF NOT EXISTS candles (
     PRIMARY KEY (symbol, interval, time)
 );
 CREATE TABLE IF NOT EXISTS ml_scans (
-    symbol   TEXT PRIMARY KEY,
+    symbol   TEXT NOT NULL,
     interval TEXT NOT NULL,
     last_scanned_time INTEGER NOT NULL DEFAULT 0,
     patterns TEXT NOT NULL DEFAULT '[]',
-    updated  TEXT NOT NULL DEFAULT (datetime('now'))
+    updated  TEXT NOT NULL DEFAULT (datetime('now')),
+    PRIMARY KEY (symbol, interval)
 );
 """
 
@@ -601,17 +603,17 @@ class DatabaseService:
             conn.execute(
                 "INSERT INTO ml_scans (symbol, interval, last_scanned_time, patterns, updated) "
                 "VALUES (?, ?, ?, ?, datetime('now')) "
-                "ON CONFLICT(symbol) DO UPDATE SET "
-                "interval = excluded.interval, last_scanned_time = excluded.last_scanned_time, "
+                "ON CONFLICT(symbol, interval) DO UPDATE SET "
+                "last_scanned_time = excluded.last_scanned_time, "
                 "patterns = excluded.patterns, updated = excluded.updated",
                 (symbol, interval, last_scanned_time, serialized),
             )
 
-    def _load_ml_scan_sqlite(self, symbol: str) -> dict | None:
+    def _load_ml_scan_sqlite(self, symbol: str, interval: str) -> dict | None:
         with self._conn() as conn:
             row = conn.execute(
-                "SELECT symbol, interval, last_scanned_time, patterns FROM ml_scans WHERE symbol = ?",
-                (symbol,),
+                "SELECT symbol, interval, last_scanned_time, patterns FROM ml_scans WHERE symbol = ? AND interval = ?",
+                (symbol, interval),
             ).fetchone()
             if row:
                 return {
@@ -642,21 +644,21 @@ class DatabaseService:
             await conn.execute(
                 "INSERT INTO ml_scans (symbol, interval, last_scanned_time, patterns, updated) "
                 "VALUES ($1, $2, $3, $4, NOW()::TEXT) "
-                "ON CONFLICT (symbol) DO UPDATE SET "
-                "interval = EXCLUDED.interval, last_scanned_time = EXCLUDED.last_scanned_time, "
+                "ON CONFLICT (symbol, interval) DO UPDATE SET "
+                "last_scanned_time = EXCLUDED.last_scanned_time, "
                 "patterns = EXCLUDED.patterns, updated = EXCLUDED.updated",
                 symbol, interval, last_scanned_time, serialized,
             )
 
-    async def load_ml_scan(self, symbol: str) -> dict | None:
+    async def load_ml_scan(self, symbol: str, interval: str) -> dict | None:
         if self.use_sqlite:
             loop = asyncio.get_running_loop()
-            return await loop.run_in_executor(None, self._load_ml_scan_sqlite, symbol)
+            return await loop.run_in_executor(None, self._load_ml_scan_sqlite, symbol, interval)
         assert self._pool is not None
         async with self._pool.acquire() as conn:
             row = await conn.fetchrow(
-                "SELECT symbol, interval, last_scanned_time, patterns FROM ml_scans WHERE symbol = $1",
-                symbol,
+                "SELECT symbol, interval, last_scanned_time, patterns FROM ml_scans WHERE symbol = $1 AND interval = $2",
+                symbol, interval,
             )
             if row:
                 return {

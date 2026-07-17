@@ -105,8 +105,8 @@ async def count_candles(db: DatabaseService, symbol: str, interval: str) -> int:
     return await db.count_candles(symbol, interval)
 
 
-async def get_patterns(db: DatabaseService, symbol: str, pretty: bool = False) -> dict | None:
-    scan = await db.load_ml_scan(symbol)
+async def get_patterns(db: DatabaseService, symbol: str, interval: str = "5m", pretty: bool = False) -> dict | None:
+    scan = await db.load_ml_scan(symbol, interval)
     if scan is None:
         return None
     if pretty and scan.get("patterns"):

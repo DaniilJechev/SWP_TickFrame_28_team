@@ -330,19 +330,40 @@ var DrawingController = (function () {
     if (!_manager) return;
     try {
       var resp = await fetch('/api/drawings?symbol=' + encodeURIComponent(symbol));
-      if (!resp.ok) return;
-      var data = await resp.json();
-      if (data.drawings_data && data.drawings_data.length) {
-        _manager.importDrawings(data.drawings_data, _createDrawingFactory());
-      } else if (data.drawings && data.drawings.length) {
-        var registry = DrawingLib.getToolRegistry();
-        data.drawings.forEach(function (d) {
-          var drawing = registry.createDrawing(d.type, d.id || String(d.type + '-' + Date.now()), d.points || d.anchors || [], d.opts || d.style || {}, {});
-          if (drawing) _manager.addDrawing(drawing);
-        });
+      if (resp.ok) {
+        var data = await resp.json();
+        if (data.drawings_data && data.drawings_data.length) {
+          _manager.importDrawings(data.drawings_data, _createDrawingFactory());
+        } else if (data.drawings && data.drawings.length) {
+          var registry = DrawingLib.getToolRegistry();
+          data.drawings.forEach(function (d) {
+            var drawing = registry.createDrawing(d.type, d.id || String(d.type + '-' + Date.now()), d.points || d.anchors || [], d.opts || d.style || {}, {});
+            if (drawing) _manager.addDrawing(drawing);
+          });
+        }
+        _restorePatternDateRangeOptions();
       }
       DrawingState.setDrawingCount(_manager.getAllDrawings().length);
+      if (window.DrawingEvents) DrawingEvents.emit('drawings:loaded', { symbol: symbol });
     } catch (e) { console.error('drawing load error', e); }
+  }
+
+  function _restorePatternDateRangeOptions() {
+    if (!_manager) return;
+    var all = _manager.getAllDrawings();
+    if (!all) return;
+    for (var i = 0; i < all.length; i++) {
+      var d = all[i];
+      if (d.type === 'pattern-date-range' && d.options && d.options._patternLabel) {
+        d.setDateRangeOptions({
+          labelText: d.options._patternLabel,
+          showBars: false,
+          showDays: false,
+          showDates: true,
+          filled: false,
+        });
+      }
+    }
   }
 
   function load(symbol) {

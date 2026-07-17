@@ -9,7 +9,7 @@ import httpx
 LOGGER = logging.getLogger("tickframe.ml_client")
 
 ML_API_URL = os.getenv("ML_API_URL", "http://ml-service:8001/predict")
-ML_CONFIDENCE_THRESHOLD = float(os.getenv("ML_CONFIDENCE_THRESHOLD", "0.80"))
+ML_CONFIDENCE_THRESHOLD = float(os.getenv("ML_CONFIDENCE_THRESHOLD", "0.60"))
 ML_REQUEST_TIMEOUT = float(os.getenv("ML_REQUEST_TIMEOUT", "30.0"))
 
 

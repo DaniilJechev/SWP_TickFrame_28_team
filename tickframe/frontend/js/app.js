@@ -117,7 +117,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var dark = !body.classList.contains('light');
     window.TFChart?.applyChartTheme?.(dark);
     saveSetting('theme', dark ? 'dark' : 'light');
-    if (typeof loadFearAndGreed === 'function') loadFearAndGreed();
+    if (typeof startFearAndGreedPolling === 'function') startFearAndGreedPolling();
     if (window.TFDraw && window.TFDraw.redraw) {
       window.TFDraw.redraw();
     }
