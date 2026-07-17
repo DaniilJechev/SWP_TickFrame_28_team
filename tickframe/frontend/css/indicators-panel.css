@@ -1,42 +1,16 @@
+/* ============================================================
+   Indicators panel — unified with TickFrame matrix theme.
+   Variables (colors/fonts) inherit from styles.css.
+   ============================================================ */
 :root {
-  --ind-panel-bg: #0f1724;
-  --ind-panel-border: rgba(32, 38, 50, 0.35);
-  --ind-panel-width: 260px;
-  --ind-row-hover: rgba(38, 166, 154, 0.12);
-  --ind-row-active: #26a69a;
-  --ind-text: #d1d4dc;
-  --ind-text-muted: #6b7280;
-  --ind-header-fg: #e2e8f0;
-  --ind-count-fg: #6b7280;
-  --ind-input-bg: #07101a;
-  --ind-input-border: #222;
-  --ind-input-fg: #d1d4dc;
-  --ind-chip-bg: rgba(38, 166, 154, 0.18);
-  --ind-chip-border: rgba(38, 166, 154, 0.35);
-  --ind-chip-fg: #26a69a;
-}
-
-body.light {
-  --ind-panel-bg: #ffffff;
-  --ind-panel-border: rgba(219, 226, 234, 0.4);
-  --ind-row-hover: #eef2f7;
-  --ind-text: #0f172a;
-  --ind-text-muted: #5b6575;
-  --ind-header-fg: #0f172a;
-  --ind-count-fg: #5b6575;
-  --ind-input-bg: #f8fafc;
-  --ind-input-border: #d8e0ea;
-  --ind-input-fg: #0f172a;
-  --ind-chip-bg: rgba(31, 157, 143, 0.12);
-  --ind-chip-border: rgba(31, 157, 143, 0.3);
-  --ind-chip-fg: #1f9d8f;
+  --ind-panel-width: 280px;
 }
 
 .indicators-panel {
   width: var(--ind-panel-width);
   min-width: var(--ind-panel-width);
-  background: var(--ind-panel-bg);
-  border-left: 1px solid var(--ind-panel-border);
+  background: var(--panel);
+  border-left: 1px solid var(--border);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -51,192 +25,216 @@ body.light {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 14px 8px;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--ind-header-fg);
-  border-bottom: 1px solid var(--ind-panel-border);
+  padding: 14px 14px 10px;
+  font-size: 12px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+}
+
+.indicators-panel-header span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.indicators-panel-header span::before {
+  content: "≣";
+  color: var(--accent);
+  font-size: 15px;
 }
 
 .indicators-panel-header .ind-close-btn {
   background: none;
   border: none;
-  color: var(--ind-text-muted);
+  color: var(--muted);
   cursor: pointer;
-  padding: 2px;
-  border-radius: 4px;
+  padding: 3px;
+  border-radius: 6px;
   display: flex;
   align-items: center;
+  transition: background 0.12s, color 0.12s;
 }
 
 .indicators-panel-header .ind-close-btn:hover {
-  color: var(--ind-text);
+  color: var(--accent);
+  background: var(--panel-2);
 }
 
+/* ---- Search ---- */
 .indicators-search-wrap {
-  padding: 8px 10px;
+  padding: 10px 12px;
+  position: relative;
+}
+.indicators-search-wrap::before {
+  content: "";
+  position: absolute;
+  left: 22px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 14px;
+  height: 14px;
+  background: var(--muted);
+  -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='11' cy='11' r='8'/><line x1='21' y1='21' x2='16.65' y2='16.65'/></svg>") center / contain no-repeat;
+  mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='11' cy='11' r='8'/><line x1='21' y1='21' x2='16.65' y2='16.65'/></svg>") center / contain no-repeat;
+  pointer-events: none;
 }
 
 #indicatorsSearch {
   width: 100%;
-  padding: 7px 10px;
-  border-radius: 6px;
-  border: 1px solid var(--ind-input-border);
-  background: var(--ind-input-bg);
-  color: var(--ind-input-fg);
+  padding: 8px 10px 8px 32px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--panel-2);
+  color: var(--text);
+  font-family: var(--font-mono);
   font-size: 12px;
   outline: none;
   box-sizing: border-box;
+  transition: border-color 0.15s, box-shadow 0.15s;
 }
 
 #indicatorsSearch:focus {
-  border-color: var(--ind-row-active);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-soft);
 }
 
 #indicatorsSearch::placeholder {
-  color: var(--ind-text-muted);
+  color: var(--muted);
 }
 
 .indicators-list {
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
+  padding-bottom: 8px;
 }
 
+/* ---- Groups ---- */
 .indicator-group + .indicator-group {
-  border-top: 1px solid var(--ind-panel-border);
+  border-top: 1px solid var(--border);
 }
 
 .indicator-group-header {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   width: 100%;
-  padding: 8px 10px;
+  padding: 10px 12px;
   background: none;
   border: none;
-  color: var(--ind-header-fg);
+  color: var(--text);
   font-size: 12px;
+  font-family: var(--font-mono);
   cursor: pointer;
   text-align: left;
+  transition: background 0.12s;
 }
 
 .indicator-group-header:hover {
-  background: var(--ind-row-hover);
+  background: var(--panel-2);
 }
 
 .indicator-chevron {
   display: flex;
   align-items: center;
-  color: var(--ind-text-muted);
+  color: var(--muted);
   transition: transform 0.15s ease;
 }
 
 .indicator-chevron.expanded {
   transform: rotate(90deg);
+  color: var(--accent);
 }
 
 .indicator-group-label {
   flex: 1;
-  font-weight: 600;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .indicator-group-count {
-  font-size: 11px;
-  color: var(--ind-count-fg);
+  font-size: 10px;
+  color: var(--muted);
   font-weight: 400;
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1px 7px;
 }
 
 .indicator-group-body {
-  padding: 0 0 4px;
+  padding: 2px 0 6px;
 }
 
+/* ---- Rows ---- */
 .indicator-row {
-  padding: 6px 10px 6px 28px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px 7px 30px;
   font-size: 12px;
-  color: var(--ind-text);
+  font-family: var(--font-mono);
+  color: var(--text-dim);
   cursor: pointer;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  transition: background 0.12s, color 0.12s;
+  position: relative;
+}
+.indicator-row::before {
+  content: "+";
+  position: absolute;
+  left: 14px;
+  color: var(--muted);
+  font-weight: 700;
+  transition: color 0.12s;
 }
 
 .indicator-row:hover {
-  background: var(--ind-row-hover);
-  color: var(--ind-row-active);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.indicator-row:hover::before {
+  color: var(--accent);
 }
 
 .indicator-row.indicator-applied {
-  color: var(--ind-chip-fg);
-  opacity: 0.7;
+  color: var(--accent);
   cursor: default;
 }
+.indicator-row.indicator-applied::before {
+  content: "✓";
+  color: var(--accent);
+}
+.indicator-row.indicator-applied:hover {
+  background: transparent;
+}
 
-/* ---- Volume pane + Indicator Panes ---- */
+/* ---- Indicator panes ----
+   Indicators (volume, RSI, MACD, …) now render as NATIVE panes inside the
+   single Lightweight Charts v5 instance. The library shares one grid, one
+   time axis and one crosshair across all panes and draws a single thin
+   separator line between them (configured via layout.panes in charts.js).
+
+   The legacy per-indicator DIV host (#indicatorPanes) is therefore obsolete
+   and must not add any border/box of its own. It is kept only so older markup
+   does not break, and is collapsed to zero size. */
 #indicatorPanes {
-  width: 100%;
+  display: none;
 }
 
-.chart-container {
-  border-bottom: 1px solid var(--ind-panel-border);
-}
 
-.volume-pane-wrap {
-  display: flex;
-  flex-direction: column;
-  border-top: 1px solid var(--ind-panel-border);
-}
-
-.volume-pane-header {
-  padding: 3px 10px;
-  font-size: 10px;
-  font-weight: 600;
-  color: var(--ind-text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  background: rgba(0, 0, 0, 0.15);
-}
-
-.indicator-pane-wrap {
-  display: flex;
-  flex-direction: column;
-  background: var(--ind-panel-bg);
-  overflow: hidden;
-}
-
-.indicator-pane-header {
-  padding: 3px 10px;
-  font-size: 10px;
-  font-weight: 600;
-  color: var(--ind-text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  background: rgba(0, 0, 0, 0.15);
-}
-
-.indicator-pane-chart {
-  flex: 1;
-  min-height: 36px;
-}
-
-.indicator-pane-divider {
-  height: 6px;
-  cursor: row-resize;
-  flex-shrink: 0;
-  position: relative;
-  border-top: 1pt dashed var(--ind-panel-border);
-  margin-top: -1px;
-  z-index: 1;
-}
-.indicator-pane-divider:hover {
-  border-top-color: var(--ind-row-active);
-}
 
 /* ---- Indicator Chips (pills above chart) ---- */
 .indicator-chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px;
+  gap: 5px;
   padding: 4px 10px;
   min-height: 0;
 }
@@ -244,27 +242,29 @@ body.light {
 .volume-toggle-chip {
   display: flex;
   align-items: center;
-  gap: 4px;
-  padding: 2px 8px;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 4px;
+  gap: 5px;
+  padding: 3px 9px;
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
   font-size: 11px;
+  font-family: var(--font-mono);
   color: var(--muted);
   cursor: pointer;
   white-space: nowrap;
   user-select: none;
+  transition: border-color 0.12s, color 0.12s;
 }
 
 .volume-toggle-chip:hover {
-  background: rgba(255,255,255,0.1);
-  border-color: rgba(255,255,255,0.2);
+  border-color: var(--accent-dim);
+  color: var(--text);
 }
 
 .volume-toggle-chip.active {
-  background: var(--ind-chip-bg);
-  border-color: var(--ind-chip-border);
-  color: var(--ind-chip-fg);
+  background: var(--accent-soft);
+  border-color: var(--accent-dim);
+  color: var(--accent);
 }
 
 .volume-toggle-chip .vt-check {
@@ -281,19 +281,20 @@ body.light {
 .chips-inner-wrap {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px;
+  gap: 5px;
 }
 
 .indicator-chip {
   display: flex;
   align-items: center;
-  gap: 4px;
-  padding: 2px 6px 2px 8px;
-  background: var(--ind-chip-bg);
-  border: 1px solid var(--ind-chip-border);
-  border-radius: 4px;
+  gap: 5px;
+  padding: 3px 7px 3px 9px;
+  background: var(--accent-soft);
+  border: 1px solid var(--border-soft);
+  border-radius: 6px;
   font-size: 11px;
-  color: var(--ind-chip-fg);
+  font-family: var(--font-mono);
+  color: var(--accent);
   cursor: default;
 }
 
@@ -310,89 +311,43 @@ body.light {
   cursor: pointer;
   padding: 0;
   opacity: 0.6;
+  transition: opacity 0.12s;
 }
 
 .indicator-chip-remove:hover {
   opacity: 1;
 }
 
-/* ---- Indicators toggle button ---- */
-#indicatorsToggle {
-  background: none;
-  border: 1px solid var(--ind-panel-border);
-  color: var(--ind-text);
-  padding: 6px 10px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 12px;
-}
+/* ---- Indicators toggle button (styled in styles.css) ---- */
 
-#indicatorsToggle:hover {
-  background: var(--ind-row-hover);
-}
+/* Scrollbars inherit global styling from styles.css */
 
-#indicatorsToggle.active {
-  background: var(--ind-row-active);
-  color: #fff;
-  border-color: var(--ind-row-active);
-}
-
-/* Scrollbar styling */
-.indicators-list::-webkit-scrollbar,
-.indicator-pane-wrap::-webkit-scrollbar {
-  width: 4px;
-}
-
-.indicators-list::-webkit-scrollbar-track,
-.indicator-pane-wrap::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.indicators-list::-webkit-scrollbar-thumb,
-.indicator-pane-wrap::-webkit-scrollbar-thumb {
-  background: var(--ind-text-muted);
-  border-radius: 2px;
-}
-
-.indicator-row-pinned {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  cursor: pointer;
-  font-size: 12px;
-  color: var(--ind-text);
-  margin: 0;
-  padding: 6px 14px;
-  border: none;
-  background: transparent;
-  transition: background 0.15s;
-}
-.indicator-row-pinned:hover {
-  background: var(--ind-row-hover);
-}
-.indicator-pin-icon {
-  color: var(--ind-row-active);
-  font-size: 11px;
-}
-
+.indicator-row-pinned,
 .indicator-row-toggle {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   cursor: pointer;
   font-size: 12px;
-  color: var(--ind-text);
+  font-family: var(--font-mono);
+  color: var(--text-dim);
   margin: 0;
-  padding: 6px 14px;
+  padding: 7px 14px;
   border: none;
   background: transparent;
-  transition: background 0.15s;
+  transition: background 0.12s, color 0.12s;
 }
+.indicator-row-pinned:hover,
 .indicator-row-toggle:hover {
-  background: var(--ind-row-hover);
+  background: var(--panel-2);
+  color: var(--text);
+}
+.indicator-pin-icon {
+  color: var(--accent);
+  font-size: 11px;
 }
 .indicator-toggle-icon {
-  color: var(--ind-text-muted);
+  color: var(--muted);
   display: flex;
   align-items: center;
 }
@@ -400,8 +355,8 @@ body.light {
   margin-left: auto;
   width: 16px;
   height: 16px;
-  border-radius: 3px;
-  border: 1px solid var(--ind-text-muted);
+  border-radius: 4px;
+  border: 1px solid var(--muted);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -409,15 +364,24 @@ body.light {
   transition: all 0.15s;
 }
 .indicator-toggle-check.checked {
-  background: var(--ind-row-active);
-  border-color: var(--ind-row-active);
-  color: #fff;
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #00160c;
 }
 
 .indicator-pinned-separator {
   height: 1px;
-  background: var(--ind-panel-border);
+  background: var(--border);
   margin: 4px 14px 6px;
+}
+
+/* ---- No-results state ---- */
+.indicators-empty {
+  padding: 20px 14px;
+  color: var(--muted);
+  font-size: 12px;
+  font-family: var(--font-mono);
+  text-align: center;
 }
 
 @media (max-width: 900px) {
@@ -425,10 +389,10 @@ body.light {
     display: none;
     position: absolute;
     right: 0;
-    top: 64px;
+    top: 60px;
     bottom: 0;
     z-index: 30;
-    box-shadow: -4px 0 20px rgba(0,0,0,0.3);
+    box-shadow: -4px 0 20px rgba(0, 0, 0, 0.4);
   }
   .indicators-panel:not(.hidden) {
     display: flex;

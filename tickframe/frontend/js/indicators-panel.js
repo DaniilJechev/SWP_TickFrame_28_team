@@ -53,11 +53,41 @@ var TFIndicatorPanel = (function () {
   }
 
   function applyVolumeVisibility(visible) {
-    var pane = window._indicatorPanes && window._indicatorPanes._volume;
-    if (pane && pane.container) {
-      pane.container.style.display = visible ? '' : 'none';
+    var active = window.TFChart && typeof window.TFChart.mainChart === 'function' ? window.TFChart.mainChart() : null;
+    var targetSeries = null;
+    if (active && active._tickframeVolumeSeries) {
+      targetSeries = active._tickframeVolumeSeries;
+    } else if (window._volumeSeries) {
+      targetSeries = window._volumeSeries;
+    }
+    if (targetSeries && typeof targetSeries.applyOptions === 'function') {
+      targetSeries.applyOptions({ visible: visible });
+    }
+    if (active && active._tickframeVolumeSmaSeries) {
+      active._tickframeVolumeSmaSeries.applyOptions({ visible: visible });
+    } else if (window._volumeSmaSeries && typeof window._volumeSmaSeries.applyOptions === 'function') {
+      window._volumeSmaSeries.applyOptions({ visible: visible });
+    }
+
+    // Hiding the histogram series alone leaves the volume pane (and its empty
+    // price axis / gutter) visible. Collapse the volume pane's stretch factor to
+    // 0 when hidden so the whole indicator bar disappears, and restore it when
+    // shown. This relies on the volume pane being pane index 1.
+    if (active && typeof active.panes === 'function') {
+      try {
+        var panes = active.panes();
+        var pricePane = panes[0];
+        var volPane = panes[1];
+        if (volPane && typeof volPane.setStretchFactor === 'function') {
+          volPane.setStretchFactor(visible ? 1 : 0.0001);
+        }
+        if (pricePane && typeof pricePane.setStretchFactor === 'function') {
+          pricePane.setStretchFactor(visible ? 4 : 1);
+        }
+      } catch (e) { /* older lib versions may not support panes() */ }
     }
   }
+
 
   function render() {
     if (!listEl) return;

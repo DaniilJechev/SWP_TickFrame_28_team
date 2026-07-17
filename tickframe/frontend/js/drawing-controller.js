@@ -10,6 +10,8 @@ var DrawingController = (function () {
   var _pendingDrawing = null;
   var _pendingAnchors = [];
   var _redactMode = false;
+  var _saveGeneration = 0;
+
 
   function _createDrawingFactory() {
     var registry = DrawingLib.getToolRegistry();
@@ -25,15 +27,19 @@ var DrawingController = (function () {
 
   async function _save() {
     if (!_manager || !_symbol) return;
+    var generation = ++_saveGeneration;
+    var symbolAtSave = _symbol;
     try {
       var exported = _manager.exportDrawings();
+      if (generation !== _saveGeneration || symbolAtSave !== _symbol) return;
       await fetch('/api/drawings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ symbol: _symbol, drawings_data: exported }),
+        body: JSON.stringify({ symbol: symbolAtSave, drawings_data: exported }),
       });
     } catch (e) { console.error('drawing save error', e); }
   }
+
 
   var _highlightOrigins = {};
   var _pendingSymbol = null;
@@ -202,8 +208,11 @@ var DrawingController = (function () {
 
   function _boostHitAreas() {
     DrawingLib && Object.values(DrawingLib).forEach(function (c) {
-      if (typeof c === 'function' && c.HIT_THRESHOLD !== void 0) c.HIT_THRESHOLD = 12;
+      try {
+        if (typeof c === 'function' && c.HIT_THRESHOLD !== void 0) c.HIT_THRESHOLD = 12;
+      } catch (e) {}
     });
+
     var proto = DrawingLib.Drawing && DrawingLib.Drawing.prototype;
     if (proto) proto.hitTestAnchor = function (pt, vp) {
       var pts = this.getControlPoints(vp);

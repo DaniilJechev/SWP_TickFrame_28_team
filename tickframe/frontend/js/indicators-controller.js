@@ -95,10 +95,9 @@ var TFIndicatorController = (function () {
     var colorIdx = 0;
     var paneId = entry.uid;
 
-    var paneArea = document.getElementById('indicatorPanes');
-    if (!paneArea) return;
-
-    var pane = TFIndicatorPanes.createPane(paneId, 120);
+    // Reserve a native chart pane index for this indicator. The pane itself is
+    // materialised by the library once we add the first series to it.
+    var pane = TFIndicatorPanes.getOrCreatePane(paneId);
     if (!pane) return;
     entry.paneId = paneId;
 
@@ -110,21 +109,23 @@ var TFIndicatorController = (function () {
       var color = DEFAULT_COLORS[colorIdx % DEFAULT_COLORS.length];
       colorIdx++;
       try {
-        var lineSeries = pane.chart.addSeries(LightweightCharts.LineSeries, {
+        // Third argument = paneIndex → series is placed in the shared chart's pane.
+        var lineSeries = window.chart.addSeries(LightweightCharts.LineSeries, {
           color: color,
           lineWidth: 1,
           lastValueVisible: true,
           priceLineVisible: false,
-        });
+          title: entry.title,
+        }, pane.paneIndex);
         lineSeries.setData(data);
         entry.series.push(lineSeries);
+        TFIndicatorPanes.registerSeries(paneId, lineSeries);
       } catch (e) {
         console.warn('Failed to create pane series', e);
       }
     }
-
-    pane.container.querySelector('.indicator-pane-header').textContent = entry.title;
   }
+
 
   function renderCandlestickPatterns(entry, result) {
     var plotData = result.plots && result.plots.plot0;

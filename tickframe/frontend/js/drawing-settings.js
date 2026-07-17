@@ -7,13 +7,14 @@ var DrawingSettings = (function () {
       'fib-retracement', 'fib-extension', 'fib-channel', 'fib-time-zone',
       'gann-box', 'gann-fan'].indexOf(toolType) >= 0;
     var def = {
-      lineColor: '#26a69a',
+      lineColor: '#00ff88',
       lineWidth: 2,
       lineDash: [],
       fillOpacity: 0.12,
     };
-    if (hasFill) def.fillColor = 'rgba(38, 166, 154, 0.12)';
+    if (hasFill) def.fillColor = 'rgba(0, 255, 136, 0.12)';
     return def;
+
   }
 
   function load() {

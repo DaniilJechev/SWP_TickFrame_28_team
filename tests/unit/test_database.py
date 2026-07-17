@@ -12,7 +12,8 @@ from tickframe.backend.services.database import DatabaseService
 def db():
     tmpdir = Path(tempfile.mkdtemp(prefix="tickframe-db-", suffix="-test"))
     path = tmpdir / "test.db"
-    svc = DatabaseService(path)
+    svc = DatabaseService(use_sqlite=True, db_path=path)
+
     try:
         yield svc
     finally:

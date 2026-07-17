@@ -4,7 +4,8 @@ var DrawingProperties = (function () {
   var _currentId = null;
   var _initialized = false;
 
-  var _COLORS = ['#ffffff', '#6b7280', '#3b82f6', '#22c55e', '#ef4444', '#f97316', '#eab308', '#a855f7'];
+  var _COLORS = ['#00ff88', '#00c46a', '#3b82f6', '#ff4d5e', '#f97316', '#eab308', '#a855f7', '#ffffff'];
+
 
   function init() {
     if (_initialized) return;

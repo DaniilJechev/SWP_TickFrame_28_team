@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import logging
 from typing import Any
 
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
@@ -9,6 +10,8 @@ from ..services.bybit_client import normalize_interval, normalize_symbol, utc_no
 from ..services.cache import MemoryMarketCache
 
 router = APIRouter(tags=["stream"])
+LOGGER = logging.getLogger("tickframe.ws")
+
 
 
 class SocketHub:
@@ -31,8 +34,10 @@ class SocketHub:
         for websocket in clients:
             try:
                 await websocket.send_json(payload)
-            except Exception:
+            except Exception as exc:
+                LOGGER.warning("Failed to broadcast to client, dropping connection: %s", exc)
                 await self.disconnect(websocket)
+
 
 
 market_hub = SocketHub()
@@ -76,14 +81,8 @@ async def candle_stream(websocket: WebSocket, symbol: str) -> None:
             if previous_signature is None:
                 payload = await cache.get_candles(pair, interval, limit)
             else:
-                candle_payload = await cache.client.fetch_candles(pair, interval, 2)
-                payload = {
-                    "symbol": pair,
-                    "interval": interval,
-                    "source": candle_payload.source,
-                    "updated_at": candle_payload.updated_at,
-                    "candles": candle_payload.candles,
-                }
+                payload = await cache.get_candles(pair, interval, 2)
+
             candles = payload["candles"]
             last_candle = candles[-1] if candles else None
             current_signature = None

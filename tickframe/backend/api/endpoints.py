@@ -1,11 +1,12 @@
 from __future__ import annotations
 
+import json
 import logging
 
-from fastapi import APIRouter, Body, Depends, HTTPException, Query, Request
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from pydantic import BaseModel
 
-from ..models.schemas import AnalyzeResponse, CandleResponse, CoinSummary, IndicatorsPayload, PriceResponse
+from ..models.schemas import CandleResponse, CoinSummary, IndicatorsPayload, PriceResponse
 from ..services.cache import MemoryMarketCache
 from ..services.database import DatabaseService
 from ..services.coin_icons import coin_icons_client
@@ -86,53 +87,86 @@ async def get_candles(
     return payload
 
 
-class AnalyzeRequest(BaseModel):
-    candles: list[dict] | None = None
-
-
-@router.post("/analyze/{symbol}", response_model=AnalyzeResponse)
+@router.post("/analyze/{symbol}")
 async def analyze_patterns(
     symbol: str,
-    body: AnalyzeRequest | None = Body(None),
     interval: str = Query(default="5m", pattern="^(5m|15m|1h|4h|1d)$"),
-    limit: int = Query(default=200, ge=99, le=MAX_CANDLES_LIMIT),
     confidence_threshold: float = Query(default=0.80, ge=0.0, le=1.0),
     cache: MemoryMarketCache = Depends(get_cache),
     ml: MlClient = Depends(get_ml_client),
+    db: DatabaseService = Depends(get_database),
 ) -> dict:
-    warmup = max(50, min(limit // 4, 500))
-    if body and body.candles:
-        ml_candles = body.candles
+    existing = await db.load_ml_scan(symbol)
+    if existing and existing["patterns"]:
         LOGGER.info(
-            "Analyzing symbol=%s interval=%s with %d provided candles, threshold=%.2f",
-            symbol, interval, len(ml_candles), confidence_threshold,
+            "Incremental analyze symbol=%s interval=%s last_scanned=%s",
+            symbol, interval, existing["last_scanned_time"],
         )
+        after = existing["last_scanned_time"]
+        existing_patterns = existing["patterns"]
+        existing_times = {p["timestamp"] for p in existing_patterns if "timestamp" in p}
     else:
-        fetch_limit = limit + warmup
-        payload = await cache.get_candles(symbol, interval, fetch_limit)
-        candles = payload.get("candles", [])
-        if len(candles) < warmup:
-            raise HTTPException(
-                status_code=400,
-                detail=f"Not enough candle data: got {len(candles)}, need at least {warmup}",
-            )
-        ml_candles = [
-            {"timestamp": c["time"], "open": c["open"], "high": c["high"],
-             "low": c["low"], "close": c["close"], "volume": c["volume"]}
-            for c in candles
-        ]
-        LOGGER.info(
-            "Analyzing symbol=%s interval=%s target_candles=%s total_sent=%s",
-            symbol, interval, limit, len(ml_candles),
-        )
+        after = 0
+        existing_patterns = []
+        existing_times = set()
 
-    patterns = await ml.analyze_candles(symbol, interval, ml_candles, confidence_threshold)
+    if after > 0:
+        candles = await db.load_candles_after(symbol, interval, after)
+    else:
+        db_count = await db.count_candles(symbol, interval)
+        if db_count >= 50000:
+            candles = await db.load_last_n_candles(symbol, interval, 50000)
+        else:
+            cache_result = await cache.get_candles(symbol, interval, 50000)
+            candles = cache_result.get("candles", [])
+
+    if after == 0 and not candles:
+        raise HTTPException(status_code=400, detail="No candle data available for analysis")
+
+    if not candles:
+        LOGGER.info("No new candles since last scan for %s", symbol)
+        return {
+            "symbol": symbol, "interval": interval,
+            "patterns": existing_patterns,
+        }
+
+    ml_candles = [
+        {"timestamp": c["time"], "open": c["open"], "high": c["high"],
+         "low": c["low"], "close": c["close"], "volume": c["volume"]}
+        for c in candles
+    ]
+
+    new_patterns = await ml.analyze_candles(symbol, interval, ml_candles, confidence_threshold)
+
+    for p in new_patterns:
+        ts = p.get("timestamp")
+        if ts is not None and ts not in existing_times:
+            existing_patterns.append(p)
+            existing_times.add(ts)
+
+    last_time = candles[-1]["time"]
+    await db.save_ml_scan(symbol, interval, last_time, existing_patterns)
+
+    LOGGER.info(
+        "Analyze complete symbol=%s new=%d total=%d",
+        symbol, len(new_patterns), len(existing_patterns),
+    )
 
     return {
+        "symbol": symbol, "interval": interval,
+        "patterns": existing_patterns,
+    }
+
+
+@router.get("/patterns/{symbol}")
+async def get_patterns(
+    symbol: str,
+    db: DatabaseService = Depends(get_database),
+) -> dict:
+    scan = await db.load_ml_scan(symbol)
+    return {
         "symbol": symbol,
-        "interval": interval,
-        "limit": len(ml_candles),
-        "patterns": patterns,
+        "patterns": scan["patterns"] if scan else [],
     }
 
 
@@ -172,17 +206,15 @@ async def get_drawings(symbol: str = "", db: DatabaseService = Depends(get_datab
     blob = await db.load_drawings_blob(symbol)
     if blob:
         return {"drawings_data": blob}
-    drawings = await db.load_drawings(symbol)
-    return {"drawings": drawings}
+    return {"drawings": []}
 
 
 @router.post("/drawings")
 async def save_drawings(payload: DrawingsPayload, db: DatabaseService = Depends(get_database)) -> dict:
-    if payload.drawings_data is not None:
-        await db.save_drawings_blob(payload.symbol, payload.drawings_data)
-    else:
-        await db.save_drawings(payload.symbol, payload.drawings)
+    data = payload.drawings_data if payload.drawings_data is not None else payload.drawings
+    await db.save_drawings_blob(payload.symbol, data)
     return {"status": "ok"}
+
 @router.get("/indicators")
 async def get_indicators(symbol: str = "", db: DatabaseService = Depends(get_database)) -> dict:
     blob = await db.load_indicators(symbol)
@@ -208,3 +240,85 @@ async def save_settings(payload: SettingsPayload, db: DatabaseService = Depends(
     for key, value in payload.settings.items():
         await db.set_setting(key, value)
     return {"status": "ok"}
+
+
+# ---------------------------------------------------------------------------
+# Admin / DB Toolkit endpoints (dev-only, gated by ENABLE_DB_ADMIN_API)
+# ---------------------------------------------------------------------------
+
+import os as _os
+
+if _os.environ.get("ENABLE_DB_ADMIN_API", "").lower() in ("1", "true", "yes"):
+
+    from fastapi.responses import StreamingResponse as _StreamingResponse
+    import csv as _csv
+    import io as _io
+
+    @router.get("/admin/db/candles/{symbol}/export")
+    async def admin_db_export_candles(
+        symbol: str,
+        interval: str = Query(default="5m"),
+        fmt: str = Query(default="csv", alias="format"),
+        db: DatabaseService = Depends(get_database),
+    ) -> _StreamingResponse:
+        candles = await db.load_candles(symbol, interval)
+        if fmt == "json":
+            return _StreamingResponse(
+                iter([json.dumps(candles, indent=2)]),
+                media_type="application/json",
+                headers={"Content-Disposition": f"attachment; filename={symbol}_{interval}.json"},
+            )
+        buf = _io.StringIO()
+        writer = _csv.DictWriter(buf, fieldnames=["time", "open", "high", "low", "close", "volume"])
+        writer.writeheader()
+        writer.writerows(candles)
+        buf.seek(0)
+        return _StreamingResponse(
+            iter([buf.getvalue()]),
+            media_type="text/csv",
+            headers={"Content-Disposition": f"attachment; filename={symbol}_{interval}.csv"},
+        )
+
+    @router.post("/admin/db/candles/{symbol}/import")
+    async def admin_db_import_candles(
+        symbol: str,
+        interval: str = Query(default="5m"),
+        db: DatabaseService = Depends(get_database),
+    ) -> dict:
+        from fastapi import UploadFile, File as _File, HTTPException as _HTTPException
+        file: UploadFile = _File(...)
+        content = await file.read()
+        raw = content.decode("utf-8")
+        ext = file.filename.split(".")[-1].lower() if file.filename else "csv"
+        if ext == "json" or raw.strip().startswith("["):
+            candles = json.loads(raw)
+        else:
+            reader = _csv.DictReader(_io.StringIO(raw))
+            candles = []
+            row_num = 0
+            for row in reader:
+                row_num += 1
+                try:
+                    candles.append({
+                        "time": int(row["time"]),
+                        "open": float(row["open"]),
+                        "high": float(row["high"]),
+                        "low": float(row["low"]),
+                        "close": float(row["close"]),
+                        "volume": float(row.get("volume", 0)),
+                    })
+                except (ValueError, KeyError) as e:
+                    raise _HTTPException(400, f"Row {row_num}: {e}")
+        total = len(candles)
+        await db.save_candles(symbol, interval, candles)
+        return {"status": "ok", "rows_read": total, "rows_upserted": total}
+
+    @router.get("/admin/db/patterns/{symbol}")
+    async def admin_db_patterns(
+        symbol: str,
+        db: DatabaseService = Depends(get_database),
+    ) -> dict:
+        scan = await db.load_ml_scan(symbol)
+        if scan:
+            return scan
+        return {"symbol": symbol, "interval": "", "last_scanned_time": 0, "patterns": []}

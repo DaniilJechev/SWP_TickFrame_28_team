@@ -1,26 +1,27 @@
 :root {
-  --toolbar-bg: rgba(28, 28, 32, 0.78);
-  --toolbar-hover: rgba(255, 255, 255, 0.08);
-  --toolbar-active: #26a69a;
-  --toolbar-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
-  --toolbar-radius: 14px;
+  --toolbar-bg: rgba(6, 13, 10, 0.9);
+  --toolbar-hover: rgba(0, 255, 136, 0.12);
+  --toolbar-active: #00ff88;
+  --toolbar-shadow: 0 12px 40px rgba(0, 0, 0, 0.55);
+  --toolbar-radius: 12px;
   --toolbar-width: 98px;
   --toolbar-gap: 1px;
   --icon-size: 14px;
-  --divider: rgba(255, 255, 255, 0.06);
-  --text-muted: rgba(255, 255, 255, 0.45);
-  --text-bright: rgba(255, 255, 255, 0.9);
+  --divider: rgba(0, 255, 136, 0.12);
+  --text-muted: #5f8f72;
+  --text-bright: #c8f7d6;
 }
 
 body.light {
-  --toolbar-bg: rgba(245, 247, 250, 0.88);
-  --toolbar-hover: rgba(0, 0, 0, 0.06);
-  --toolbar-active: #1f9d8f;
-  --toolbar-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
-  --divider: rgba(0, 0, 0, 0.06);
-  --text-muted: rgba(0, 0, 0, 0.4);
-  --text-bright: rgba(0, 0, 0, 0.85);
+  --toolbar-bg: rgba(255, 255, 255, 0.92);
+  --toolbar-hover: rgba(10, 165, 95, 0.10);
+  --toolbar-active: #0aa55f;
+  --toolbar-shadow: 0 12px 40px rgba(15, 40, 30, 0.12);
+  --divider: rgba(15, 80, 50, 0.12);
+  --text-muted: #5d766b;
+  --text-bright: #0f231a;
 }
+
 
 .drawing-toolbar {
   position: absolute;
@@ -113,14 +114,15 @@ body.light {
 
 .dt-btn.active {
   background: var(--toolbar-active);
-  color: #fff;
+  color: #00160c;
 }
 
 .dt-btn.active:hover {
   background: var(--toolbar-active);
-  color: #fff;
+  color: #00160c;
   transform: scale(1.05);
 }
+
 
 .dt-btn.active:active {
   transform: scale(0.95);
@@ -253,7 +255,7 @@ body.light {
   appearance: none;
   width: 100%;
   height: 4px;
-  background: rgba(255,255,255,0.15);
+  background: var(--divider);
   border-radius: 2px;
   outline: none;
   cursor: pointer;
@@ -265,9 +267,10 @@ body.light {
   height: 14px;
   border-radius: 50%;
   background: var(--toolbar-active);
-  border: 2px solid rgba(255,255,255,0.3);
+  border: 2px solid var(--toolbar-bg);
   cursor: pointer;
 }
+
 
 .dt-width-value {
   font-size: 11px;
@@ -288,7 +291,7 @@ body.light {
   align-items: center;
   justify-content: center;
   background: transparent;
-  border: 1px solid rgba(255,255,255,0.1);
+  border: 1px solid var(--divider);
   border-radius: 6px;
   cursor: pointer;
   transition: border-color 0.12s ease, background 0.12s ease;
@@ -298,13 +301,14 @@ body.light {
 
 .dt-dash-btn:hover {
   background: var(--toolbar-hover);
-  border-color: rgba(255,255,255,0.2);
+  border-color: var(--toolbar-active);
 }
 
 .dt-dash-btn.active {
   border-color: var(--toolbar-active);
-  background: rgba(38,166,154,0.15);
+  background: var(--toolbar-hover);
 }
+
 
 .dt-settings-close {
   position: absolute;

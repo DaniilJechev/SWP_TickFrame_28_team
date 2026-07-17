@@ -29,25 +29,22 @@ function initIndicatorSubsystem() {
       getCurrentBarsFn: function () { return window.TFChart ? window.TFChart.getCurrentBars() : []; },
     });
     var mainChart = window.TFChart ? window.TFChart.mainChart() : null;
-    var paneArea = document.getElementById('indicatorPanes');
-    if (mainChart && paneArea) {
-      TFIndicatorPanes.init(mainChart, paneArea, paneArea);
+    if (mainChart) {
+      TFIndicatorPanes.init(mainChart);
     }
-
-    var volumePane = TFIndicatorPanes.createPane('_volume', 80);
-    if (volumePane) {
-      var volHeader = volumePane.container.querySelector('.indicator-pane-header');
-      if (volHeader) volHeader.textContent = 'Volume';
-      if (window.TFChart && typeof window.TFChart.initVolumePane === 'function') {
-        window.TFChart.initVolumePane(volumePane.chart);
-      }
-    }
-
     TFIndicatorPanel.init();
     TFIndicatorChips.init();
   }
 
   window._onCandlesUpdated = function (symbol) {
+    if (window.TFTopbar && typeof window.TFTopbar.refreshChanges === 'function') {
+      window.TFTopbar.refreshChanges();
+    }
+    // Lazy-init indicator panes with the active chart (created on first coin switch)
+    if (window.TFIndicatorPanes && !window.TFIndicatorPanes.mainChart) {
+      var chart = window.TFChart ? window.TFChart.mainChart() : null;
+      if (chart) TFIndicatorPanes.init(chart);
+    }
     if (!window.TFIndicatorController) return;
     var saved = TFIndicatorState.getApplied().slice();
     TFIndicatorController.destroyAll();
@@ -67,82 +64,57 @@ function initIndicatorSubsystem() {
   };
 }
 
-function indicatorsToggle() {
-  var panel = document.getElementById('indicatorsPanel');
-  if (panel) {
-    panel.classList.toggle('hidden');
-    var btn = document.getElementById('indicatorsToggle');
-    if (btn) btn.classList.toggle('active');
-  }
-}
-
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', function () {
   loadSettings();
+  initIndicatorSubsystem();
   const defaultSymbol = 'BTCUSDT';
   const symbolNames = {
-    BTCUSDT: 'Bitcoin',
-    ETHUSDT: 'Ethereum',
-    SOLUSDT: 'Solana',
-    XRPUSDT: 'Ripple',
-    DOGEUSDT: 'Dogecoin',
-    ADAUSDT: 'Cardano',
-    AVAXUSDT: 'Avalanche',
-    DOTUSDT: 'Polkadot',
-    LINKUSDT: 'Chainlink',
-    BNBUSDT: 'BNB',
+    BTCUSDT: 'Bitcoin', ETHUSDT: 'Ethereum', SOLUSDT: 'Solana',
+    XRPUSDT: 'Ripple', DOGEUSDT: 'Dogecoin', ADAUSDT: 'Cardano',
+    AVAXUSDT: 'Avalanche', DOTUSDT: 'Polkadot', LINKUSDT: 'Chainlink', BNBUSDT: 'BNB',
   };
 
-  const titleEl = document.getElementById('marketTitle');
-  const updateTitle = (symbol) => {
-    if (titleEl) titleEl.innerText = `Market charts - ${symbolNames[symbol] || symbol}`;
+  const updateTitle = function (symbol) {
+    document.title = (symbolNames[symbol] || symbol) + ' \u00B7 TickFrame';
+    if (window.TFTopbar && typeof window.TFTopbar.onSymbolChange === 'function') {
+      window.TFTopbar.onSymbolChange(symbol);
+    }
   };
-
-  initIndicatorSubsystem();
 
   var origSetActive = window.TFChart?.setActiveSymbol;
   if (window.TFChart) {
-    window.TFChart.setActiveSymbol = (symbol) => {
+    window.TFChart.setActiveSymbol = function (symbol) {
       window.currentSymbol = symbol;
       updateTitle(symbol);
       _initialLoadDone = true;
-      if (typeof origSetActive === 'function') {
-        origSetActive(symbol);
-      }
+      if (typeof origSetActive === 'function') origSetActive(symbol);
       if (window.TFIndicatorController && typeof TFIndicatorController.loadForSymbol === 'function') {
         TFIndicatorController.loadForSymbol(symbol);
       }
     };
   }
 
-  // timeframe buttons
-  document.querySelectorAll('.timeframes button').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.timeframes button').forEach(b => b.classList.remove('active'));
+  // timeframe buttons — use the manager's switchInterval
+  document.querySelectorAll('.timeframes button').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      document.querySelectorAll('.timeframes button').forEach(function (b) { b.classList.remove('active'); });
       btn.classList.add('active');
-      const tf = btn.dataset.tf;
+      var tf = btn.dataset.tf;
       if (window.TFChart) {
-        window.TFChart.loadCandles(window.currentSymbol || defaultSymbol, tf);
-        window.TFChart.startCandleWs(window.currentSymbol || defaultSymbol, tf);
+        if (window.currentSymbol && window.TFChart.saveCoinState) {
+          window.TFChart.saveCoinState(window.currentSymbol, tf);
+        }
+        window.TFChart.switchInterval(tf);
       }
     });
   });
 
-  // indicators toggle
-  var indicatorsToggleBtn = document.getElementById('indicatorsToggle');
-  if (indicatorsToggleBtn) {
-    indicatorsToggleBtn.addEventListener('click', indicatorsToggle);
-  }
-  var indicatorsCloseBtn = document.getElementById('indicatorsClose');
-  if (indicatorsCloseBtn) {
-    indicatorsCloseBtn.addEventListener('click', indicatorsToggle);
-  }
-
   // theme toggle
-  const themeBtn = document.getElementById('themeBtn');
-  themeBtn?.addEventListener('click', () => {
-    const body = document.body;
+  var themeBtn = document.getElementById('themeBtn');
+  themeBtn?.addEventListener('click', function () {
+    var body = document.body;
     body.classList.toggle('light');
-    const dark = !body.classList.contains('light');
+    var dark = !body.classList.contains('light');
     window.TFChart?.applyChartTheme?.(dark);
     saveSetting('theme', dark ? 'dark' : 'light');
     if (typeof loadFearAndGreed === 'function') loadFearAndGreed();
@@ -154,19 +126,70 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // analyze button
-  const analyzeBtn = document.querySelector('.analyze-btn');
-  analyzeBtn?.addEventListener('click', () => {
-    window.TFChart?.analyzePatterns?.();
+  // analyze / clear patterns button
+  var analyzeBtn = document.querySelector('.analyze-btn');
+  analyzeBtn?.addEventListener('click', function () {
+    var label = analyzeBtn.querySelector('.analyze-btn-label');
+    if (label && label.textContent === 'CLEAR PATTERNS') {
+      window.TFChart?.clearPatternsFrontend?.();
+    } else {
+      window.TFChart?.analyzePatterns?.();
+    }
   });
 
-  // Select default coin after chart is ready; skip if user already clicked a coin.
+  // pattern filter button
+  var filterBtn = document.querySelector('.filter-patterns-btn');
+  filterBtn?.addEventListener('click', function () {
+    window.TFChart?.togglePatternFilter?.();
+  });
+
+  function updateFilterBadge() {
+    var badge = document.getElementById('filterCountBadge');
+    if (!badge) return;
+    var checked = document.querySelectorAll('.pattern-filter-cb:checked').length;
+    var total = document.querySelectorAll('.pattern-filter-cb').length;
+    badge.textContent = checked;
+    if (filterBtn) filterBtn.classList.toggle('filtered', checked < total);
+  }
+
+  document.querySelectorAll('.pattern-filter-cb').forEach(function (cb) {
+    cb.addEventListener('change', function () {
+      var pattern = this.dataset.pattern;
+      if (window._patternFilter) {
+        window._patternFilter[pattern] = this.checked;
+      }
+      updateFilterBadge();
+      window.TFChart?.onPatternFilterChange?.();
+    });
+  });
+
+  function setAllPatterns(state) {
+    document.querySelectorAll('.pattern-filter-cb').forEach(function (cb) {
+      cb.checked = state;
+      if (window._patternFilter) {
+        window._patternFilter[cb.dataset.pattern] = state;
+      }
+    });
+    updateFilterBadge();
+    window.TFChart?.onPatternFilterChange?.();
+  }
+  document.getElementById('patternFilterSelectAll')?.addEventListener('click', function () { setAllPatterns(true); });
+  document.getElementById('patternFilterClearAll')?.addEventListener('click', function () { setAllPatterns(false); });
+
+  var filterClose = document.getElementById('patternFilterClose');
+  if (filterClose) {
+    filterClose.addEventListener('click', function () {
+      window.TFChart?.togglePatternFilter?.();
+    });
+  }
+
+  updateFilterBadge();
   updateTitle(defaultSymbol);
-  setTimeout(() => {
+
+  // Auto-select first coin when chart is ready
+  setTimeout(function () {
     if (_initialLoadDone) return;
-    const first = document.querySelector('.watchlist .coin');
-    if (first) {
-      first.click();
-    }
+    var first = document.querySelector('.watchlist .coin');
+    if (first) first.click();
   }, 300);
 });

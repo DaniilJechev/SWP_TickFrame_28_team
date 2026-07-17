@@ -1,20 +1,21 @@
 :root {
-  --dp-bg: rgba(28, 28, 32, 0.85);
-  --dp-border: rgba(255, 255, 255, 0.06);
-  --dp-text: rgba(255, 255, 255, 0.85);
-  --dp-muted: rgba(255, 255, 255, 0.4);
-  --dp-active: #26a69a;
-  --dp-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  --dp-bg: rgba(6, 13, 10, 0.92);
+  --dp-border: rgba(0, 255, 136, 0.14);
+  --dp-text: #c8f7d6;
+  --dp-muted: #5f8f72;
+  --dp-active: #00ff88;
+  --dp-shadow: 0 8px 32px rgba(0, 0, 0, 0.55);
 }
 
 body.light {
-  --dp-bg: rgba(245, 247, 250, 0.92);
-  --dp-border: rgba(0, 0, 0, 0.06);
-  --dp-text: rgba(0, 0, 0, 0.85);
-  --dp-muted: rgba(0, 0, 0, 0.4);
-  --dp-active: #1f9d8f;
-  --dp-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  --dp-bg: rgba(255, 255, 255, 0.95);
+  --dp-border: rgba(15, 80, 50, 0.14);
+  --dp-text: #0f231a;
+  --dp-muted: #5d766b;
+  --dp-active: #0aa55f;
+  --dp-shadow: 0 8px 32px rgba(15, 40, 30, 0.12);
 }
+
 
 .drawing-properties {
   position: fixed;
