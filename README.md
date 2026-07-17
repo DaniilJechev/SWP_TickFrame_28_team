@@ -47,7 +47,12 @@ netstat -ano | findstr ":8000"
 If you see a non-Docker process on port `8000`, the Docker container will be unreachable on that port. The docker-compose.yml maps `8080:8000` to avoid the most common conflict — adjust the host port in `docker-compose.yml` if needed.
 
 ### 3. Build and run
-
+```bash
+cp .env.example .env
+```
+```bash
+cd tickframe/frontend && npm install
+```
 ```bash
 docker compose up --build
 ```
