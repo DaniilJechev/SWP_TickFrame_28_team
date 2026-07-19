@@ -226,10 +226,11 @@ The demo video will be recorded and linked here before the Week 7 submission dea
 
 ---
 
-## 25. Sprint Review Evidence
+## 25. Sprint Review — Summary, Transcript, and Notes
 
 | Artifact | Link |
 |---|---|
+| Sprint Review summary | [reports/week7/sprint-review-summary.md](sprint-review-summary.md) |
 | Sprint Review transcript | [reports/week7/sprint-review-transcript.md](sprint-review-transcript.md) (published — recording/publication permitted) |
 | Sprint Review notes | [reports/week7/sprint-review-notes.md](sprint-review-notes.md) |
 
@@ -240,31 +241,25 @@ The demo video will be recorded and linked here before the Week 7 submission dea
 
 ---
 
-## 26. Sprint Review Summary
-
-[reports/week7/sprint-review-summary.md](sprint-review-summary.md)
-
----
-
-## 27. Reflection
+## 26. Reflection
 
 [reports/week7/reflection.md](reflection.md)
 
 ---
 
-## 28. Retrospective
+## 27. Retrospective
 
 [reports/week7/retrospective.md](retrospective.md)
 
 ---
 
-## 29. LLM Report
+## 28. LLM Report
 
 [reports/week7/llm-report.md](llm-report.md)
 
 ---
 
-## 30. Final Product Status
+## 29. Final Product Status
 
 **MVP v3** (v3.0.0) is the final course version of SWP TickFrame. All planned PBIs for Sprint 6 have been delivered:
 
@@ -280,7 +275,7 @@ The demo video will be recorded and linked here before the Week 7 submission dea
 
 ---
 
-## 31. Contribution Traceability
+## 30. Contribution Traceability
 
 | Person | Role | Issues | PRs | Reviews | Testing | QA | Docs | Transition / Deployment | Demo Prep |
 |---|---|---|---|---|---|---|---|---|---|
@@ -292,7 +287,7 @@ The demo video will be recorded and linked here before the Week 7 submission dea
 
 ---
 
-## 32. Screenshots
+## 31. Screenshots
 
 Screenshots evidence for inspectable Week 7 artifacts:
 

@@ -18,7 +18,7 @@
 | **Sprint 3** | [v1.1.0](https://github.com/Fedos113/SWP_TickFrame_28_team/releases/tag/v1.1.0) |
 | **MVP v2** | [v2.0.0](https://github.com/Fedos113/SWP_TickFrame_28_team/releases/tag/v2.0.0) (Sprint 4) |
 | **Week 6 Trial** | [v2.2.0-trial] (Sprint 5) |
-| **MVP v3** | TBD — final course version (Sprint 6) |
+| **MVP v3** | [v3.0.0](https://github.com/Fedos113/SWP_TickFrame_28_team/releases/tag/v3.0.0) (Sprint 6 — Assignment 7) |
 
 ---
 
@@ -213,7 +213,7 @@ documentation, retrospective, reflection, and LLM report — all based on the
 | Retrospective | [`reports/week7/retrospective.md`](../../reports/week7/retrospective.md) | What went well, what didn't, changes from previous sprint, process improvements |
 | Reflection | [`reports/week7/reflection.md`](../../reports/week7/reflection.md) | Learning points, validated assumptions, friction/gaps, planned response |
 | LLM Usage Report | [`reports/week7/llm-report.md`](../../reports/week7/llm-report.md) | OpenCode usage areas and limitations encountered |
-| Week 7 Report Index | [`reports/week7/README.md`](../../reports/week7/README.md) | ML Dual-Model Integration report with traceability |
+| Week 7 Report Index | [`reports/week7/README.md`](../../reports/week7/README.md) | 31-section Week 7 report with transition outcome, UAT results, release, contribution traceability |
 
 Key updates across the repository:
 - **A7 scaffolding files:** All 6 `assignments/7/*.md` files updated with Sprint 6 completion state — context, architecture, breakdown, contributions, issue template, and assignment spec
@@ -261,10 +261,10 @@ Corresponding documentation issues created on GitHub:
 |---|---|
 | **Backend** | Python 3.11, FastAPI, Uvicorn, httpx, websockets |
 | **Frontend** | Lightweight Charts v5, Canvas API, vanilla JS, lightweight-charts-drawing, lightweight-charts-indicators, oakscriptjs, Lucide icons, esbuild |
-| **Database** | SQLite (via aiosqlite) |
+| **Database** | PostgreSQL 16 (via asyncpg) |
 | **ML** | XGBoost (H&S and DT/DB detection), Numba, FastAPI microservice |
 | **Exchange** | Bybit v5 API (primary), Binance API (fallback) |
-| **Deployment** | Docker + Docker Compose (2 containers) |
+| **Deployment** | Docker + Docker Compose (3 containers: ML, TickFrame, PostgreSQL) |
 | **CI** | GitHub Actions (ruff, mypy, pytest+cov, bandit, ESLint, Vitest, Lychee) |
 | **AI Tools** | OpenCode (deepseek-v4-flash-free) |
 
