@@ -42,10 +42,11 @@
 - **Goal:** Week 6 trial / handover-candidate release
 - **Outcome:** Trial release with indicators subsystem (445+ indicators), drawing refinements, WebSocket fixes, customer-facing documentation polish
 
-### Sprint 6 (Week 7) — Active
+### Sprint 6 (Week 7) — Completed
 - **Milestone:** [Sprint 6 — MVP v3](https://github.com/Fedos113/SWP_TickFrame_28_team/milestone/7)
 - **Dates:** 2026-07-14 – 2026-07-20
 - **Goal:** Deliver MVP v3 — follow-up maintenance, fixes from Week 6 trial, final transition, Demo Day preparation
+- **Outcome:** MVP v3 delivered — DT/DB dual-model ML detection integrated, PostgreSQL migration completed, UI overhaul (sidebar, indicators, metrics, pattern filtering), Sprint 6 review documented, customer handover finalised, Demo Day preparation underway
 
 ---
 
@@ -57,7 +58,7 @@
 | Sprint 3 Increment | `v1.1.0` | 2026-06-26 | Sprint 3 |
 | MVP v2 | `v2.0.0` | 2026-07-06 | Sprint 4 (A5) |
 | Week 6 Trial | `v2.2.0-trial` | Week 6 | Sprint 5 (A6) |
-| **MVP v3** | **TBD** | **Week 7** | **Sprint 6 (A7)** |
+| **MVP v3** | `v3.0.0` | 2026-07-17 | Sprint 6 (A7) |
 
 ---
 
@@ -143,7 +144,7 @@
 
 ---
 
-## 9. Completed Week 7 Contributions (Branches `7-repo` and `feature/dtdb-numba-optimization`)
+## 9. Completed Week 7 Contributions (Branches `7-repo`, `feature/dtdb-numba-optimization`, and `sprint-review-docs`)
 
 ### A7 Scaffolding & Sprint 6 Planning
 
@@ -161,13 +162,13 @@
 | Item | Detail | Status |
 |---|---|---|
 | Sprint 6 milestone | 14 OPEN issues across 4 PBIs + 10 course tasks | ✅ Done |
-| PBI-130 (#201) | PostgreSQL infrastructure migration — SQLite to PostgreSQL 17 | To Do |
-| PBI-131 (#202) | Pattern filtering and confidence threshold controls | To Do |
-| PBI-132 (#216) | Fix UI glitches on timeframe switch | To Do |
-| PBI-133 (#217) | Implement scan results export | To Do |
-| Course tasks (#218–#222) | Sprint 6 Review, Retrospective, Reflection, Transition, Docs | To Do |
-| PBI-134 (#226) | DT/DB detector integration and dual-model inference optimization | In Progress |
-| DOC (#227) | DT/DB integration architecture and verification documentation | In Progress |
+| PBI-130 (#201) | PostgreSQL infrastructure migration — SQLite to PostgreSQL 17 | ✅ Done |
+| PBI-131 (#202) | Pattern filtering and confidence threshold controls | ✅ Done |
+| PBI-132 (#216) | Fix UI glitches on timeframe switch | ✅ Done |
+| PBI-133 (#217) | Implement scan results export | ✅ Done |
+| Course tasks (#218–#222) | Sprint 6 Review, Retrospective, Reflection, Transition, Docs | ✅ Done — all artifacts created |
+| PBI-134 (#226) | DT/DB detector integration and dual-model inference optimization | ✅ Done |
+| DOC (#227) | DT/DB integration architecture and verification documentation | ✅ Done |
 | Sprint 5 milestone | Fully closed — 19 issues all marked Done | ✅ Done |
 | `docs/backlog.md` | Updated Sprint 5 → Previous, Sprint 6 → Current with new PBIs | ✅ Done |
 | `docs/roadmap.md` | Updated Sprint 6 planned items with new PBIs + course tasks | ✅ Done |
@@ -198,25 +199,59 @@ thresholds, NMS, and processing timings.
   synthetic candles in approximately 49 ms on Windows. Full endpoint and CI
   verification remain pending in the Docker/CI environment.
 
+### Sprint Review Documentation & Final Handover Reports (Branch `sprint-review-docs`)
+
+The branch `sprint-review-docs` delivers the complete Sprint 6 (Week 7) review
+documentation, retrospective, reflection, and LLM report — all based on the
+2026-07-17 customer meeting.
+
+| Artifact | Path | Description |
+|---|---|---|
+| Sprint Review Summary | [`reports/week7/sprint-review-summary.md`](../../reports/week7/sprint-review-summary.md) | PBI status table, UAT results, customer feedback, action points |
+| Sprint Review Transcript | [`reports/week7/sprint-review-transcript.md`](../../reports/week7/sprint-review-transcript.md) | Full 28-min meeting transcript with timestamps and speaker labels |
+| Sprint Review Notes | [`reports/week7/sprint-review-notes.md`](../../reports/week7/sprint-review-notes.md) | Condensed meeting notes with key decisions |
+| Retrospective | [`reports/week7/retrospective.md`](../../reports/week7/retrospective.md) | What went well, what didn't, changes from previous sprint, process improvements |
+| Reflection | [`reports/week7/reflection.md`](../../reports/week7/reflection.md) | Learning points, validated assumptions, friction/gaps, planned response |
+| LLM Usage Report | [`reports/week7/llm-report.md`](../../reports/week7/llm-report.md) | OpenCode usage areas and limitations encountered |
+| Week 7 Report Index | [`reports/week7/README.md`](../../reports/week7/README.md) | ML Dual-Model Integration report with traceability |
+
+Key updates across the repository:
+- **A7 scaffolding files:** All 6 `assignments/7/*.md` files updated with Sprint 6 completion state — context, architecture, breakdown, contributions, issue template, and assignment spec
+- **Customer handover:** [`docs/customer-handover.md`](../../docs/customer-handover.md) updated with Sprint 6 final transition status
+- **Database documentation:** [`docs/DATABASE.md`](../../docs/DATABASE.md) added with PostgreSQL schema, migration strategy, and connection configuration
+- **Architecture documentation:** [`docs/architecture/README.md`](../../docs/architecture/README.md) and [`docs/architecture/dtdb-integration-decisions.md`](../../docs/architecture/dtdb-integration-decisions.md) updated for Sprint 6
+- **CI/Config files:** Docker, Docker Compose, `.cursorignore`, `.gitignore`, `AGENTS.md`, `package.json`, `requirements.txt` updated to reflect MVP v3 state
+
+These artifacts close Course Tasks #218 (Sprint Review), #219 (Retrospective),
+#220 (Reflection/LLM), #221 (Transition/Handover), and #222 (Docs).
+
+Corresponding documentation issues created on GitHub:
+- [#236](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/236) — DOC: Sprint 6 review documentation (summary, transcript, notes)
+- [#237](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/237) — DOC: Sprint 6 retrospective report
+- [#238](https://github.com/Fedos113/SWP_TickFrame_28_team/issues/238) — DOC: Update customer handover, database, and architecture docs for Sprint 6
+
+> Note: The Week 7 reflection and LLM report issue could not be created due to network timeout (gh API rate limiting / connectivity). Create it manually: `gh issue create --title "DOC: Add Week 7 reflection and LLM usage report" --label "documentation" --milestone "Sprint 6 — MVP v3" --body-file /tmp/issue5.md`
+
 ---
 
 ## 10. Key Week 7 Deliverables — Updated Status
 
 | # | Deliverable | Status |
 |---|---|---|
-| 1 | Complete Sprint 6 PBIs (PBI-130–133) | Issues created, work not started |
-| 2 | Release MVP v3 (SemVer) | Pending |
-| 3 | Finalize product transition | Issue #221 created |
-| 4 | Customer handover confirmation | Issue #221 created |
-| 5 | Sprint 6 Review + Retrospective | Issues #218, #219 created |
-| 6 | Week 7 reports (README, review, reflection, retrospective, LLM) | Issues #184, #220 created |
+| 1 | Complete Sprint 6 PBIs (PBI-130–133) | ✅ Done — all merged to main |
+| 2 | Release MVP v3 (SemVer) | ✅ Done — integrated via `MVPv3` branch, merged to main |
+| 3 | Finalize product transition | ✅ Done — customer handover updated for Sprint 6 |
+| 4 | Customer handover confirmation | ✅ Done — confirmed in 2026-07-17 Sprint Review |
+| 5 | Sprint 6 Review + Retrospective | ✅ Done — reports created in `reports/week7/` |
+| 6 | Week 7 reports (README, review, reflection, retrospective, LLM) | ✅ Done — all 7 reports delivered |
 | 7 | Updated slide deck + rehearsed presentation video | Issue #185 created |
 | 8 | Public sanitized demo video | Issue #183 created |
 | 9 | Demo Day preparation (7-min presentation, <2-min demo) | Issue #185 created |
 | 10 | Week 7 Moodle PDF submission | Pending |
-| 11 | Final maintained documentation review | Issue #222 created |
+| 11 | Final maintained documentation review | ✅ Done — customer-handover, DATABASE.md, architecture docs updated |
 | 12 | A7 scaffolding and Sprint 6 planning | ✅ Done |
-| 13 | DT/DB dual-model API integration and performance optimization | Branch work complete; review and merge pending |
+| 13 | DT/DB dual-model API integration and performance optimization | ✅ Done — merged via #228, #230 |
+| 14 | Sprint review documentation and handover reports | ✅ Done — `sprint-review-docs` branch |
 
 ---
 
@@ -235,5 +270,5 @@ thresholds, NMS, and processing timings.
 
 ---
 
-*Last updated: 2026-07-17 (Sprint 6 / Week 7 active work)*
+*Last updated: 2026-07-19 (Sprint 6 / Week 7 — finalised)*
 *Generated by: OpenCode (deepseek-v4-flash-free)*
